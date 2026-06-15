@@ -46,6 +46,7 @@ export default {
         diceRoll:    { '0%': { transform: 'rotate(0deg) scale(1)' }, '25%': { transform: 'rotate(180deg) scale(1.3)' }, '50%': { transform: 'rotate(360deg) scale(0.9)' }, '75%': { transform: 'rotate(540deg) scale(1.2)' }, '100%': { transform: 'rotate(720deg) scale(1)' } },
         slideInRight:{ '0%': { transform: 'translateX(120px) rotate(20deg)', opacity: '0' }, '60%': { transform: 'translateX(-8px) rotate(-3deg)', opacity: '1' }, '100%': { transform: 'translateX(0) rotate(0deg)', opacity: '1' } },
         streakPop:   { '0%': { transform: 'scale(1)' }, '40%': { transform: 'scale(1.4)' }, '70%': { transform: 'scale(0.9)' }, '100%': { transform: 'scale(1)' } },
+        colorFlash:  { '0%': { backgroundColor: 'transparent' }, '25%': { backgroundColor: 'rgba(212,160,23,0.85)', boxShadow: '0 0 28px rgba(212,160,23,0.9)' }, '100%': { backgroundColor: 'transparent', boxShadow: 'none' } },
       },
       animation: {
         fadeIn:      'fadeIn 0.45s cubic-bezier(0.16,1,0.3,1)',
@@ -57,6 +58,7 @@ export default {
         diceRoll:    'diceRoll 0.6s cubic-bezier(0.16,1,0.3,1)',
         slideInRight:'slideInRight 0.5s cubic-bezier(0.16,1,0.3,1)',
         streakPop:   'streakPop 0.4s cubic-bezier(0.16,1,0.3,1)',
+        colorFlash:  'colorFlash 0.35s ease-out',
       },
       backdropBlur: {
         xs: '4px',

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { playSound } from '../utils/sounds';
 
 interface Props {
@@ -9,8 +9,12 @@ interface Props {
 }
 
 export const ParticleButton: React.FC<Props> = ({ particle, emoji, isActive, onClick }) => {
+  const [flashing, setFlashing] = useState(false);
+
   const handleClick = () => {
     playSound('particleClick');
+    setFlashing(true);
+    setTimeout(() => setFlashing(false), 350);
     onClick();
   };
 
@@ -24,6 +28,7 @@ export const ParticleButton: React.FC<Props> = ({ particle, emoji, isActive, onC
           ? 'bg-particle-active text-white shadow-glow-md scale-105 border border-glow-orange/30'
           : 'glass text-white/60 hover:text-white hover:border-glow-orange/30 hover:shadow-glow-sm hover:scale-105 active:scale-95'
         }
+        ${flashing ? 'animate-colorFlash' : ''}
       `}
     >
       <span className="mr-1.5 text-sm">{emoji}</span>
