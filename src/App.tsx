@@ -14,40 +14,55 @@ export default function App() {
   const active = activeIndex !== null ? PARTICLES[activeIndex] : null;
 
   return (
-    <div className="min-h-screen bg-cream-100 font-sans">
+    <div className="min-h-screen bg-cinema-gradient font-sans relative overflow-x-hidden">
+
+      {/* Ambient orbs */}
+      <div className="pointer-events-none fixed inset-0 overflow-hidden">
+        <div className="animate-orb absolute -top-32 left-1/4 w-96 h-96 rounded-full bg-glow-orange/10 blur-3xl" />
+        <div className="animate-orb absolute top-1/2 -right-32 w-80 h-80 rounded-full bg-glow-red/8 blur-3xl" style={{ animationDelay: '-3s' }} />
+        <div className="animate-orb absolute bottom-0 left-0 w-72 h-72 rounded-full bg-glow-gold/6 blur-3xl" style={{ animationDelay: '-5s' }} />
+      </div>
+
       {/* Header */}
-      <header className="bg-white/80 backdrop-blur-sm sticky top-0 z-10 border-b border-brand-orange/10 shadow-sm">
-        <div className="max-w-3xl mx-auto px-4 py-4 flex items-center justify-between">
+      <header className="sticky top-0 z-50 glass border-b border-white/[0.07]">
+        <div className="max-w-4xl mx-auto px-5 py-4 flex items-center justify-between">
           <div>
-            <h1 className="font-handwritten text-2xl sm:text-3xl font-bold text-brand-orange leading-none">
+            <h1 className="font-display text-3xl sm:text-4xl tracking-wider shimmer-text leading-none">
               Phrasal Verb Calculator
             </h1>
-            <p className="text-xs text-gray-400 mt-0.5 font-medium tracking-wide uppercase">by Craft English</p>
+            <p className="text-white/30 text-[10px] font-semibold tracking-[0.2em] uppercase mt-0.5">
+              by Craft English
+            </p>
           </div>
+
           <button
             onClick={pickRandom}
-            className="flex items-center gap-2 px-4 py-2.5 bg-brand-orange text-white rounded-2xl font-semibold text-sm hover:bg-brand-orange-dark transition-all duration-200 shadow-md hover:shadow-lg active:scale-95"
+            className="group flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-sm text-white
+                       bg-btn-gradient shadow-glow-sm
+                       hover:shadow-glow-md hover:scale-105
+                       active:scale-95 transition-all duration-200"
           >
-            <span className="text-base">🎲</span>
-            <span className="hidden sm:inline">Random</span>
+            <span className="text-base transition-transform duration-300 group-hover:rotate-180">🎲</span>
+            <span className="hidden sm:inline tracking-wide">Random</span>
           </button>
         </div>
       </header>
 
-      <main className="max-w-3xl mx-auto px-4 py-6 space-y-6">
-        {/* Subtitle */}
-        <div className="text-center">
-          <p className="font-handwritten text-lg text-gray-500">
-            Choose a particle to explore its meaning ✨
+      <main className="max-w-4xl mx-auto px-5 py-10 space-y-8 relative z-10">
+
+        {/* Hero label */}
+        <div className="text-center space-y-2">
+          <p className="font-handwritten text-xl text-white/40">
+            Select a particle to unlock its meaning ✦
           </p>
         </div>
 
-        {/* Particle Grid */}
-        <div className="bg-white rounded-3xl p-5 shadow-sm border border-brand-orange/10">
-          <h2 className="font-handwritten text-base font-bold text-gray-400 uppercase tracking-widest mb-4">
-            Select a Particle
-          </h2>
-          <div className="flex flex-wrap gap-2.5 justify-center">
+        {/* Particle selector panel */}
+        <div className="glass rounded-3xl p-6 shadow-card">
+          <p className="text-[10px] font-semibold tracking-[0.25em] uppercase text-white/25 mb-5">
+            Choose a Particle
+          </p>
+          <div className="flex flex-wrap gap-3 justify-center">
             {PARTICLES.map((p, i) => (
               <ParticleButton
                 key={p.particle}
@@ -60,22 +75,26 @@ export default function App() {
           </div>
         </div>
 
-        {/* Detail Panel */}
+        {/* Detail or empty state */}
         {active ? (
           <ParticleDetail key={active.particle} data={active} />
         ) : (
-          <div className="text-center py-16 text-gray-400">
-            <div className="text-6xl mb-4 animate-pulse2">🔤</div>
-            <p className="font-handwritten text-xl text-gray-400">Pick a particle above to get started</p>
-            <p className="text-sm mt-2">or hit the 🎲 Random button</p>
+          <div className="text-center py-24">
+            <div className="text-7xl mb-6 animate-pulse2 inline-block">🔤</div>
+            <p className="font-display text-3xl tracking-widest text-white/20">
+              PICK A PARTICLE
+            </p>
+            <p className="text-white/20 text-sm mt-2 font-light">or hit the 🎲 Random button above</p>
           </div>
         )}
       </main>
 
       {/* Footer */}
-      <footer className="text-center py-8 text-xs text-gray-400 border-t border-brand-orange/10 mt-8">
-        <p className="font-handwritten text-sm">Made with ❤️ by Craft English</p>
-        <p className="mt-1">Helping learners master English one particle at a time</p>
+      <footer className="text-center py-10 border-t border-white/[0.05] mt-8 relative z-10">
+        <p className="font-handwritten text-lg text-white/25">Made with ❤️ by Craft English</p>
+        <p className="text-white/15 text-xs mt-1 tracking-wide">
+          Helping learners master English — one particle at a time
+        </p>
       </footer>
     </div>
   );

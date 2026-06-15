@@ -11,18 +11,18 @@ export const ParticleButton: React.FC<Props> = ({ particle, emoji, isActive, onC
   <button
     onClick={onClick}
     className={`
-      relative px-4 py-3 rounded-2xl font-bold text-sm tracking-widest transition-all duration-200
-      border-2 focus:outline-none focus:ring-2 focus:ring-brand-orange focus:ring-offset-2
+      relative px-5 py-3 rounded-2xl font-display tracking-widest text-base
+      transition-all duration-250 focus:outline-none focus:ring-2 focus:ring-glow-orange/50 focus:ring-offset-2 focus:ring-offset-cinema-dark
       ${isActive
-        ? 'bg-brand-orange text-white border-brand-orange shadow-lg scale-105'
-        : 'bg-white text-brand-orange border-brand-orange/30 hover:border-brand-orange hover:shadow-md hover:scale-102'
+        ? 'bg-particle-active text-white shadow-glow-md scale-105 border border-glow-orange/30'
+        : 'glass text-white/60 hover:text-white hover:border-glow-orange/30 hover:shadow-glow-sm hover:scale-105 active:scale-95'
       }
     `}
   >
-    <span className="mr-1">{emoji}</span>
-    <span className="font-handwritten text-base">{particle}</span>
+    <span className="mr-1.5 text-sm">{emoji}</span>
+    {particle}
     {isActive && (
-      <span className="absolute -top-1.5 -right-1.5 w-3 h-3 bg-green-400 rounded-full border-2 border-white" />
+      <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-glow-gold rounded-full shadow-glow-sm border border-cinema-dark" />
     )}
   </button>
 );

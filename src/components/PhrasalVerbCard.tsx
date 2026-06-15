@@ -9,16 +9,21 @@ interface Props {
 
 export const PhrasalVerbCard: React.FC<Props> = ({ verb, index, aiExample }) => (
   <div
-    className="bg-white rounded-2xl p-4 shadow-sm border border-brand-orange/10 hover:shadow-md hover:border-brand-orange/30 transition-all duration-200 animate-fadeIn"
-    style={{ animationDelay: `${index * 40}ms` }}
+    className="group glass rounded-2xl p-5 shadow-card hover:shadow-card-hover hover:border-glow-orange/20
+               hover:-translate-y-0.5 transition-all duration-300 animate-fadeIn"
+    style={{ animationDelay: `${index * 50}ms` }}
   >
-    <div className="flex items-start justify-between gap-2 mb-2">
-      <span className="font-handwritten text-xl font-bold text-brand-orange">{verb.verb}</span>
-      <span className="text-xs bg-brand-orange-pale text-brand-orange px-2 py-0.5 rounded-full shrink-0 mt-0.5">
+    <div className="flex items-start justify-between gap-2 mb-2.5">
+      <span className="font-handwritten text-2xl font-bold text-glow-orange group-hover:text-glow-gold transition-colors duration-200">
+        {verb.verb}
+      </span>
+      <span className="text-[10px] font-semibold tracking-widest text-white/20 bg-white/5 px-2 py-1 rounded-full shrink-0 mt-1 uppercase">
         #{index + 1}
       </span>
     </div>
-    <p className="text-gray-700 text-sm mb-2 font-medium">{verb.meaning}</p>
-    <p className="text-gray-500 text-sm italic">"{aiExample ?? verb.example}"</p>
+    <p className="text-white/70 text-sm font-medium mb-2.5 leading-relaxed">{verb.meaning}</p>
+    <p className="text-white/35 text-sm italic leading-relaxed border-l-2 border-glow-orange/30 pl-3">
+      "{aiExample ?? verb.example}"
+    </p>
   </div>
 );

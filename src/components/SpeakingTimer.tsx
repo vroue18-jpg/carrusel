@@ -10,32 +10,15 @@ export const SpeakingTimer: React.FC<Props> = ({ prompt }) => {
   const [done, setDone] = useState(false);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  const start = () => {
-    setTimeLeft(60);
-    setDone(false);
-    setRunning(true);
-  };
-
-  const stop = () => {
-    setRunning(false);
-    if (intervalRef.current) clearInterval(intervalRef.current);
-  };
-
-  const reset = () => {
-    stop();
-    setTimeLeft(60);
-    setDone(false);
-  };
+  const start = () => { setTimeLeft(60); setDone(false); setRunning(true); };
+  const stop  = () => { setRunning(false); if (intervalRef.current) clearInterval(intervalRef.current); };
+  const reset = () => { stop(); setTimeLeft(60); setDone(false); };
 
   useEffect(() => {
     if (running) {
       intervalRef.current = setInterval(() => {
         setTimeLeft((t) => {
-          if (t <= 1) {
-            setRunning(false);
-            setDone(true);
-            return 0;
-          }
+          if (t <= 1) { setRunning(false); setDone(true); return 0; }
           return t - 1;
         });
       }, 1000);
@@ -45,47 +28,56 @@ export const SpeakingTimer: React.FC<Props> = ({ prompt }) => {
 
   useEffect(() => { reset(); }, [prompt]);
 
-  const pct = (timeLeft / 60) * 100;
-  const circumference = 2 * Math.PI * 28;
-  const strokeDash = (pct / 100) * circumference;
-  const color = timeLeft > 30 ? '#e8620a' : timeLeft > 10 ? '#f59e0b' : '#ef4444';
+  const pct = timeLeft / 60;
+  const r = 32;
+  const circumference = 2 * Math.PI * r;
+  const strokeColor = timeLeft > 30 ? '#e8620a' : timeLeft > 10 ? '#f59e0b' : '#ef4444';
 
   return (
-    <div className="bg-white rounded-3xl p-6 shadow-sm border border-brand-orange/10">
-      <div className="flex items-start gap-4 mb-4">
-        <span className="text-2xl">🎙️</span>
+    <div className="glass rounded-3xl p-7 shadow-card">
+      {/* Header */}
+      <div className="flex items-center gap-3 mb-5">
+        <div className="w-9 h-9 rounded-xl bg-glow-orange/10 border border-glow-orange/20 flex items-center justify-center text-lg">
+          🎙️
+        </div>
         <div>
-          <h3 className="font-handwritten text-xl font-bold text-brand-orange mb-1">Speaking Practice</h3>
-          <p className="text-gray-600 text-sm leading-relaxed">{prompt}</p>
+          <h3 className="font-display text-xl tracking-wider text-white/90">Speaking Practice</h3>
+          <p className="text-white/30 text-[10px] font-semibold tracking-widest uppercase">1-Minute Challenge</p>
         </div>
       </div>
 
-      <div className="flex items-center justify-between mt-4">
-        <div className={`relative ${running ? 'animate-timerPulse' : ''}`}>
-          <svg width="72" height="72" viewBox="0 0 72 72">
-            <circle cx="36" cy="36" r="28" fill="none" stroke="#fde8d8" strokeWidth="6" />
+      <p className="text-white/50 text-sm leading-relaxed mb-7 pl-1">{prompt}</p>
+
+      {/* Controls */}
+      <div className="flex items-center gap-6">
+        {/* Ring */}
+        <div className={`relative shrink-0 ${running ? 'animate-timerPulse' : ''}`}>
+          <svg width="88" height="88" viewBox="0 0 88 88">
+            <circle cx="44" cy="44" r={r} fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="5" />
             <circle
-              cx="36" cy="36" r="28"
+              cx="44" cy="44" r={r}
               fill="none"
-              stroke={color}
-              strokeWidth="6"
+              stroke={strokeColor}
+              strokeWidth="5"
               strokeLinecap="round"
-              strokeDasharray={`${strokeDash} ${circumference}`}
-              strokeDashoffset="0"
-              transform="rotate(-90 36 36)"
-              style={{ transition: 'stroke-dasharray 1s linear, stroke 0.5s' }}
+              strokeDasharray={`${pct * circumference} ${circumference}`}
+              transform="rotate(-90 44 44)"
+              style={{ transition: 'stroke-dasharray 1s linear, stroke 0.5s', filter: `drop-shadow(0 0 6px ${strokeColor}88)` }}
             />
           </svg>
-          <span className="absolute inset-0 flex items-center justify-center font-bold text-lg" style={{ color }}>
+          <span className="absolute inset-0 flex items-center justify-center font-display text-2xl tracking-wider"
+            style={{ color: strokeColor }}>
             {done ? '✓' : timeLeft}
           </span>
         </div>
 
-        <div className="flex gap-2">
+        {/* Buttons */}
+        <div className="flex flex-wrap gap-2.5">
           {!running && !done && (
             <button
               onClick={start}
-              className="px-5 py-2.5 bg-brand-orange text-white rounded-xl font-semibold text-sm hover:bg-brand-orange-dark transition-colors shadow-sm"
+              className="px-6 py-2.5 bg-btn-gradient text-white rounded-xl font-semibold text-sm
+                         hover:shadow-glow-sm hover:scale-105 active:scale-95 transition-all duration-200 tracking-wide"
             >
               ▶ Start
             </button>
@@ -93,17 +85,19 @@ export const SpeakingTimer: React.FC<Props> = ({ prompt }) => {
           {running && (
             <button
               onClick={stop}
-              className="px-5 py-2.5 bg-amber-500 text-white rounded-xl font-semibold text-sm hover:bg-amber-600 transition-colors shadow-sm"
+              className="px-6 py-2.5 bg-glow-amber/90 text-cinema-black rounded-xl font-semibold text-sm
+                         hover:bg-glow-amber hover:scale-105 active:scale-95 transition-all duration-200 tracking-wide"
             >
               ⏸ Pause
             </button>
           )}
           {done && (
-            <div className="text-center">
-              <p className="text-green-600 font-bold text-sm mb-2">🎉 Great job!</p>
+            <div className="flex items-center gap-3">
+              <span className="text-green-400 font-semibold text-sm">🎉 Great job!</span>
               <button
                 onClick={reset}
-                className="px-4 py-2 bg-green-500 text-white rounded-xl font-semibold text-sm hover:bg-green-600 transition-colors"
+                className="px-5 py-2.5 bg-green-500/20 border border-green-500/30 text-green-400 rounded-xl
+                           font-semibold text-sm hover:bg-green-500/30 transition-all duration-200"
               >
                 Try Again
               </button>
@@ -112,7 +106,8 @@ export const SpeakingTimer: React.FC<Props> = ({ prompt }) => {
           {(running || (!done && timeLeft < 60)) && (
             <button
               onClick={reset}
-              className="px-4 py-2.5 bg-gray-100 text-gray-600 rounded-xl font-semibold text-sm hover:bg-gray-200 transition-colors"
+              className="px-4 py-2.5 glass text-white/40 rounded-xl font-semibold text-sm
+                         hover:text-white/70 hover:border-white/20 transition-all duration-200"
             >
               ↺
             </button>
