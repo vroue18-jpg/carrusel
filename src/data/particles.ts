@@ -2,6 +2,7 @@ export interface PhrasalVerb {
   verb: string;
   meaning: string;
   example: string;
+  extraExamples: string[];
 }
 
 export interface ParticleData {
@@ -36,16 +37,96 @@ export const PARTICLES: ParticleData[] = [
       'Talk about something you are "saving up" for right now. Why is it important to you?',
     ],
     phrasalVerbs: [
-      { verb: 'give up', meaning: 'to stop trying', example: "Don't give up — you're almost there!" },
-      { verb: 'speed up', meaning: 'to go faster', example: "Can you speed up? We're going to be late." },
-      { verb: 'set up', meaning: 'to arrange or prepare', example: 'She set up the meeting for Monday.' },
-      { verb: 'show up', meaning: 'to arrive', example: 'He finally showed up an hour late.' },
-      { verb: 'pick up', meaning: 'to collect or learn', example: 'I picked up Spanish while living in Madrid.' },
-      { verb: 'grow up', meaning: 'to mature', example: 'I grew up in a small town.' },
-      { verb: 'make up', meaning: 'to invent or reconcile', example: 'She made up a story to avoid trouble.' },
-      { verb: 'use up', meaning: 'to consume completely', example: "We've used up all the milk." },
-      { verb: 'turn up', meaning: 'to increase volume or appear', example: 'Turn up the music!' },
-      { verb: 'wake up', meaning: 'to stop sleeping', example: 'I wake up at 6 every morning.' },
+      {
+        verb: 'give up',
+        meaning: 'to stop trying or quit something',
+        example: "Don't give up — you're almost there!",
+        extraExamples: [
+          'He gave up smoking after fifteen years of trying.',
+          'She refused to give up on her dream of becoming a doctor.',
+        ],
+      },
+      {
+        verb: 'speed up',
+        meaning: 'to increase speed or make something happen faster',
+        example: "Can you speed up? We're going to be late.",
+        extraExamples: [
+          'They hired more staff to speed up the delivery process.',
+          'The new software speeds up data processing significantly.',
+        ],
+      },
+      {
+        verb: 'set up',
+        meaning: 'to arrange, prepare, or establish something',
+        example: 'She set up the meeting for Monday morning.',
+        extraExamples: [
+          'They set up a new company last year.',
+          'Can you set up the projector before the presentation?',
+        ],
+      },
+      {
+        verb: 'show up',
+        meaning: 'to arrive or appear somewhere',
+        example: 'He finally showed up an hour late.',
+        extraExamples: [
+          'Only ten people showed up to the event despite two hundred RSVPs.',
+          'She always shows up on time — never a minute late.',
+        ],
+      },
+      {
+        verb: 'pick up',
+        meaning: 'to collect someone or something, or to learn informally',
+        example: 'I picked up Spanish while living in Madrid.',
+        extraExamples: [
+          'Can you pick up the kids from school today?',
+          'He picked up some useful tips from the workshop.',
+        ],
+      },
+      {
+        verb: 'grow up',
+        meaning: 'to develop from a child into an adult',
+        example: 'I grew up in a small town near the coast.',
+        extraExamples: [
+          'She grew up speaking three languages at home.',
+          'He wants to be an astronaut when he grows up.',
+        ],
+      },
+      {
+        verb: 'make up',
+        meaning: 'to invent something, or to reconcile after an argument',
+        example: 'She made up a story to avoid getting in trouble.',
+        extraExamples: [
+          'They argued on Monday but made up by Wednesday.',
+          'He made up an excuse for missing the deadline.',
+        ],
+      },
+      {
+        verb: 'use up',
+        meaning: 'to consume or exhaust the entire supply of something',
+        example: "We've used up all the milk — can you buy more?",
+        extraExamples: [
+          'The long hike used up all of our energy.',
+          'She used up her annual leave in just two months.',
+        ],
+      },
+      {
+        verb: 'turn up',
+        meaning: 'to increase volume or intensity, or to appear unexpectedly',
+        example: 'Turn up the music — I love this song!',
+        extraExamples: [
+          'My lost keys turned up behind the sofa cushion.',
+          'He turned up at the party without being invited.',
+        ],
+      },
+      {
+        verb: 'wake up',
+        meaning: 'to stop sleeping, or to become aware of something',
+        example: 'I wake up at 6 every morning without an alarm.',
+        extraExamples: [
+          'The noise from the street woke me up at 3 AM.',
+          'She needs to wake up to the reality of the situation.',
+        ],
+      },
     ],
   },
   {
@@ -66,19 +147,99 @@ export const PARTICLES: ParticleData[] = [
       'Describe a time you "ran out" of something important at the worst possible moment.',
       'Talk about a plan or project you had to "carry out" under pressure. How did it go?',
       'Describe something you have been "putting off" finding out. Why are you avoiding it?',
-      'Talk about a time a secret "came out." How did people react?',
+      'Talk about a time when a secret "came out." How did people react?',
     ],
     phrasalVerbs: [
-      { verb: 'find out', meaning: 'to discover', example: 'I found out she was moving to London.' },
-      { verb: 'stand out', meaning: 'to be noticeable', example: 'Her red dress made her stand out.' },
-      { verb: 'run out', meaning: 'to have no more', example: "We've run out of coffee." },
-      { verb: 'work out', meaning: 'to exercise or solve', example: 'It all worked out in the end.' },
-      { verb: 'point out', meaning: 'to indicate', example: 'He pointed out a mistake in my essay.' },
-      { verb: 'burn out', meaning: 'to exhaust', example: 'She burned out after working 80-hour weeks.' },
-      { verb: 'carry out', meaning: 'to complete a task', example: 'The team carried out the plan perfectly.' },
-      { verb: 'hand out', meaning: 'to distribute', example: 'They handed out free samples.' },
-      { verb: 'figure out', meaning: 'to understand', example: "I can't figure out this puzzle." },
-      { verb: 'turn out', meaning: 'to result in', example: 'The party turned out to be amazing.' },
+      {
+        verb: 'find out',
+        meaning: 'to discover or learn information',
+        example: 'I found out she was moving to London next month.',
+        extraExamples: [
+          'How did you find out about the job opening?',
+          'He found out the truth after reading her diary.',
+        ],
+      },
+      {
+        verb: 'stand out',
+        meaning: 'to be clearly noticeable or better than others',
+        example: 'Her red dress made her stand out in the crowd.',
+        extraExamples: [
+          'His creativity really stands out in every project he does.',
+          'That blue building stands out among all the grey ones.',
+        ],
+      },
+      {
+        verb: 'run out',
+        meaning: 'to have no more of something left',
+        example: "We've run out of coffee — I'll go buy some.",
+        extraExamples: [
+          'The car stopped because we ran out of petrol.',
+          'She ran out of time before she could finish the exam.',
+        ],
+      },
+      {
+        verb: 'work out',
+        meaning: 'to exercise, or to result in a good or expected way',
+        example: 'It all worked out in the end, luckily.',
+        extraExamples: [
+          'She works out at the gym three times a week.',
+          "I hope things work out between them — they're great together.",
+        ],
+      },
+      {
+        verb: 'point out',
+        meaning: 'to draw attention to something',
+        example: 'He pointed out a mistake in my essay.',
+        extraExamples: [
+          'She pointed out that the contract was missing a signature.',
+          'Can you point out which one is your house on the map?',
+        ],
+      },
+      {
+        verb: 'burn out',
+        meaning: 'to become exhausted from overwork',
+        example: 'She burned out after working 80-hour weeks for months.',
+        extraExamples: [
+          'Many teachers burn out within their first five years.',
+          'He burned out completely and had to take a long break.',
+        ],
+      },
+      {
+        verb: 'carry out',
+        meaning: 'to complete or perform a task or plan',
+        example: 'The team carried out the plan perfectly.',
+        extraExamples: [
+          'The surgery was carried out by a specialist.',
+          'Police carried out a search of the building.',
+        ],
+      },
+      {
+        verb: 'hand out',
+        meaning: 'to distribute something to several people',
+        example: 'They handed out free samples at the entrance.',
+        extraExamples: [
+          'The teacher handed out the exam papers at 9 AM.',
+          'Volunteers handed out food to people in need.',
+        ],
+      },
+      {
+        verb: 'figure out',
+        meaning: 'to understand or solve something through thinking',
+        example: "I can't figure out this puzzle — it's too hard.",
+        extraExamples: [
+          'It took me a week to figure out how to use the new software.',
+          'She finally figured out why the engine kept stopping.',
+        ],
+      },
+      {
+        verb: 'turn out',
+        meaning: 'to result in a particular way, or to appear or arrive',
+        example: 'The party turned out to be absolutely amazing.',
+        extraExamples: [
+          'It turned out that he had been right all along.',
+          'Thousands of people turned out for the concert.',
+        ],
+      },
     ],
   },
   {
@@ -102,16 +263,96 @@ export const PARTICLES: ParticleData[] = [
       'Describe how you "set off" on a journey — a trip, a new job, or a big life change.',
     ],
     phrasalVerbs: [
-      { verb: 'take off', meaning: 'to depart or remove', example: 'The plane takes off at noon.' },
-      { verb: 'turn off', meaning: 'to stop a device', example: 'Please turn off the lights.' },
-      { verb: 'put off', meaning: 'to postpone or discourage', example: "Don't put off what you can do today." },
-      { verb: 'call off', meaning: 'to cancel', example: 'They called off the game due to rain.' },
-      { verb: 'go off', meaning: 'to explode or ring', example: 'My alarm went off at 5 AM.' },
-      { verb: 'pay off', meaning: 'to succeed or repay', example: 'All that hard work finally paid off.' },
-      { verb: 'show off', meaning: 'to display proudly', example: "She loves to show off her cooking skills." },
-      { verb: 'drop off', meaning: 'to deliver or fall asleep', example: 'He dropped off the kids at school.' },
-      { verb: 'cut off', meaning: 'to interrupt or separate', example: 'The storm cut off our electricity.' },
-      { verb: 'set off', meaning: 'to start a journey or trigger', example: 'We set off early to avoid traffic.' },
+      {
+        verb: 'take off',
+        meaning: 'to leave the ground, or to remove clothing, or to become successful',
+        example: 'The plane takes off at noon — we need to hurry.',
+        extraExamples: [
+          'Take off your shoes before entering the house.',
+          'Her career really took off after her first viral video.',
+        ],
+      },
+      {
+        verb: 'turn off',
+        meaning: 'to stop a device or light, or to cause someone to lose interest',
+        example: 'Please turn off the lights when you leave.',
+        extraExamples: [
+          'His rude behaviour turned everyone off immediately.',
+          'Did you turn off the oven before we left?',
+        ],
+      },
+      {
+        verb: 'put off',
+        meaning: 'to postpone something, or to cause someone to dislike something',
+        example: "Don't put off what you can do today.",
+        extraExamples: [
+          'The bad reviews put me off going to that restaurant.',
+          'They put off the meeting until next Thursday.',
+        ],
+      },
+      {
+        verb: 'call off',
+        meaning: 'to cancel something that was planned',
+        example: 'They called off the game due to heavy rain.',
+        extraExamples: [
+          'She called off the wedding two weeks before the date.',
+          'The strike was called off after negotiations succeeded.',
+        ],
+      },
+      {
+        verb: 'go off',
+        meaning: 'to explode, to ring loudly, or for food to spoil',
+        example: 'My alarm went off at 5 AM this morning.',
+        extraExamples: [
+          "The milk has gone off — smell it, it's awful.",
+          'A bomb went off in the city centre last night.',
+        ],
+      },
+      {
+        verb: 'pay off',
+        meaning: 'to produce a good result after effort, or to repay a debt fully',
+        example: 'All that hard work finally paid off.',
+        extraExamples: [
+          'She paid off her student loan in just three years.',
+          'Studying every day paid off — she got the highest grade.',
+        ],
+      },
+      {
+        verb: 'show off',
+        meaning: 'to display your abilities or possessions to impress others',
+        example: 'She loves to show off her cooking skills.',
+        extraExamples: [
+          'He was showing off in front of his friends on the football pitch.',
+          'Stop showing off and just get on with the work.',
+        ],
+      },
+      {
+        verb: 'drop off',
+        meaning: 'to deliver someone or something, or to fall asleep',
+        example: 'He dropped off the kids at school at 8 AM.',
+        extraExamples: [
+          'I dropped off the package at the post office.',
+          'She dropped off on the sofa while watching TV.',
+        ],
+      },
+      {
+        verb: 'cut off',
+        meaning: 'to interrupt, separate, or stop the supply of something',
+        example: 'The storm cut off electricity to the whole village.',
+        extraExamples: [
+          'He was cut off mid-sentence by his boss.',
+          'They cut off her phone contract after she missed three payments.',
+        ],
+      },
+      {
+        verb: 'set off',
+        meaning: 'to start a journey, or to cause something to begin',
+        example: 'We set off early to avoid the morning traffic.',
+        extraExamples: [
+          'The smoke set off the fire alarm in the building.',
+          'They set off on their road trip at dawn.',
+        ],
+      },
     ],
   },
   {
@@ -135,16 +376,96 @@ export const PARTICLES: ParticleData[] = [
       'Describe a habit or routine that you "keep on" doing even when you know you should stop.',
     ],
     phrasalVerbs: [
-      { verb: 'carry on', meaning: 'to continue', example: "Carry on — you're doing great!" },
-      { verb: 'move on', meaning: 'to progress forward', example: "It's time to move on from the past." },
-      { verb: 'put on', meaning: 'to wear or perform', example: "Put on a jacket — it's cold outside." },
-      { verb: 'take on', meaning: 'to accept a challenge', example: 'She took on three new projects at once.' },
-      { verb: 'rely on', meaning: 'to depend on', example: 'I rely on coffee every morning.' },
-      { verb: 'check on', meaning: 'to see how someone is doing', example: "I'll check on grandma later." },
-      { verb: 'hold on', meaning: 'to wait or grip', example: "Hold on, I'll be right back." },
-      { verb: 'go on', meaning: 'to continue or happen', example: "What's going on here?" },
-      { verb: 'catch on', meaning: 'to understand or become popular', example: 'She catches on quickly.' },
-      { verb: 'get on', meaning: 'to progress or board', example: 'How are you getting on with the project?' },
+      {
+        verb: 'carry on',
+        meaning: 'to continue doing something',
+        example: "Carry on — you're doing a great job!",
+        extraExamples: [
+          'Despite the rain, they carried on with the outdoor event.',
+          'She carried on working even after everyone else had left.',
+        ],
+      },
+      {
+        verb: 'move on',
+        meaning: 'to stop dwelling on something and progress forward',
+        example: "It's time to move on from the past.",
+        extraExamples: [
+          'After the breakup, it took her a year to move on.',
+          "Let's move on to the next topic — we're running out of time.",
+        ],
+      },
+      {
+        verb: 'put on',
+        meaning: 'to place clothing on your body, or to perform or stage something',
+        example: "Put on a jacket — it's cold outside.",
+        extraExamples: [
+          'The school put on a brilliant theatre performance.',
+          'She put on her reading glasses to check the menu.',
+        ],
+      },
+      {
+        verb: 'take on',
+        meaning: 'to accept responsibility, or to hire someone',
+        example: 'She took on three new projects at once.',
+        extraExamples: [
+          'The company is taking on fifty new employees this month.',
+          "Don't take on more than you can handle.",
+        ],
+      },
+      {
+        verb: 'rely on',
+        meaning: 'to depend on someone or something with confidence',
+        example: 'I rely on coffee to get through Monday mornings.',
+        extraExamples: [
+          'You can always rely on her — she never lets people down.',
+          'The whole team relies on his technical expertise.',
+        ],
+      },
+      {
+        verb: 'check on',
+        meaning: 'to visit or contact someone to see if they are okay',
+        example: "I'll check on grandma after work today.",
+        extraExamples: [
+          'The nurse checked on the patient every two hours.',
+          'He called to check on her after hearing she was ill.',
+        ],
+      },
+      {
+        verb: 'hold on',
+        meaning: 'to wait, or to grip something tightly',
+        example: "Hold on, I'll be right back in a minute.",
+        extraExamples: [
+          'Hold on to the railing — the steps are slippery.',
+          'Hold on — I think I left my keys inside.',
+        ],
+      },
+      {
+        verb: 'go on',
+        meaning: 'to continue, or to happen',
+        example: "What's going on here? Everyone looks upset.",
+        extraExamples: [
+          'Go on — tell me what happened next.',
+          'The concert went on for three hours without a break.',
+        ],
+      },
+      {
+        verb: 'catch on',
+        meaning: 'to become popular, or to understand something',
+        example: 'She catches on to new concepts very quickly.',
+        extraExamples: [
+          'The trend caught on quickly across social media.',
+          'It took me a while to catch on to what he was trying to say.',
+        ],
+      },
+      {
+        verb: 'get on',
+        meaning: 'to progress, or to board a vehicle, or to have a good relationship',
+        example: 'How are you getting on with the new project?',
+        extraExamples: [
+          'We need to get on the train before it leaves.',
+          'She gets on really well with her new colleagues.',
+        ],
+      },
     ],
   },
   {
@@ -168,16 +489,96 @@ export const PARTICLES: ParticleData[] = [
       'Talk about something you "rolled over" in your mind for days before making a decision.',
     ],
     phrasalVerbs: [
-      { verb: 'get over', meaning: 'to recover from', example: "I can't get over how delicious that meal was." },
-      { verb: 'take over', meaning: 'to assume control', example: 'She took over as manager last month.' },
-      { verb: 'look over', meaning: 'to review', example: 'Can you look over my CV?' },
-      { verb: 'think over', meaning: 'to consider carefully', example: "I'll think it over and let you know." },
-      { verb: 'come over', meaning: 'to visit', example: "Why don't you come over for dinner?" },
-      { verb: 'run over', meaning: 'to hit or exceed time', example: 'The meeting ran over by 20 minutes.' },
-      { verb: 'go over', meaning: 'to review or visit', example: "Let's go over the plan one more time." },
-      { verb: 'turn over', meaning: 'to flip or hand to authorities', example: 'Turn over the page when ready.' },
-      { verb: 'hand over', meaning: 'to give to someone', example: 'He handed over the documents.' },
-      { verb: 'roll over', meaning: 'to transfer or flip', example: 'She rolled over in her sleep.' },
+      {
+        verb: 'get over',
+        meaning: 'to recover from something difficult or surprising',
+        example: "I still can't get over how delicious that meal was.",
+        extraExamples: [
+          'It took him months to get over the loss of his job.',
+          'She got over her fear of flying after therapy.',
+        ],
+      },
+      {
+        verb: 'take over',
+        meaning: 'to assume control or responsibility',
+        example: 'She took over as manager last month.',
+        extraExamples: [
+          'A large company took over the small local business.',
+          'Can you take over while I take a short break?',
+        ],
+      },
+      {
+        verb: 'look over',
+        meaning: 'to examine or review something carefully',
+        example: 'Can you look over my CV before I send it?',
+        extraExamples: [
+          'The lawyer looked over the contract before signing.',
+          'Please look over these figures — something seems wrong.',
+        ],
+      },
+      {
+        verb: 'think over',
+        meaning: 'to consider something carefully before deciding',
+        example: "I'll think it over and let you know by Friday.",
+        extraExamples: [
+          'Think it over carefully — it\'s a big commitment.',
+          'She thought over the offer for a week before accepting.',
+        ],
+      },
+      {
+        verb: 'come over',
+        meaning: 'to visit someone at their home',
+        example: "Why don't you come over for dinner on Saturday?",
+        extraExamples: [
+          'A feeling of sadness suddenly came over her.',
+          'His friends came over to help him move the furniture.',
+        ],
+      },
+      {
+        verb: 'run over',
+        meaning: 'to exceed a time limit, or to hit someone with a vehicle',
+        example: 'The meeting ran over by twenty minutes.',
+        extraExamples: [
+          'A car ran over the box that had fallen into the road.',
+          "We've run over budget — we need to cut costs.",
+        ],
+      },
+      {
+        verb: 'go over',
+        meaning: 'to review or examine something in detail',
+        example: "Let's go over the plan one more time before the meeting.",
+        extraExamples: [
+          'The teacher went over the exam answers with the class.',
+          'Can we go over the main points again quickly?',
+        ],
+      },
+      {
+        verb: 'turn over',
+        meaning: 'to flip something to the other side, or to hand to authority',
+        example: 'Turn over the page when you are ready to continue.',
+        extraExamples: [
+          'He turned over the evidence to the police.',
+          'The pancake is ready — turn it over now.',
+        ],
+      },
+      {
+        verb: 'hand over',
+        meaning: 'to give something to someone else, especially formally',
+        example: 'He handed over the documents to the new manager.',
+        extraExamples: [
+          'The criminal handed himself over to the authorities.',
+          'She handed over her phone when asked at the border.',
+        ],
+      },
+      {
+        verb: 'roll over',
+        meaning: 'to turn onto the other side, or to transfer a balance',
+        example: 'She rolled over in her sleep and fell off the bed.',
+        extraExamples: [
+          'The unused budget rolled over into the next financial year.',
+          'The dog learned to roll over on command.',
+        ],
+      },
     ],
   },
   {
@@ -201,16 +602,96 @@ export const PARTICLES: ParticleData[] = [
       'Describe a time you had to "look through" a large amount of information to find something important.',
     ],
     phrasalVerbs: [
-      { verb: 'go through', meaning: 'to experience or examine', example: 'We went through all the options carefully.' },
-      { verb: 'get through', meaning: 'to survive or contact', example: "I can't get through to her — she's not answering." },
-      { verb: 'follow through', meaning: 'to complete what was started', example: 'He always follows through on his promises.' },
-      { verb: 'pull through', meaning: 'to survive', example: 'The patient pulled through after surgery.' },
-      { verb: 'look through', meaning: 'to examine', example: 'I looked through the old photos.' },
-      { verb: 'break through', meaning: 'to overcome an obstacle', example: 'Scientists broke through with a new treatment.' },
-      { verb: 'see through', meaning: 'to detect deception or complete', example: 'I can see through his lies.' },
-      { verb: 'come through', meaning: 'to succeed or arrive', example: 'Help finally came through.' },
-      { verb: 'carry through', meaning: 'to complete successfully', example: 'She carried through her plan.' },
-      { verb: 'read through', meaning: 'to read completely', example: 'Read through the contract before signing.' },
+      {
+        verb: 'go through',
+        meaning: 'to experience a difficult situation, or to examine in detail',
+        example: 'We went through all the options carefully.',
+        extraExamples: [
+          'She went through a very tough time after her divorce.',
+          'Let\'s go through the report section by section.',
+        ],
+      },
+      {
+        verb: 'get through',
+        meaning: 'to successfully contact someone, or to survive something difficult',
+        example: "I can't get through to her — she's not answering.",
+        extraExamples: [
+          'I don\'t know how I got through those first months alone.',
+          'He finally got through all the paperwork.',
+        ],
+      },
+      {
+        verb: 'follow through',
+        meaning: 'to complete something you started or promised',
+        example: 'He always follows through on his promises.',
+        extraExamples: [
+          'She came up with the idea but never followed through.',
+          'In tennis, following through on your swing is essential.',
+        ],
+      },
+      {
+        verb: 'pull through',
+        meaning: 'to survive or recover from a serious illness or difficulty',
+        example: 'The patient pulled through after emergency surgery.',
+        extraExamples: [
+          'The business was struggling, but they pulled through.',
+          'We all pulled through the crisis together as a team.',
+        ],
+      },
+      {
+        verb: 'look through',
+        meaning: 'to examine or read something quickly or carefully',
+        example: 'I looked through all the old photos last night.',
+        extraExamples: [
+          'Could you look through these notes and correct any errors?',
+          'She looked through the window but saw nothing unusual.',
+        ],
+      },
+      {
+        verb: 'break through',
+        meaning: 'to overcome a barrier or make an important discovery',
+        example: 'Scientists broke through with a major new treatment.',
+        extraExamples: [
+          'After months of practice, she finally broke through her plateau.',
+          'The sun broke through the clouds in the afternoon.',
+        ],
+      },
+      {
+        verb: 'see through',
+        meaning: 'to recognise that something is not true, or to complete something',
+        example: 'I can see through his lies immediately.',
+        extraExamples: [
+          'She saw through his fake smile right away.',
+          'He saw the project through to the very end.',
+        ],
+      },
+      {
+        verb: 'come through',
+        meaning: 'to succeed or arrive after being awaited',
+        example: 'Help finally came through after three long weeks.',
+        extraExamples: [
+          'Her test results came through this morning.',
+          'He always comes through when people need him most.',
+        ],
+      },
+      {
+        verb: 'carry through',
+        meaning: 'to complete something successfully despite difficulty',
+        example: 'She carried her plan through despite all the obstacles.',
+        extraExamples: [
+          'His determination carried him through the hardest moments.',
+          'The reforms were carried through by the new government.',
+        ],
+      },
+      {
+        verb: 'read through',
+        meaning: 'to read something from beginning to end',
+        example: 'Read through the whole contract before you sign.',
+        extraExamples: [
+          'I read through my essay twice before submitting it.',
+          'She read through the instructions carefully.',
+        ],
+      },
     ],
   },
   {
@@ -234,16 +715,96 @@ export const PARTICLES: ParticleData[] = [
       'Talk about something that was "taken away" from you unexpectedly. How did you cope?',
     ],
     phrasalVerbs: [
-      { verb: 'go away', meaning: 'to leave or disappear', example: 'The headache finally went away.' },
-      { verb: 'give away', meaning: 'to donate or reveal', example: "Don't give away the ending!" },
-      { verb: 'put away', meaning: 'to store', example: "Put away your toys when you're done." },
-      { verb: 'throw away', meaning: 'to discard', example: "Don't throw away those leftovers." },
-      { verb: 'get away', meaning: 'to escape or take a vacation', example: 'We need to get away for the weekend.' },
-      { verb: 'take away', meaning: 'to remove', example: "What's the main takeaway from today's lesson?" },
-      { verb: 'run away', meaning: 'to flee', example: 'The cat ran away from the loud noise.' },
-      { verb: 'fade away', meaning: 'to gradually disappear', example: 'The memory slowly faded away.' },
-      { verb: 'look away', meaning: 'to avert your eyes', example: 'She looked away in embarrassment.' },
-      { verb: 'save away', meaning: 'to store for later', example: 'He saves away money every month.' },
+      {
+        verb: 'go away',
+        meaning: 'to leave a place or person, or for something to disappear',
+        example: 'The headache finally went away after I rested.',
+        extraExamples: [
+          'They went away for the weekend to the mountains.',
+          'Just go away — I need some time alone.',
+        ],
+      },
+      {
+        verb: 'give away',
+        meaning: 'to give something for free, or to reveal a secret',
+        example: "Don't give away the ending of the film!",
+        extraExamples: [
+          'She gave away all her old clothes to charity.',
+          'His nervous smile gave away the fact that he was lying.',
+        ],
+      },
+      {
+        verb: 'put away',
+        meaning: 'to place something in its proper storage place',
+        example: "Put away your toys when you're done playing.",
+        extraExamples: [
+          'Can you put the dishes away after washing them?',
+          'She puts away a little money every week for emergencies.',
+        ],
+      },
+      {
+        verb: 'throw away',
+        meaning: 'to discard something in the bin, or to waste an opportunity',
+        example: "Don't throw away those leftovers — I'll eat them tomorrow.",
+        extraExamples: [
+          'He threw away a great opportunity by arriving late.',
+          'She threw away all his letters without reading them.',
+        ],
+      },
+      {
+        verb: 'get away',
+        meaning: 'to escape or manage to leave, or to go on a short holiday',
+        example: 'We need to get away for the weekend — I\'m exhausted.',
+        extraExamples: [
+          'The thief got away before the police arrived.',
+          "You can't get away with cheating in this class.",
+        ],
+      },
+      {
+        verb: 'take away',
+        meaning: 'to remove something, or food ordered to eat elsewhere',
+        example: "What's the main takeaway from today's lesson?",
+        extraExamples: [
+          'The teacher took away his phone during the exam.',
+          "Let's get a takeaway tonight — I don't feel like cooking.",
+        ],
+      },
+      {
+        verb: 'run away',
+        meaning: 'to flee from a place or situation',
+        example: 'The cat ran away from the loud thunderstorm.',
+        extraExamples: [
+          "You can't run away from your problems forever.",
+          'He ran away from home at the age of sixteen.',
+        ],
+      },
+      {
+        verb: 'fade away',
+        meaning: 'to gradually become less strong, clear, or visible',
+        example: 'The memory slowly faded away over the years.',
+        extraExamples: [
+          'The music faded away as the car drove into the distance.',
+          'His confidence faded away after the harsh criticism.',
+        ],
+      },
+      {
+        verb: 'look away',
+        meaning: 'to turn your eyes away from something',
+        example: 'She looked away in embarrassment.',
+        extraExamples: [
+          'I had to look away during the scary part of the film.',
+          "Don't look away — watch carefully or you'll miss it.",
+        ],
+      },
+      {
+        verb: 'save away',
+        meaning: 'to regularly store or set aside money or resources',
+        example: 'He saves away a portion of his salary every month.',
+        extraExamples: [
+          "She's been saving away for a trip to Japan for two years.",
+          'They saved away enough to buy a house by thirty.',
+        ],
+      },
     ],
   },
   {
@@ -267,16 +828,96 @@ export const PARTICLES: ParticleData[] = [
       'Describe a skill or relationship you want to "bring back" into your life.',
     ],
     phrasalVerbs: [
-      { verb: 'come back', meaning: 'to return', example: 'Come back anytime you want.' },
-      { verb: 'give back', meaning: 'to return something', example: "Please give back my pen when you're done." },
-      { verb: 'hold back', meaning: 'to restrain or withhold', example: 'She held back her tears.' },
-      { verb: 'pay back', meaning: 'to repay', example: "I'll pay you back tomorrow." },
-      { verb: 'call back', meaning: 'to return a call', example: "I'll call you back in ten minutes." },
-      { verb: 'look back', meaning: 'to reflect on the past', example: 'Looking back, I made the right choice.' },
-      { verb: 'take back', meaning: 'to retract or return', example: "I take back what I said." },
-      { verb: 'cut back', meaning: 'to reduce', example: "We need to cut back on expenses." },
-      { verb: 'get back', meaning: 'to return or retaliate', example: "I'll get back to you on that." },
-      { verb: 'set back', meaning: 'to delay progress', example: 'The flood set back the construction.' },
+      {
+        verb: 'come back',
+        meaning: 'to return to a place or person',
+        example: 'Come back anytime — you are always welcome here.',
+        extraExamples: [
+          'When are you coming back from your trip?',
+          'The pain came back after she stopped taking the medicine.',
+        ],
+      },
+      {
+        verb: 'give back',
+        meaning: 'to return something to its owner',
+        example: "Please give back my pen when you're done.",
+        extraExamples: [
+          'He gave back the money he had borrowed.',
+          'She gave back the library books a week late.',
+        ],
+      },
+      {
+        verb: 'hold back',
+        meaning: 'to restrain yourself or prevent something from progressing',
+        example: 'She held back her tears during the speech.',
+        extraExamples: [
+          "Don't hold back — say exactly what you think.",
+          'Fear was holding him back from applying for the job.',
+        ],
+      },
+      {
+        verb: 'pay back',
+        meaning: 'to repay money owed, or to get revenge',
+        example: "I'll pay you back as soon as I get paid.",
+        extraExamples: [
+          'She paid back every cent she had borrowed.',
+          "He said he'd pay them back for what they did to him.",
+        ],
+      },
+      {
+        verb: 'call back',
+        meaning: 'to return a phone call',
+        example: "I'm busy right now — I'll call you back in ten minutes.",
+        extraExamples: [
+          'She called back as soon as she saw the missed call.',
+          'The doctor said she would call back with the test results.',
+        ],
+      },
+      {
+        verb: 'look back',
+        meaning: 'to think about or review the past',
+        example: 'Looking back, I think I made the right choice.',
+        extraExamples: [
+          "Don't spend your life looking back — focus on the future.",
+          'She looked back on her childhood with great fondness.',
+        ],
+      },
+      {
+        verb: 'take back',
+        meaning: 'to retract something said, or to return a purchase',
+        example: "I take back what I said — I was wrong.",
+        extraExamples: [
+          'She took the faulty product back to the shop.',
+          "I can't take back the words I said that night.",
+        ],
+      },
+      {
+        verb: 'cut back',
+        meaning: 'to reduce the amount of something',
+        example: "We need to cut back on unnecessary expenses.",
+        extraExamples: [
+          "He's trying to cut back on sugar and processed food.",
+          'The government cut back funding for public services.',
+        ],
+      },
+      {
+        verb: 'get back',
+        meaning: 'to return to a place or state, or to contact someone again',
+        example: "I'll get back to you on that — give me a day.",
+        extraExamples: [
+          'What time did you get back from the party?',
+          'It took her months to get back to her normal routine.',
+        ],
+      },
+      {
+        verb: 'set back',
+        meaning: 'to delay or hinder progress',
+        example: 'The flooding set back the construction by months.',
+        extraExamples: [
+          'The injury set him back just before the championship.',
+          'A technical failure set the launch back by two weeks.',
+        ],
+      },
     ],
   },
   {
@@ -300,16 +941,96 @@ export const PARTICLES: ParticleData[] = [
       'Talk about a time you had to "wait around" for a long time. How did you keep yourself occupied?',
     ],
     phrasalVerbs: [
-      { verb: 'get around', meaning: 'to travel or avoid', example: "It's easy to get around by bicycle." },
-      { verb: 'look around', meaning: 'to explore', example: 'Feel free to look around the store.' },
-      { verb: 'hang around', meaning: 'to wait or spend time', example: 'We hung around the café all afternoon.' },
-      { verb: 'turn around', meaning: 'to reverse direction or improve', example: "The company turned around its losses." },
-      { verb: 'go around', meaning: 'to circulate or be enough', example: "There isn't enough cake to go around." },
-      { verb: 'come around', meaning: 'to change opinion or visit', example: "She'll come around eventually." },
-      { verb: 'mess around', meaning: 'to waste time', example: "Stop messing around and focus!" },
-      { verb: 'boss around', meaning: 'to order people', example: 'He keeps bossing everyone around.' },
-      { verb: 'fool around', meaning: 'to joke or waste time', example: "We're just fooling around." },
-      { verb: 'carry around', meaning: 'to have with you', example: 'She carries around a notebook everywhere.' },
+      {
+        verb: 'get around',
+        meaning: 'to travel from place to place, or to avoid a problem',
+        example: "It's easy to get around the city by bicycle.",
+        extraExamples: [
+          'She gets around using public transport every day.',
+          'They found a clever way to get around the restriction.',
+        ],
+      },
+      {
+        verb: 'look around',
+        meaning: 'to explore a place by looking in different directions',
+        example: 'Feel free to look around the shop.',
+        extraExamples: [
+          'We spent the morning looking around the old town.',
+          'She looked around nervously before entering the building.',
+        ],
+      },
+      {
+        verb: 'hang around',
+        meaning: 'to spend time waiting in a place, or to spend time with someone',
+        example: 'We hung around the café all afternoon talking.',
+        extraExamples: [
+          'Stop hanging around and do something productive.',
+          'He hangs around with the wrong crowd at school.',
+        ],
+      },
+      {
+        verb: 'turn around',
+        meaning: 'to face or move in the opposite direction, or to improve a situation',
+        example: "The company turned around its losses in just one year.",
+        extraExamples: [
+          'Turn around — there\'s something behind you.',
+          'The new coach turned the team around completely.',
+        ],
+      },
+      {
+        verb: 'go around',
+        meaning: 'to move in a circle, or to be enough for everyone',
+        example: "There isn't enough cake to go around — we need more.",
+        extraExamples: [
+          'A rumour is going around that the office is closing.',
+          'We had to go around the roadblock.',
+        ],
+      },
+      {
+        verb: 'come around',
+        meaning: 'to change your opinion, or to visit, or to regain consciousness',
+        example: "She'll come around to the idea eventually.",
+        extraExamples: [
+          'Christmas comes around so quickly every year.',
+          'He came around after a few minutes and asked what happened.',
+        ],
+      },
+      {
+        verb: 'mess around',
+        meaning: 'to waste time, or to behave in a silly or irresponsible way',
+        example: "Stop messing around and focus on your work!",
+        extraExamples: [
+          'The children were messing around in the garden.',
+          "Don't mess around with people's feelings.",
+        ],
+      },
+      {
+        verb: 'boss around',
+        meaning: 'to tell people what to do in a domineering way',
+        example: 'He keeps bossing everyone around the office.',
+        extraExamples: [
+          "I won't let anyone boss me around.",
+          'She hates being bossed around by her older brother.',
+        ],
+      },
+      {
+        verb: 'fool around',
+        meaning: 'to waste time or behave in a silly way',
+        example: "We're just fooling around — don't take it seriously.",
+        extraExamples: [
+          'Stop fooling around — this is serious.',
+          'They spent the afternoon fooling around at the beach.',
+        ],
+      },
+      {
+        verb: 'carry around',
+        meaning: 'to have something with you at all times',
+        example: 'She carries a notebook around with her everywhere.',
+        extraExamples: [
+          "He's been carrying around that stress for months.",
+          'I always carry a spare pen around just in case.',
+        ],
+      },
     ],
   },
   {
@@ -333,16 +1054,96 @@ export const PARTICLES: ParticleData[] = [
       'Describe a time when you had to "back down" from a position or argument. Was it difficult?',
     ],
     phrasalVerbs: [
-      { verb: 'break down', meaning: 'to fail or analyze', example: 'My car broke down on the highway.' },
-      { verb: 'calm down', meaning: 'to become less agitated', example: 'Take a deep breath and calm down.' },
-      { verb: 'let down', meaning: 'to disappoint', example: "I don't want to let you down." },
-      { verb: 'write down', meaning: 'to record', example: 'Write down your ideas before you forget.' },
-      { verb: 'sit down', meaning: 'to take a seat', example: "Please sit down — we'll begin shortly." },
-      { verb: 'slow down', meaning: 'to decrease speed', example: "Slow down — you're driving too fast." },
-      { verb: 'cut down', meaning: 'to reduce', example: "I'm cutting down on sugar this month." },
-      { verb: 'turn down', meaning: 'to refuse or lower volume', example: 'She turned down the job offer.' },
-      { verb: 'knock down', meaning: 'to demolish or reduce price', example: 'They knocked down the old building.' },
-      { verb: 'pin down', meaning: 'to specify exactly', example: "I can't pin down what's bothering me." },
+      {
+        verb: 'break down',
+        meaning: 'to stop functioning, or to lose emotional control, or to analyse something',
+        example: 'My car broke down on the motorway this morning.',
+        extraExamples: [
+          'She broke down in tears when she heard the news.',
+          "Let's break down the problem into smaller parts.",
+        ],
+      },
+      {
+        verb: 'calm down',
+        meaning: 'to become less upset, excited, or agitated',
+        example: 'Take a deep breath and calm down.',
+        extraExamples: [
+          "Calm down — everything is going to be fine.",
+          'It took him an hour to calm down after the argument.',
+        ],
+      },
+      {
+        verb: 'let down',
+        meaning: 'to disappoint someone who was counting on you',
+        example: "I don't want to let you down after all your support.",
+        extraExamples: [
+          'He let the whole team down by not showing up.',
+          'She felt let down when her friend cancelled at the last minute.',
+        ],
+      },
+      {
+        verb: 'write down',
+        meaning: 'to record something on paper or digitally',
+        example: 'Write down your ideas before you forget them.',
+        extraExamples: [
+          'She wrote down every word he said during the interview.',
+          'I always write down new vocabulary I learn.',
+        ],
+      },
+      {
+        verb: 'sit down',
+        meaning: 'to move from standing to a seated position',
+        example: "Please sit down — the presentation is about to begin.",
+        extraExamples: [
+          'Sit down and tell me exactly what happened.',
+          'She sat down heavily after a long day on her feet.',
+        ],
+      },
+      {
+        verb: 'slow down',
+        meaning: 'to move or happen at a reduced speed',
+        example: "Slow down — you're driving way too fast.",
+        extraExamples: [
+          'The doctor told him to slow down and reduce his stress.',
+          'Business slows down a lot during the summer months.',
+        ],
+      },
+      {
+        verb: 'cut down',
+        meaning: 'to reduce the amount or number of something',
+        example: "I'm cutting down on sugar this month.",
+        extraExamples: [
+          'They cut down the old tree to build the new road.',
+          "He's trying to cut down on the hours he works.",
+        ],
+      },
+      {
+        verb: 'turn down',
+        meaning: 'to refuse an offer, or to reduce the volume or level of something',
+        example: 'She turned down the job offer — the salary was too low.',
+        extraExamples: [
+          'Can you turn down the TV? I\'m trying to concentrate.',
+          'He was turned down for the promotion three times.',
+        ],
+      },
+      {
+        verb: 'knock down',
+        meaning: 'to demolish a structure, or to reduce a price',
+        example: 'They knocked down the old factory to build flats.',
+        extraExamples: [
+          'She was knocked down by a cyclist on the pavement.',
+          'He managed to knock down the price by negotiating.',
+        ],
+      },
+      {
+        verb: 'pin down',
+        meaning: 'to identify something precisely, or to force someone to commit to something',
+        example: "I can't pin down exactly what's bothering me.",
+        extraExamples: [
+          'It\'s hard to pin down the exact cause of the problem.',
+          "I've been trying to pin him down to a meeting all week.",
+        ],
+      },
     ],
   },
 ];

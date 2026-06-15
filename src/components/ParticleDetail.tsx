@@ -2,22 +2,20 @@ import React, { useState } from 'react';
 import type { ParticleData } from '../data/particles';
 import { PhrasalVerbCard } from './PhrasalVerbCard';
 import { SpeakingTimer } from './SpeakingTimer';
-import { generateExamples } from '../utils/aiExamples';
 
 interface Props {
   data: ParticleData;
 }
 
 export const ParticleDetail: React.FC<Props> = ({ data }) => {
-  const [aiExamples, setAiExamples] = useState<Record<string, string>>({});
-  const [loading, setLoading] = useState(false);
+  const [exampleSet, setExampleSet] = useState(0); // 0 = original, 1-2 = extras
   const [promptIndex, setPromptIndex] = useState(0);
 
-  const handleGenerateExamples = async () => {
-    setLoading(true);
-    const examples = await generateExamples(data.phrasalVerbs);
-    setAiExamples(examples);
-    setLoading(false);
+  // total sets = original + 2 extra examples per verb
+  const totalSets = 3;
+
+  const handleGenerateExamples = () => {
+    setExampleSet((prev) => (prev + 1) % totalSets);
   };
 
   const handleNewChallenge = () => {
@@ -82,27 +80,14 @@ export const ParticleDetail: React.FC<Props> = ({ data }) => {
 
           <button
             onClick={handleGenerateExamples}
-            disabled={loading}
             className="group flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold tracking-wide
                        bg-glow-orange/10 border border-glow-orange/25 text-glow-orange
                        hover:bg-glow-orange/20 hover:border-glow-orange/50 hover:shadow-glow-sm
-                       disabled:opacity-40 disabled:cursor-not-allowed
                        transition-all duration-200"
           >
-            {loading ? (
-              <>
-                <svg className="animate-spin h-3.5 w-3.5" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                </svg>
-                Generating…
-              </>
-            ) : (
-              <>
-                <span className="transition-transform duration-300 group-hover:rotate-12">✨</span>
-                Generate New Examples
-              </>
-            )}
+            <span className="transition-transform duration-300 group-hover:rotate-12">✨</span>
+            New Examples
+            <span className="text-white/25 ml-1">{exampleSet + 1}/{totalSets}</span>
           </button>
         </div>
 
@@ -112,7 +97,7 @@ export const ParticleDetail: React.FC<Props> = ({ data }) => {
               key={pv.verb}
               verb={pv}
               index={i}
-              aiExample={aiExamples[pv.verb]}
+              exampleSet={exampleSet}
             />
           ))}
         </div>
