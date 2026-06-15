@@ -76,6 +76,34 @@ const buildChime = (c: AudioContext) => {
   });
 };
 
+const buildDiceRoll = (c: AudioContext) => {
+  // Rapid random clicks simulating dice tumbling
+  const clicks = 10;
+  for (let i = 0; i < clicks; i++) {
+    const delay = i * 0.055;
+    const osc = c.createOscillator();
+    const gain = c.createGain();
+    osc.connect(gain); gain.connect(c.destination);
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(200 + Math.random() * 400, c.currentTime + delay);
+    gain.gain.setValueAtTime(0.12, c.currentTime + delay);
+    gain.gain.exponentialRampToValueAtTime(0.001, c.currentTime + delay + 0.04);
+    osc.start(c.currentTime + delay);
+    osc.stop(c.currentTime + delay + 0.05);
+  }
+  // Final "landing" thud
+  const thud = c.createOscillator();
+  const thudGain = c.createGain();
+  thud.connect(thudGain); thudGain.connect(c.destination);
+  thud.type = 'sine';
+  thud.frequency.setValueAtTime(120, c.currentTime + 0.58);
+  thud.frequency.exponentialRampToValueAtTime(60, c.currentTime + 0.68);
+  thudGain.gain.setValueAtTime(0.22, c.currentTime + 0.58);
+  thudGain.gain.exponentialRampToValueAtTime(0.001, c.currentTime + 0.68);
+  thud.start(c.currentTime + 0.58);
+  thud.stop(c.currentTime + 0.7);
+};
+
 const buildBeeps = (c: AudioContext) => {
   [0, 0.18, 0.36].forEach((delay) => {
     const osc = c.createOscillator();
@@ -90,10 +118,11 @@ const buildBeeps = (c: AudioContext) => {
   });
 };
 
-export type SoundType = 'particleClick' | 'startRecording' | 'warning';
+export type SoundType = 'particleClick' | 'startRecording' | 'warning' | 'diceRoll';
 
 export const playSound = (type: SoundType) => {
   if (type === 'particleClick') play(buildClick);
   else if (type === 'startRecording') play(buildChime);
   else if (type === 'warning') play(buildBeeps);
+  else if (type === 'diceRoll') play(buildDiceRoll);
 };

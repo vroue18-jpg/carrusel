@@ -2,6 +2,7 @@ import { useState, useCallback, useRef } from 'react';
 import { PARTICLES } from './data/particles';
 import { ParticleButton } from './components/ParticleButton';
 import { ParticleDetail } from './components/ParticleDetail';
+import { playSound } from './utils/sounds';
 
 const DICE_FACES = ['⚀', '⚁', '⚂', '⚃', '⚄', '⚅'];
 
@@ -16,6 +17,7 @@ export default function App() {
 
   const pickRandom = useCallback(() => {
     if (diceRolling) return;
+    playSound('diceRoll');
     setDiceRolling(true);
     setBtnAnim(true);
 
