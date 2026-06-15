@@ -10,7 +10,7 @@ export interface ParticleData {
   coreMeaning: string;
   visualMetaphor: string;
   patternExplanation: string;
-  speakingPrompt: string;
+  speakingPrompts: string[];
   phrasalVerbs: PhrasalVerb[];
 }
 
@@ -23,11 +23,21 @@ export const PARTICLES: ParticleData[] = [
       'Imagine filling a glass to the top — things that are "up" are complete, full, or moving to a higher level.',
     patternExplanation:
       'UP often signals that an action is completed ("eat up"), intensified ("speed up"), or literally rising ("stand up"). It can also suggest preparation ("set up") or destruction ("blow up").',
-    speakingPrompt:
-      'Talk for 1 minute about a time you had to "give up" something you loved, or when you "stayed up" all night to finish a project.',
+    speakingPrompts: [
+      'Talk about a time you had to "give up" something you loved. Why did you do it? Do you regret it?',
+      'Describe a skill you have "picked up" without taking a formal class. How did you learn it?',
+      'Tell a story about a time you "stayed up" all night. What were you doing and how did you feel the next day?',
+      'Talk about a goal you are "working up" to right now. What steps are you taking to get there?',
+      'Describe a situation where something "came up" and changed your plans completely.',
+      'Talk about a time when you had to "speak up" about something you believed in. Was it difficult?',
+      'Describe your morning routine — what do you do when you "wake up" and why does it matter to you?',
+      'Talk about a relationship or friendship that you had to "build up" over time. What made it grow?',
+      'Describe a time when you "messed up" at work or school. What did you learn from it?',
+      'Talk about something you are "saving up" for right now. Why is it important to you?',
+    ],
     phrasalVerbs: [
       { verb: 'give up', meaning: 'to stop trying', example: "Don't give up — you're almost there!" },
-      { verb: 'speed up', meaning: 'to go faster', example: 'Can you speed up? We\'re going to be late.' },
+      { verb: 'speed up', meaning: 'to go faster', example: "Can you speed up? We're going to be late." },
       { verb: 'set up', meaning: 'to arrange or prepare', example: 'She set up the meeting for Monday.' },
       { verb: 'show up', meaning: 'to arrive', example: 'He finally showed up an hour late.' },
       { verb: 'pick up', meaning: 'to collect or learn', example: 'I picked up Spanish while living in Madrid.' },
@@ -46,8 +56,18 @@ export const PARTICLES: ParticleData[] = [
       'Picture a bird flying out of a cage — OUT suggests leaving an enclosed space, being revealed, or reaching the outside world.',
     patternExplanation:
       'OUT often means something leaves a container or state ("get out"), is distributed ("hand out"), reaches its limit ("burn out"), or is discovered ("find out"). It also signals surpassing ("stand out").',
-    speakingPrompt:
-      'Describe a time you "found out" surprising news, or talk about what makes you "stand out" from the crowd.',
+    speakingPrompts: [
+      'Describe a time you "found out" surprising news. How did it change things for you?',
+      'Talk about what makes you "stand out" from the people around you. What is unique about you?',
+      'Describe a moment when you completely "burned out." What caused it and how did you recover?',
+      'Talk about a problem you had to "figure out" on your own without anyone\'s help.',
+      'Describe a time when things "worked out" better than you expected. What happened?',
+      'Talk about a skill or talent you want to "bring out" more in your daily life.',
+      'Describe a time you "ran out" of something important at the worst possible moment.',
+      'Talk about a plan or project you had to "carry out" under pressure. How did it go?',
+      'Describe something you have been "putting off" finding out. Why are you avoiding it?',
+      'Talk about a time a secret "came out." How did people react?',
+    ],
     phrasalVerbs: [
       { verb: 'find out', meaning: 'to discover', example: 'I found out she was moving to London.' },
       { verb: 'stand out', meaning: 'to be noticeable', example: 'Her red dress made her stand out.' },
@@ -69,8 +89,18 @@ export const PARTICLES: ParticleData[] = [
       'Think of a switch turning off — OFF suggests cutting a connection, departing, or removing something from its original position.',
     patternExplanation:
       'OFF often indicates stopping ("turn off"), leaving ("take off"), removing ("cut off"), or completing ("finish off"). It can also mean something explodes or triggers ("go off").',
-    speakingPrompt:
-      'Talk about a time you had to "call off" an event or when something "put you off" doing something you wanted to do.',
+    speakingPrompts: [
+      'Talk about a time you had to "call off" an important event or plan. What happened?',
+      'Describe something that has really "put you off" recently — a food, habit, or experience.',
+      'Talk about a time when something finally "paid off" after a long period of hard work.',
+      'Describe a moment when you "took off" on an adventure without much planning.',
+      'Talk about something you always "put off" doing. Why do you keep avoiding it?',
+      'Describe a time an alarm or phone "went off" at the worst possible moment.',
+      'Talk about a person or activity you had to "cut off" from your life. Was it the right decision?',
+      'Describe something you like to "show off" about yourself. Are you proud of it?',
+      'Talk about a time you had to "drop off" something or someone important. How did it feel?',
+      'Describe how you "set off" on a journey — a trip, a new job, or a big life change.',
+    ],
     phrasalVerbs: [
       { verb: 'take off', meaning: 'to depart or remove', example: 'The plane takes off at noon.' },
       { verb: 'turn off', meaning: 'to stop a device', example: 'Please turn off the lights.' },
@@ -92,17 +122,27 @@ export const PARTICLES: ParticleData[] = [
       'Like a light being switched on — ON represents continuation, something being active, or an ongoing connection.',
     patternExplanation:
       'ON often means continuing ("carry on"), activating ("switch on"), depending ("rely on"), or wearing/attaching ("put on"). It also signals progress in time ("move on").',
-    speakingPrompt:
-      'Talk for 1 minute about something you "carry on" doing despite challenges, or describe how you "move on" from difficult situations.',
+    speakingPrompts: [
+      'Talk about something you "carry on" doing despite challenges or setbacks.',
+      'Describe how you "move on" from difficult situations. What helps you the most?',
+      'Talk about something or someone you "rely on" every single day. Why are they so important?',
+      'Describe a responsibility you recently had to "take on." Are you handling it well?',
+      'Talk about a time you needed to "hold on" through a tough period. How did you manage?',
+      'Describe something strange that is "going on" in your neighborhood, workplace, or social circle.',
+      'Talk about a trend or idea that you think will "catch on" in the future.',
+      'Describe how you are "getting on" with a current project or life goal.',
+      'Talk about someone you regularly "check on." Why is it important to you?',
+      'Describe a habit or routine that you "keep on" doing even when you know you should stop.',
+    ],
     phrasalVerbs: [
-      { verb: 'carry on', meaning: 'to continue', example: 'Carry on — you\'re doing great!' },
+      { verb: 'carry on', meaning: 'to continue', example: "Carry on — you're doing great!" },
       { verb: 'move on', meaning: 'to progress forward', example: "It's time to move on from the past." },
-      { verb: 'put on', meaning: 'to wear or perform', example: 'Put on a jacket — it\'s cold outside.' },
+      { verb: 'put on', meaning: 'to wear or perform', example: "Put on a jacket — it's cold outside." },
       { verb: 'take on', meaning: 'to accept a challenge', example: 'She took on three new projects at once.' },
       { verb: 'rely on', meaning: 'to depend on', example: 'I rely on coffee every morning.' },
       { verb: 'check on', meaning: 'to see how someone is doing', example: "I'll check on grandma later." },
-      { verb: 'hold on', meaning: 'to wait or grip', example: 'Hold on, I\'ll be right back.' },
-      { verb: 'go on', meaning: 'to continue or happen', example: 'What\'s going on here?' },
+      { verb: 'hold on', meaning: 'to wait or grip', example: "Hold on, I'll be right back." },
+      { verb: 'go on', meaning: 'to continue or happen', example: "What's going on here?" },
       { verb: 'catch on', meaning: 'to understand or become popular', example: 'She catches on quickly.' },
       { verb: 'get on', meaning: 'to progress or board', example: 'How are you getting on with the project?' },
     ],
@@ -115,14 +155,24 @@ export const PARTICLES: ParticleData[] = [
       'Imagine a bridge going over a river — OVER suggests crossing a boundary, reviewing something thoroughly, or going beyond a limit.',
     patternExplanation:
       'OVER often means examining ("look over"), recovering ("get over"), repeating ("do over"), or surpassing a limit ("spill over"). It can also mean something dominates ("take over").',
-    speakingPrompt:
-      'Describe how you "get over" a disappointment, or talk about a time you had to "take over" a responsibility from someone else.',
+    speakingPrompts: [
+      'Describe how you "get over" a disappointment. Do you have a strategy or ritual?',
+      'Talk about a time you had to "take over" a task or responsibility from someone else.',
+      'Describe a decision you wish you could "do over." What would you change?',
+      'Talk about a time you had to "think something over" before giving your answer.',
+      'Describe a friend or family member who "comes over" often. What do you do together?',
+      'Talk about a meeting or event that "ran over" its scheduled time. How did it affect you?',
+      'Describe a document, contract, or plan you carefully "looked over." What did you find?',
+      'Talk about a situation where emotions "spilled over" into your professional or public life.',
+      'Describe a time when you "handed over" an important responsibility. Was it hard to let go?',
+      'Talk about something you "rolled over" in your mind for days before making a decision.',
+    ],
     phrasalVerbs: [
       { verb: 'get over', meaning: 'to recover from', example: "I can't get over how delicious that meal was." },
       { verb: 'take over', meaning: 'to assume control', example: 'She took over as manager last month.' },
       { verb: 'look over', meaning: 'to review', example: 'Can you look over my CV?' },
       { verb: 'think over', meaning: 'to consider carefully', example: "I'll think it over and let you know." },
-      { verb: 'come over', meaning: 'to visit', example: 'Why don\'t you come over for dinner?' },
+      { verb: 'come over', meaning: 'to visit', example: "Why don't you come over for dinner?" },
       { verb: 'run over', meaning: 'to hit or exceed time', example: 'The meeting ran over by 20 minutes.' },
       { verb: 'go over', meaning: 'to review or visit', example: "Let's go over the plan one more time." },
       { verb: 'turn over', meaning: 'to flip or hand to authorities', example: 'Turn over the page when ready.' },
@@ -138,8 +188,18 @@ export const PARTICLES: ParticleData[] = [
       'Like a train going through a tunnel — THROUGH suggests passing completely from one side to another, finishing something thoroughly.',
     patternExplanation:
       'THROUGH often means completing something ("follow through"), experiencing difficulty ("go through"), or examining closely ("look through"). It signals a full journey from start to end.',
-    speakingPrompt:
-      'Talk about a difficult time you "went through" and what helped you "get through" it. What did you learn?',
+    speakingPrompts: [
+      'Talk about a difficult period you "went through" and what helped you survive it.',
+      'Describe a time you had to "get through" to someone who was not listening. What did you do?',
+      'Talk about a promise or plan you always "follow through" on. Why is it important to you?',
+      'Describe a moment when you "pulled through" against the odds. How did it feel?',
+      'Talk about a book, film, or report you recently "read through" or "sat through." Was it worth it?',
+      'Describe a breakthrough moment in your learning journey. What "broke through" for you?',
+      'Talk about something you "saw through" — a lie, a bad plan, or a misleading promise.',
+      'Describe a time when help or good news finally "came through" after a long wait.',
+      'Talk about a plan you "carried through" to the very end despite obstacles.',
+      'Describe a time you had to "look through" a large amount of information to find something important.',
+    ],
     phrasalVerbs: [
       { verb: 'go through', meaning: 'to experience or examine', example: 'We went through all the options carefully.' },
       { verb: 'get through', meaning: 'to survive or contact', example: "I can't get through to her — she's not answering." },
@@ -161,15 +221,25 @@ export const PARTICLES: ParticleData[] = [
       'Picture someone walking into the horizon — AWAY suggests distance from a starting point, disappearance, or doing something continuously without stopping.',
     patternExplanation:
       'AWAY often means moving to a distance ("go away"), disappearing ("fade away"), continuous action ("work away"), or storing something ("put away"). It can also suggest giving freely ("give away").',
-    speakingPrompt:
-      'Talk about something you find hard to "throw away" and why, or describe a dream place you\'d love to "get away" to.',
+    speakingPrompts: [
+      'Describe your dream "getaway." Where would you go and what would you do there?',
+      'Talk about something you find impossible to "throw away." Why do you keep it?',
+      'Describe a memory that has "faded away" over time. Do you wish you could remember it better?',
+      'Talk about something you "gave away" that you later wished you had kept.',
+      'Describe a habit or feeling you are trying to "move away" from in your life.',
+      'Talk about a time you had to "look away" from something difficult. How did it make you feel?',
+      'Describe how you "put away" money or resources for the future. Are you good at saving?',
+      'Talk about something you were "working away" at for months. Did you finish it?',
+      'Describe a time when you felt like "running away" from a situation. Did you stay or go?',
+      'Talk about something that was "taken away" from you unexpectedly. How did you cope?',
+    ],
     phrasalVerbs: [
       { verb: 'go away', meaning: 'to leave or disappear', example: 'The headache finally went away.' },
       { verb: 'give away', meaning: 'to donate or reveal', example: "Don't give away the ending!" },
-      { verb: 'put away', meaning: 'to store', example: 'Put away your toys when you\'re done.' },
+      { verb: 'put away', meaning: 'to store', example: "Put away your toys when you're done." },
       { verb: 'throw away', meaning: 'to discard', example: "Don't throw away those leftovers." },
       { verb: 'get away', meaning: 'to escape or take a vacation', example: 'We need to get away for the weekend.' },
-      { verb: 'take away', meaning: 'to remove', example: 'What\'s the main takeaway from today\'s lesson?' },
+      { verb: 'take away', meaning: 'to remove', example: "What's the main takeaway from today's lesson?" },
       { verb: 'run away', meaning: 'to flee', example: 'The cat ran away from the loud noise.' },
       { verb: 'fade away', meaning: 'to gradually disappear', example: 'The memory slowly faded away.' },
       { verb: 'look away', meaning: 'to avert your eyes', example: 'She looked away in embarrassment.' },
@@ -184,11 +254,21 @@ export const PARTICLES: ParticleData[] = [
       'Think of a boomerang returning — BACK indicates returning to an original position, reversing an action, or responding to something done to you.',
     patternExplanation:
       'BACK often means returning ("come back"), responding ("talk back"), reversing ("cut back"), or restraining ("hold back"). It signals a reversal or return to a previous state.',
-    speakingPrompt:
-      'Talk about something you wish you could "take back", or describe a time you "held back" your true feelings.',
+    speakingPrompts: [
+      'Talk about something you said or did that you wish you could "take back."',
+      'Describe a time you "held back" your true feelings. Was it the right decision?',
+      'Talk about a place you love to "come back" to again and again. What makes it special?',
+      'Describe a time you had to "pay back" a debt — financial or emotional.',
+      'Talk about something from your past you like to "look back" on with pride.',
+      'Describe a time when you "fought back" against an unfair situation.',
+      'Talk about a habit or expense you had to "cut back" on. How did it affect your life?',
+      'Describe a time something "set you back" significantly. How did you recover?',
+      'Talk about a time you had to "call someone back" with important news.',
+      'Describe a skill or relationship you want to "bring back" into your life.',
+    ],
     phrasalVerbs: [
       { verb: 'come back', meaning: 'to return', example: 'Come back anytime you want.' },
-      { verb: 'give back', meaning: 'to return something', example: 'Please give back my pen when you\'re done.' },
+      { verb: 'give back', meaning: 'to return something', example: "Please give back my pen when you're done." },
       { verb: 'hold back', meaning: 'to restrain or withhold', example: 'She held back her tears.' },
       { verb: 'pay back', meaning: 'to repay', example: "I'll pay you back tomorrow." },
       { verb: 'call back', meaning: 'to return a call', example: "I'll call you back in ten minutes." },
@@ -207,13 +287,23 @@ export const PARTICLES: ParticleData[] = [
       'Imagine walking in a circle exploring a new neighborhood — AROUND suggests moving in a circle, exploring an area, or finding a way to deal with obstacles.',
     patternExplanation:
       'AROUND often means moving in circles ("go around"), exploring ("look around"), avoiding ("get around"), or existing in an area ("hang around"). It can suggest rotation or circumvention.',
-    speakingPrompt:
-      'Describe how you "get around" a city you\'ve visited, or talk about a time you "turned around" a bad situation.',
+    speakingPrompts: [
+      'Describe how you prefer to "get around" a city you love. What is your favourite way to travel?',
+      'Talk about a time you "turned around" a bad situation through creativity or persistence.',
+      'Describe a place where you like to "hang around" and why it feels comfortable.',
+      'Talk about someone who tries to "boss you around." How do you handle it?',
+      'Describe a time when there was not enough of something to "go around." How was it managed?',
+      'Talk about a time you "came around" to an idea you initially rejected.',
+      'Describe a rule or obstacle you found a clever way to "get around."',
+      'Talk about something you "carry around" with you everywhere. Why is it important?',
+      'Describe a time you were just "messing around" and accidentally discovered something great.',
+      'Talk about a time you had to "wait around" for a long time. How did you keep yourself occupied?',
+    ],
     phrasalVerbs: [
       { verb: 'get around', meaning: 'to travel or avoid', example: "It's easy to get around by bicycle." },
       { verb: 'look around', meaning: 'to explore', example: 'Feel free to look around the store.' },
       { verb: 'hang around', meaning: 'to wait or spend time', example: 'We hung around the café all afternoon.' },
-      { verb: 'turn around', meaning: 'to reverse direction or improve', example: 'The company turned around its losses.' },
+      { verb: 'turn around', meaning: 'to reverse direction or improve', example: "The company turned around its losses." },
       { verb: 'go around', meaning: 'to circulate or be enough', example: "There isn't enough cake to go around." },
       { verb: 'come around', meaning: 'to change opinion or visit', example: "She'll come around eventually." },
       { verb: 'mess around', meaning: 'to waste time', example: "Stop messing around and focus!" },
@@ -230,15 +320,25 @@ export const PARTICLES: ParticleData[] = [
       'Picture a leaf falling from a tree — DOWN suggests something decreasing, settling, being written/recorded, or stopping completely.',
     patternExplanation:
       'DOWN often means reducing ("calm down"), failing or stopping ("break down"), recording ("write down"), or subduing ("pin down"). It can also signal settling comfortably ("sit down").',
-    speakingPrompt:
-      'Talk about a time you felt "let down" by someone, or describe how you "calm down" when you\'re stressed.',
+    speakingPrompts: [
+      'Talk about a time you felt "let down" by someone you trusted. How did you handle it?',
+      'Describe how you "calm down" when you are stressed or overwhelmed.',
+      'Talk about a time something important "broke down" — a machine, a plan, or a relationship.',
+      'Describe something you always "write down" to help you remember. Why does it work for you?',
+      'Talk about a time you had to "slow down" in life. What forced you to do it?',
+      'Describe something you are trying to "cut down" on right now. Is it going well?',
+      'Talk about a time you "turned down" an opportunity. Do you think you made the right choice?',
+      'Describe a time when you had to "knuckle down" and focus on something difficult.',
+      'Talk about a feeling or habit you are trying to "pin down" and understand better.',
+      'Describe a time when you had to "back down" from a position or argument. Was it difficult?',
+    ],
     phrasalVerbs: [
       { verb: 'break down', meaning: 'to fail or analyze', example: 'My car broke down on the highway.' },
       { verb: 'calm down', meaning: 'to become less agitated', example: 'Take a deep breath and calm down.' },
       { verb: 'let down', meaning: 'to disappoint', example: "I don't want to let you down." },
       { verb: 'write down', meaning: 'to record', example: 'Write down your ideas before you forget.' },
-      { verb: 'sit down', meaning: 'to take a seat', example: 'Please sit down — we\'ll begin shortly.' },
-      { verb: 'slow down', meaning: 'to decrease speed', example: 'Slow down — you\'re driving too fast.' },
+      { verb: 'sit down', meaning: 'to take a seat', example: "Please sit down — we'll begin shortly." },
+      { verb: 'slow down', meaning: 'to decrease speed', example: "Slow down — you're driving too fast." },
       { verb: 'cut down', meaning: 'to reduce', example: "I'm cutting down on sugar this month." },
       { verb: 'turn down', meaning: 'to refuse or lower volume', example: 'She turned down the job offer.' },
       { verb: 'knock down', meaning: 'to demolish or reduce price', example: 'They knocked down the old building.' },

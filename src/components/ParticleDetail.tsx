@@ -11,6 +11,7 @@ interface Props {
 export const ParticleDetail: React.FC<Props> = ({ data }) => {
   const [aiExamples, setAiExamples] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
+  const [promptIndex, setPromptIndex] = useState(0);
 
   const handleGenerateExamples = async () => {
     setLoading(true);
@@ -19,13 +20,17 @@ export const ParticleDetail: React.FC<Props> = ({ data }) => {
     setLoading(false);
   };
 
+  const handleNewChallenge = () => {
+    const next = (promptIndex + 1 + Math.floor(Math.random() * (data.speakingPrompts.length - 1))) % data.speakingPrompts.length;
+    setPromptIndex(next);
+  };
+
   return (
     <div className="animate-fadeIn space-y-5">
 
       {/* Hero banner */}
       <div className="relative overflow-hidden rounded-3xl p-8 shadow-card border border-glow-orange/20"
            style={{ background: 'linear-gradient(135deg, rgba(232,98,10,0.20) 0%, rgba(192,57,43,0.12) 60%, rgba(212,160,23,0.08) 100%)' }}>
-        {/* Background glow blob */}
         <div className="absolute -top-12 -right-12 w-64 h-64 rounded-full bg-glow-orange/15 blur-3xl pointer-events-none" />
         <div className="relative z-10 flex items-center gap-5">
           <div className="text-6xl drop-shadow-lg shrink-0">{data.emoji}</div>
@@ -42,7 +47,6 @@ export const ParticleDetail: React.FC<Props> = ({ data }) => {
 
       {/* Two-col info row */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-        {/* Visual Metaphor */}
         <div className="glass rounded-3xl p-6 shadow-card hover:shadow-card-hover hover:border-white/12 transition-all duration-300">
           <div className="flex items-center gap-2.5 mb-4">
             <div className="w-8 h-8 rounded-lg bg-glow-gold/10 border border-glow-gold/20 flex items-center justify-center text-sm">
@@ -53,7 +57,6 @@ export const ParticleDetail: React.FC<Props> = ({ data }) => {
           <p className="text-white/45 text-sm leading-relaxed">{data.visualMetaphor}</p>
         </div>
 
-        {/* Pattern Explanation */}
         <div className="glass rounded-3xl p-6 shadow-card hover:shadow-card-hover hover:border-white/12 transition-all duration-300">
           <div className="flex items-center gap-2.5 mb-4">
             <div className="w-8 h-8 rounded-lg bg-glow-orange/10 border border-glow-orange/20 flex items-center justify-center text-sm">
@@ -115,17 +118,20 @@ export const ParticleDetail: React.FC<Props> = ({ data }) => {
         </div>
       </div>
 
-      {/* Speaking section divider */}
+      {/* Divider */}
       <div className="flex items-center gap-4 pt-4">
         <div className="h-px flex-1 bg-gradient-to-r from-transparent via-glow-orange/30 to-transparent" />
-        <span className="text-[10px] font-semibold tracking-[0.3em] uppercase text-white/20">
-          Now practice
-        </span>
+        <span className="text-[10px] font-semibold tracking-[0.3em] uppercase text-white/20">Now practice</span>
         <div className="h-px flex-1 bg-gradient-to-r from-transparent via-glow-orange/30 to-transparent" />
       </div>
 
-      {/* Speaking Timer — focal point */}
-      <SpeakingTimer prompt={data.speakingPrompt} />
+      {/* Speaking Timer */}
+      <SpeakingTimer
+        prompt={data.speakingPrompts[promptIndex]}
+        promptIndex={promptIndex}
+        totalPrompts={data.speakingPrompts.length}
+        onNewChallenge={handleNewChallenge}
+      />
     </div>
   );
 };
