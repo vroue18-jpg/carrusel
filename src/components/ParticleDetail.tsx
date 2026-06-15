@@ -115,7 +115,16 @@ export const ParticleDetail: React.FC<Props> = ({ data }) => {
         </div>
       </div>
 
-      {/* Speaking Timer */}
+      {/* Speaking section divider */}
+      <div className="flex items-center gap-4 pt-4">
+        <div className="h-px flex-1 bg-gradient-to-r from-transparent via-glow-orange/30 to-transparent" />
+        <span className="text-[10px] font-semibold tracking-[0.3em] uppercase text-white/20">
+          Now practice
+        </span>
+        <div className="h-px flex-1 bg-gradient-to-r from-transparent via-glow-orange/30 to-transparent" />
+      </div>
+
+      {/* Speaking Timer — focal point */}
       <SpeakingTimer prompt={data.speakingPrompt} />
     </div>
   );
