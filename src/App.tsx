@@ -52,8 +52,9 @@ export default function App() {
 
         {/* Hero label */}
         <div className="text-center space-y-2">
-          <p className="font-handwritten text-xl text-white/40">
-            Select a particle to unlock its meaning ✦
+          <p className="text-sm font-light tracking-[0.25em] uppercase text-white/35">
+            Select a particle to unlock its meaning{' '}
+            <span className="text-glow-orange/60">✦</span>
           </p>
         </div>
 
