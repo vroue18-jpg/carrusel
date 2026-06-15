@@ -1,14 +1,45 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import { PARTICLES } from './data/particles';
 import { ParticleButton } from './components/ParticleButton';
 import { ParticleDetail } from './components/ParticleDetail';
 
+const DICE_FACES = ['⚀', '⚁', '⚂', '⚃', '⚄', '⚅'];
+
 export default function App() {
-  const [activeIndex, setActiveIndex] = useState<number | null>(null);
+  const [activeIndex, setActiveIndex]   = useState<number | null>(null);
+  const [streak, setStreak]             = useState(0);
+  const [streakAnim, setStreakAnim]     = useState(false);
+  const [diceRolling, setDiceRolling]   = useState(false);
+  const [diceFace, setDiceFace]         = useState('🎲');
+  const [btnAnim, setBtnAnim]           = useState(false);
+  const diceIntervalRef                 = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const pickRandom = useCallback(() => {
-    const idx = Math.floor(Math.random() * PARTICLES.length);
-    setActiveIndex(idx);
+    if (diceRolling) return;
+    setDiceRolling(true);
+    setBtnAnim(true);
+
+    // Cycle through dice faces rapidly while rolling
+    let tick = 0;
+    diceIntervalRef.current = setInterval(() => {
+      setDiceFace(DICE_FACES[tick % DICE_FACES.length]);
+      tick++;
+    }, 80);
+
+    setTimeout(() => {
+      if (diceIntervalRef.current) clearInterval(diceIntervalRef.current);
+      const idx = Math.floor(Math.random() * PARTICLES.length);
+      setDiceFace(DICE_FACES[idx % DICE_FACES.length]);
+      setActiveIndex(idx);
+      setDiceRolling(false);
+      setBtnAnim(false);
+    }, 600);
+  }, [diceRolling]);
+
+  const handleStreakIncrement = useCallback(() => {
+    setStreak((s) => s + 1);
+    setStreakAnim(true);
+    setTimeout(() => setStreakAnim(false), 400);
   }, []);
 
   const active = activeIndex !== null ? PARTICLES[activeIndex] : null;
@@ -25,7 +56,7 @@ export default function App() {
 
       {/* Header */}
       <header className="sticky top-0 z-50 glass border-b border-white/[0.07]">
-        <div className="max-w-4xl mx-auto px-5 py-4 flex items-center justify-between">
+        <div className="max-w-4xl mx-auto px-5 py-4 flex items-center justify-between gap-4">
           <div>
             <h1 className="font-display text-3xl sm:text-4xl tracking-wider shimmer-text leading-none">
               Phrasal Verb Calculator
@@ -35,16 +66,36 @@ export default function App() {
             </p>
           </div>
 
-          <button
-            onClick={pickRandom}
-            className="group flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-sm text-white
-                       bg-btn-gradient shadow-glow-sm
-                       hover:shadow-glow-md hover:scale-105
-                       active:scale-95 transition-all duration-200"
-          >
-            <span className="text-base transition-transform duration-300 group-hover:rotate-180">🎲</span>
-            <span className="hidden sm:inline tracking-wide">Random</span>
-          </button>
+          <div className="flex items-center gap-3">
+            {/* Streak counter */}
+            {streak > 0 && (
+              <div className={`flex items-center gap-1.5 px-3 py-2 rounded-xl glass border border-glow-gold/25 ${streakAnim ? 'animate-streakPop' : ''}`}>
+                <span className="text-base">🔥</span>
+                <span className="font-display text-lg tracking-wider text-glow-gold leading-none">{streak}</span>
+                <span className="text-[10px] text-white/30 font-semibold tracking-widest uppercase hidden sm:inline">streak</span>
+              </div>
+            )}
+
+            {/* Random / Dice button */}
+            <button
+              onClick={pickRandom}
+              disabled={diceRolling}
+              className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-sm text-white
+                         bg-btn-gradient shadow-glow-sm hover:shadow-glow-md
+                         active:scale-95 transition-all duration-200 disabled:cursor-not-allowed
+                         ${btnAnim ? 'animate-slideInRight' : ''}`}
+            >
+              <span
+                className="text-base inline-block"
+                style={{ animation: diceRolling ? 'diceRoll 0.6s cubic-bezier(0.16,1,0.3,1)' : 'none' }}
+              >
+                {diceFace}
+              </span>
+              <span className="hidden sm:inline tracking-wide">
+                {diceRolling ? 'Rolling…' : 'Random'}
+              </span>
+            </button>
+          </div>
         </div>
       </header>
 
@@ -78,7 +129,11 @@ export default function App() {
 
         {/* Detail or empty state */}
         {active ? (
-          <ParticleDetail key={active.particle} data={active} />
+          <ParticleDetail
+            key={active.particle}
+            data={active}
+            onChallengeComplete={handleStreakIncrement}
+          />
         ) : (
           <div className="text-center py-24">
             <div className="text-7xl mb-6 animate-pulse2 inline-block">🔤</div>
