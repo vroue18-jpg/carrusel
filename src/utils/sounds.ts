@@ -1,32 +1,51 @@
 // All sounds generated via Web Audio API — no external files needed
 
-// Unlock AudioContext on first touch (required by iOS Safari)
-if (typeof window !== 'undefined') {
-  const unlock = () => {
-    const w = window as typeof window & { _audioCtx?: AudioContext };
-    if (!w._audioCtx) w._audioCtx = new AudioContext();
-    if (w._audioCtx.state === 'suspended') w._audioCtx.resume();
-    window.removeEventListener('touchstart', unlock, true);
-    window.removeEventListener('touchend', unlock, true);
-  };
-  window.addEventListener('touchstart', unlock, true);
-  window.addEventListener('touchend', unlock, true);
-}
+type W = typeof window & { _audioCtx?: AudioContext; _audioUnlocked?: boolean };
 
-const ctx = (): AudioContext => {
-  const w = window as typeof window & { _audioCtx?: AudioContext };
+const getCtx = (): AudioContext => {
+  const w = window as W;
   if (!w._audioCtx) w._audioCtx = new AudioContext();
   return w._audioCtx;
 };
 
+// iOS Safari requires creating + resuming AudioContext AND playing a silent
+// buffer synchronously inside a user-gesture handler to fully unlock audio.
+const playSilentBuffer = (c: AudioContext) => {
+  const buf = c.createBuffer(1, 1, 22050);
+  const src = c.createBufferSource();
+  src.buffer = buf;
+  src.connect(c.destination);
+  src.start(0);
+};
+
+if (typeof window !== 'undefined') {
+  const unlock = () => {
+    const w = window as W;
+    if (w._audioUnlocked) return;
+    const c = getCtx();
+    if (c.state === 'suspended') {
+      c.resume().then(() => playSilentBuffer(c));
+    } else {
+      playSilentBuffer(c);
+    }
+    w._audioUnlocked = true;
+    ['touchstart', 'touchend', 'mousedown', 'keydown'].forEach((ev) =>
+      window.removeEventListener(ev, unlock, true)
+    );
+  };
+  ['touchstart', 'touchend', 'mousedown', 'keydown'].forEach((ev) =>
+    window.addEventListener(ev, unlock, true)
+  );
+}
+
 const resume = async () => {
-  const c = ctx();
+  const c = getCtx();
   if (c.state === 'suspended') await c.resume();
 };
 
 // Short satisfying pop/click — particle selection
 const playParticleClick = () => {
-  const c = ctx();
+  const c = getCtx();
   const osc = c.createOscillator();
   const gain = c.createGain();
   osc.connect(gain);
@@ -42,7 +61,7 @@ const playParticleClick = () => {
 
 // Gentle rising tone — start speaking
 const playStartRecording = () => {
-  const c = ctx();
+  const c = getCtx();
   [0, 0.1].forEach((delay, i) => {
     const osc = c.createOscillator();
     const gain = c.createGain();
@@ -61,7 +80,7 @@ const playStartRecording = () => {
 
 // Soft triple beep — 10-second warning
 const playWarning = () => {
-  const c = ctx();
+  const c = getCtx();
   [0, 0.18, 0.36].forEach((delay) => {
     const osc = c.createOscillator();
     const gain = c.createGain();
@@ -79,18 +98,12 @@ const playWarning = () => {
 
 export type SoundType = 'particleClick' | 'startRecording' | 'warning';
 
-export const playSound = async (type: SoundType, volume = 1) => {
+export const playSound = async (type: SoundType) => {
   try {
     await resume();
-    const c = ctx();
-    // Apply global volume via a master gain if needed
-    // (individual gains above already handle volume shaping)
-    // volume param scales the gain values
-    void volume; // used implicitly via individual gain values
     if (type === 'particleClick') playParticleClick();
     else if (type === 'startRecording') playStartRecording();
     else if (type === 'warning') playWarning();
-    void c;
   } catch {
     // Silently fail if audio is blocked
   }
