@@ -1,0 +1,248 @@
+export interface PhrasalVerb {
+  verb: string;
+  meaning: string;
+  example: string;
+}
+
+export interface ParticleData {
+  particle: string;
+  emoji: string;
+  coreMeaning: string;
+  visualMetaphor: string;
+  patternExplanation: string;
+  speakingPrompt: string;
+  phrasalVerbs: PhrasalVerb[];
+}
+
+export const PARTICLES: ParticleData[] = [
+  {
+    particle: 'UP',
+    emoji: '⬆️',
+    coreMeaning: 'Completion, increase, or upward movement',
+    visualMetaphor:
+      'Imagine filling a glass to the top — things that are "up" are complete, full, or moving to a higher level.',
+    patternExplanation:
+      'UP often signals that an action is completed ("eat up"), intensified ("speed up"), or literally rising ("stand up"). It can also suggest preparation ("set up") or destruction ("blow up").',
+    speakingPrompt:
+      'Talk for 1 minute about a time you had to "give up" something you loved, or when you "stayed up" all night to finish a project.',
+    phrasalVerbs: [
+      { verb: 'give up', meaning: 'to stop trying', example: "Don't give up — you're almost there!" },
+      { verb: 'speed up', meaning: 'to go faster', example: 'Can you speed up? We\'re going to be late.' },
+      { verb: 'set up', meaning: 'to arrange or prepare', example: 'She set up the meeting for Monday.' },
+      { verb: 'show up', meaning: 'to arrive', example: 'He finally showed up an hour late.' },
+      { verb: 'pick up', meaning: 'to collect or learn', example: 'I picked up Spanish while living in Madrid.' },
+      { verb: 'grow up', meaning: 'to mature', example: 'I grew up in a small town.' },
+      { verb: 'make up', meaning: 'to invent or reconcile', example: 'She made up a story to avoid trouble.' },
+      { verb: 'use up', meaning: 'to consume completely', example: "We've used up all the milk." },
+      { verb: 'turn up', meaning: 'to increase volume or appear', example: 'Turn up the music!' },
+      { verb: 'wake up', meaning: 'to stop sleeping', example: 'I wake up at 6 every morning.' },
+    ],
+  },
+  {
+    particle: 'OUT',
+    emoji: '↗️',
+    coreMeaning: 'Outward movement, emergence, or completion',
+    visualMetaphor:
+      'Picture a bird flying out of a cage — OUT suggests leaving an enclosed space, being revealed, or reaching the outside world.',
+    patternExplanation:
+      'OUT often means something leaves a container or state ("get out"), is distributed ("hand out"), reaches its limit ("burn out"), or is discovered ("find out"). It also signals surpassing ("stand out").',
+    speakingPrompt:
+      'Describe a time you "found out" surprising news, or talk about what makes you "stand out" from the crowd.',
+    phrasalVerbs: [
+      { verb: 'find out', meaning: 'to discover', example: 'I found out she was moving to London.' },
+      { verb: 'stand out', meaning: 'to be noticeable', example: 'Her red dress made her stand out.' },
+      { verb: 'run out', meaning: 'to have no more', example: "We've run out of coffee." },
+      { verb: 'work out', meaning: 'to exercise or solve', example: 'It all worked out in the end.' },
+      { verb: 'point out', meaning: 'to indicate', example: 'He pointed out a mistake in my essay.' },
+      { verb: 'burn out', meaning: 'to exhaust', example: 'She burned out after working 80-hour weeks.' },
+      { verb: 'carry out', meaning: 'to complete a task', example: 'The team carried out the plan perfectly.' },
+      { verb: 'hand out', meaning: 'to distribute', example: 'They handed out free samples.' },
+      { verb: 'figure out', meaning: 'to understand', example: "I can't figure out this puzzle." },
+      { verb: 'turn out', meaning: 'to result in', example: 'The party turned out to be amazing.' },
+    ],
+  },
+  {
+    particle: 'OFF',
+    emoji: '🔴',
+    coreMeaning: 'Separation, disconnection, or departure',
+    visualMetaphor:
+      'Think of a switch turning off — OFF suggests cutting a connection, departing, or removing something from its original position.',
+    patternExplanation:
+      'OFF often indicates stopping ("turn off"), leaving ("take off"), removing ("cut off"), or completing ("finish off"). It can also mean something explodes or triggers ("go off").',
+    speakingPrompt:
+      'Talk about a time you had to "call off" an event or when something "put you off" doing something you wanted to do.',
+    phrasalVerbs: [
+      { verb: 'take off', meaning: 'to depart or remove', example: 'The plane takes off at noon.' },
+      { verb: 'turn off', meaning: 'to stop a device', example: 'Please turn off the lights.' },
+      { verb: 'put off', meaning: 'to postpone or discourage', example: "Don't put off what you can do today." },
+      { verb: 'call off', meaning: 'to cancel', example: 'They called off the game due to rain.' },
+      { verb: 'go off', meaning: 'to explode or ring', example: 'My alarm went off at 5 AM.' },
+      { verb: 'pay off', meaning: 'to succeed or repay', example: 'All that hard work finally paid off.' },
+      { verb: 'show off', meaning: 'to display proudly', example: "She loves to show off her cooking skills." },
+      { verb: 'drop off', meaning: 'to deliver or fall asleep', example: 'He dropped off the kids at school.' },
+      { verb: 'cut off', meaning: 'to interrupt or separate', example: 'The storm cut off our electricity.' },
+      { verb: 'set off', meaning: 'to start a journey or trigger', example: 'We set off early to avoid traffic.' },
+    ],
+  },
+  {
+    particle: 'ON',
+    emoji: '🟢',
+    coreMeaning: 'Continuation, activation, or attachment',
+    visualMetaphor:
+      'Like a light being switched on — ON represents continuation, something being active, or an ongoing connection.',
+    patternExplanation:
+      'ON often means continuing ("carry on"), activating ("switch on"), depending ("rely on"), or wearing/attaching ("put on"). It also signals progress in time ("move on").',
+    speakingPrompt:
+      'Talk for 1 minute about something you "carry on" doing despite challenges, or describe how you "move on" from difficult situations.',
+    phrasalVerbs: [
+      { verb: 'carry on', meaning: 'to continue', example: 'Carry on — you\'re doing great!' },
+      { verb: 'move on', meaning: 'to progress forward', example: "It's time to move on from the past." },
+      { verb: 'put on', meaning: 'to wear or perform', example: 'Put on a jacket — it\'s cold outside.' },
+      { verb: 'take on', meaning: 'to accept a challenge', example: 'She took on three new projects at once.' },
+      { verb: 'rely on', meaning: 'to depend on', example: 'I rely on coffee every morning.' },
+      { verb: 'check on', meaning: 'to see how someone is doing', example: "I'll check on grandma later." },
+      { verb: 'hold on', meaning: 'to wait or grip', example: 'Hold on, I\'ll be right back.' },
+      { verb: 'go on', meaning: 'to continue or happen', example: 'What\'s going on here?' },
+      { verb: 'catch on', meaning: 'to understand or become popular', example: 'She catches on quickly.' },
+      { verb: 'get on', meaning: 'to progress or board', example: 'How are you getting on with the project?' },
+    ],
+  },
+  {
+    particle: 'OVER',
+    emoji: '🌐',
+    coreMeaning: 'Crossing, examining, or excess',
+    visualMetaphor:
+      'Imagine a bridge going over a river — OVER suggests crossing a boundary, reviewing something thoroughly, or going beyond a limit.',
+    patternExplanation:
+      'OVER often means examining ("look over"), recovering ("get over"), repeating ("do over"), or surpassing a limit ("spill over"). It can also mean something dominates ("take over").',
+    speakingPrompt:
+      'Describe how you "get over" a disappointment, or talk about a time you had to "take over" a responsibility from someone else.',
+    phrasalVerbs: [
+      { verb: 'get over', meaning: 'to recover from', example: "I can't get over how delicious that meal was." },
+      { verb: 'take over', meaning: 'to assume control', example: 'She took over as manager last month.' },
+      { verb: 'look over', meaning: 'to review', example: 'Can you look over my CV?' },
+      { verb: 'think over', meaning: 'to consider carefully', example: "I'll think it over and let you know." },
+      { verb: 'come over', meaning: 'to visit', example: 'Why don\'t you come over for dinner?' },
+      { verb: 'run over', meaning: 'to hit or exceed time', example: 'The meeting ran over by 20 minutes.' },
+      { verb: 'go over', meaning: 'to review or visit', example: "Let's go over the plan one more time." },
+      { verb: 'turn over', meaning: 'to flip or hand to authorities', example: 'Turn over the page when ready.' },
+      { verb: 'hand over', meaning: 'to give to someone', example: 'He handed over the documents.' },
+      { verb: 'roll over', meaning: 'to transfer or flip', example: 'She rolled over in her sleep.' },
+    ],
+  },
+  {
+    particle: 'THROUGH',
+    emoji: '🚇',
+    coreMeaning: 'Completion from start to finish, or penetrating',
+    visualMetaphor:
+      'Like a train going through a tunnel — THROUGH suggests passing completely from one side to another, finishing something thoroughly.',
+    patternExplanation:
+      'THROUGH often means completing something ("follow through"), experiencing difficulty ("go through"), or examining closely ("look through"). It signals a full journey from start to end.',
+    speakingPrompt:
+      'Talk about a difficult time you "went through" and what helped you "get through" it. What did you learn?',
+    phrasalVerbs: [
+      { verb: 'go through', meaning: 'to experience or examine', example: 'We went through all the options carefully.' },
+      { verb: 'get through', meaning: 'to survive or contact', example: "I can't get through to her — she's not answering." },
+      { verb: 'follow through', meaning: 'to complete what was started', example: 'He always follows through on his promises.' },
+      { verb: 'pull through', meaning: 'to survive', example: 'The patient pulled through after surgery.' },
+      { verb: 'look through', meaning: 'to examine', example: 'I looked through the old photos.' },
+      { verb: 'break through', meaning: 'to overcome an obstacle', example: 'Scientists broke through with a new treatment.' },
+      { verb: 'see through', meaning: 'to detect deception or complete', example: 'I can see through his lies.' },
+      { verb: 'come through', meaning: 'to succeed or arrive', example: 'Help finally came through.' },
+      { verb: 'carry through', meaning: 'to complete successfully', example: 'She carried through her plan.' },
+      { verb: 'read through', meaning: 'to read completely', example: 'Read through the contract before signing.' },
+    ],
+  },
+  {
+    particle: 'AWAY',
+    emoji: '🏃',
+    coreMeaning: 'Distance, removal, or continuous action',
+    visualMetaphor:
+      'Picture someone walking into the horizon — AWAY suggests distance from a starting point, disappearance, or doing something continuously without stopping.',
+    patternExplanation:
+      'AWAY often means moving to a distance ("go away"), disappearing ("fade away"), continuous action ("work away"), or storing something ("put away"). It can also suggest giving freely ("give away").',
+    speakingPrompt:
+      'Talk about something you find hard to "throw away" and why, or describe a dream place you\'d love to "get away" to.',
+    phrasalVerbs: [
+      { verb: 'go away', meaning: 'to leave or disappear', example: 'The headache finally went away.' },
+      { verb: 'give away', meaning: 'to donate or reveal', example: "Don't give away the ending!" },
+      { verb: 'put away', meaning: 'to store', example: 'Put away your toys when you\'re done.' },
+      { verb: 'throw away', meaning: 'to discard', example: "Don't throw away those leftovers." },
+      { verb: 'get away', meaning: 'to escape or take a vacation', example: 'We need to get away for the weekend.' },
+      { verb: 'take away', meaning: 'to remove', example: 'What\'s the main takeaway from today\'s lesson?' },
+      { verb: 'run away', meaning: 'to flee', example: 'The cat ran away from the loud noise.' },
+      { verb: 'fade away', meaning: 'to gradually disappear', example: 'The memory slowly faded away.' },
+      { verb: 'look away', meaning: 'to avert your eyes', example: 'She looked away in embarrassment.' },
+      { verb: 'save away', meaning: 'to store for later', example: 'He saves away money every month.' },
+    ],
+  },
+  {
+    particle: 'BACK',
+    emoji: '↩️',
+    coreMeaning: 'Return, reversal, or doing something in response',
+    visualMetaphor:
+      'Think of a boomerang returning — BACK indicates returning to an original position, reversing an action, or responding to something done to you.',
+    patternExplanation:
+      'BACK often means returning ("come back"), responding ("talk back"), reversing ("cut back"), or restraining ("hold back"). It signals a reversal or return to a previous state.',
+    speakingPrompt:
+      'Talk about something you wish you could "take back", or describe a time you "held back" your true feelings.',
+    phrasalVerbs: [
+      { verb: 'come back', meaning: 'to return', example: 'Come back anytime you want.' },
+      { verb: 'give back', meaning: 'to return something', example: 'Please give back my pen when you\'re done.' },
+      { verb: 'hold back', meaning: 'to restrain or withhold', example: 'She held back her tears.' },
+      { verb: 'pay back', meaning: 'to repay', example: "I'll pay you back tomorrow." },
+      { verb: 'call back', meaning: 'to return a call', example: "I'll call you back in ten minutes." },
+      { verb: 'look back', meaning: 'to reflect on the past', example: 'Looking back, I made the right choice.' },
+      { verb: 'take back', meaning: 'to retract or return', example: "I take back what I said." },
+      { verb: 'cut back', meaning: 'to reduce', example: "We need to cut back on expenses." },
+      { verb: 'get back', meaning: 'to return or retaliate', example: "I'll get back to you on that." },
+      { verb: 'set back', meaning: 'to delay progress', example: 'The flood set back the construction.' },
+    ],
+  },
+  {
+    particle: 'AROUND',
+    emoji: '🔄',
+    coreMeaning: 'Circular movement, exploration, or approximation',
+    visualMetaphor:
+      'Imagine walking in a circle exploring a new neighborhood — AROUND suggests moving in a circle, exploring an area, or finding a way to deal with obstacles.',
+    patternExplanation:
+      'AROUND often means moving in circles ("go around"), exploring ("look around"), avoiding ("get around"), or existing in an area ("hang around"). It can suggest rotation or circumvention.',
+    speakingPrompt:
+      'Describe how you "get around" a city you\'ve visited, or talk about a time you "turned around" a bad situation.',
+    phrasalVerbs: [
+      { verb: 'get around', meaning: 'to travel or avoid', example: "It's easy to get around by bicycle." },
+      { verb: 'look around', meaning: 'to explore', example: 'Feel free to look around the store.' },
+      { verb: 'hang around', meaning: 'to wait or spend time', example: 'We hung around the café all afternoon.' },
+      { verb: 'turn around', meaning: 'to reverse direction or improve', example: 'The company turned around its losses.' },
+      { verb: 'go around', meaning: 'to circulate or be enough', example: "There isn't enough cake to go around." },
+      { verb: 'come around', meaning: 'to change opinion or visit', example: "She'll come around eventually." },
+      { verb: 'mess around', meaning: 'to waste time', example: "Stop messing around and focus!" },
+      { verb: 'boss around', meaning: 'to order people', example: 'He keeps bossing everyone around.' },
+      { verb: 'fool around', meaning: 'to joke or waste time', example: "We're just fooling around." },
+      { verb: 'carry around', meaning: 'to have with you', example: 'She carries around a notebook everywhere.' },
+    ],
+  },
+  {
+    particle: 'DOWN',
+    emoji: '⬇️',
+    coreMeaning: 'Decrease, failure, or settling into position',
+    visualMetaphor:
+      'Picture a leaf falling from a tree — DOWN suggests something decreasing, settling, being written/recorded, or stopping completely.',
+    patternExplanation:
+      'DOWN often means reducing ("calm down"), failing or stopping ("break down"), recording ("write down"), or subduing ("pin down"). It can also signal settling comfortably ("sit down").',
+    speakingPrompt:
+      'Talk about a time you felt "let down" by someone, or describe how you "calm down" when you\'re stressed.',
+    phrasalVerbs: [
+      { verb: 'break down', meaning: 'to fail or analyze', example: 'My car broke down on the highway.' },
+      { verb: 'calm down', meaning: 'to become less agitated', example: 'Take a deep breath and calm down.' },
+      { verb: 'let down', meaning: 'to disappoint', example: "I don't want to let you down." },
+      { verb: 'write down', meaning: 'to record', example: 'Write down your ideas before you forget.' },
+      { verb: 'sit down', meaning: 'to take a seat', example: 'Please sit down — we\'ll begin shortly.' },
+      { verb: 'slow down', meaning: 'to decrease speed', example: 'Slow down — you\'re driving too fast.' },
+      { verb: 'cut down', meaning: 'to reduce', example: "I'm cutting down on sugar this month." },
+      { verb: 'turn down', meaning: 'to refuse or lower volume', example: 'She turned down the job offer.' },
+      { verb: 'knock down', meaning: 'to demolish or reduce price', example: 'They knocked down the old building.' },
+      { verb: 'pin down', meaning: 'to specify exactly', example: "I can't pin down what's bothering me." },
+    ],
+  },
+];
