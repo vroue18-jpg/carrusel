@@ -1,5 +1,18 @@
 // All sounds generated via Web Audio API — no external files needed
 
+// Unlock AudioContext on first touch (required by iOS Safari)
+if (typeof window !== 'undefined') {
+  const unlock = () => {
+    const w = window as typeof window & { _audioCtx?: AudioContext };
+    if (!w._audioCtx) w._audioCtx = new AudioContext();
+    if (w._audioCtx.state === 'suspended') w._audioCtx.resume();
+    window.removeEventListener('touchstart', unlock, true);
+    window.removeEventListener('touchend', unlock, true);
+  };
+  window.addEventListener('touchstart', unlock, true);
+  window.addEventListener('touchend', unlock, true);
+}
+
 const ctx = (): AudioContext => {
   const w = window as typeof window & { _audioCtx?: AudioContext };
   if (!w._audioCtx) w._audioCtx = new AudioContext();
