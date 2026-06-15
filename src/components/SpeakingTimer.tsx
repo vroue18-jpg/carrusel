@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { playSound } from '../utils/sounds';
 
 interface Props {
   prompt: string;
@@ -24,15 +25,21 @@ export const SpeakingTimer: React.FC<Props> = ({ prompt, promptIndex, totalPromp
   const [playing, setPlaying] = useState(false);
 
   // ── Timer logic ──────────────────────────────────────────────
-  const start = () => { setTimeLeft(60); setDone(false); setRunning(true); };
+  const warningFiredRef = useRef(false);
+
+  const start = () => { setTimeLeft(60); setDone(false); setRunning(true); warningFiredRef.current = false; playSound('startRecording'); };
   const stop  = () => { setRunning(false); if (intervalRef.current) clearInterval(intervalRef.current); };
-  const reset = () => { stop(); setTimeLeft(60); setDone(false); };
+  const reset = () => { stop(); setTimeLeft(60); setDone(false); warningFiredRef.current = false; };
 
   useEffect(() => {
     if (running) {
       intervalRef.current = setInterval(() => {
         setTimeLeft((t) => {
           if (t <= 1) { setRunning(false); setDone(true); return 0; }
+          if (t === 11 && !warningFiredRef.current) {
+            warningFiredRef.current = true;
+            playSound('warning');
+          }
           return t - 1;
         });
       }, 1000);
