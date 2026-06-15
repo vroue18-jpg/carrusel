@@ -1,10 +1,56 @@
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import { PARTICLES } from './data/particles';
 import { ParticleButton } from './components/ParticleButton';
 import { ParticleDetail } from './components/ParticleDetail';
 import { playSound } from './utils/sounds';
 
 const DICE_FACES = ['⚀', '⚁', '⚂', '⚃', '⚄', '⚅'];
+const DAILY_GOAL = 3;
+
+function getDailyProgress(): number {
+  const today = new Date().toISOString().slice(0, 10);
+  try {
+    const raw = localStorage.getItem('craftEnglishDaily');
+    if (!raw) return 0;
+    const { date, count } = JSON.parse(raw);
+    return date === today ? (count as number) : 0;
+  } catch { return 0; }
+}
+
+function saveDailyProgress(count: number) {
+  const today = new Date().toISOString().slice(0, 10);
+  localStorage.setItem('craftEnglishDaily', JSON.stringify({ date: today, count }));
+}
+
+// Circular SVG ring for daily goal
+function GoalRing({ done, total, goalMet }: { done: number; total: number; goalMet: boolean }) {
+  const r = 18;
+  const circ = 2 * Math.PI * r;
+  const pct = Math.min(done / total, 1);
+  const color = goalMet ? '#d4a017' : '#e8620a';
+
+  return (
+    <div className={`relative flex items-center justify-center transition-all duration-500 ${goalMet ? 'animate-streakPop' : ''}`}>
+      <svg width="48" height="48" viewBox="0 0 48 48">
+        <circle cx="24" cy="24" r={r} fill="none" stroke="rgba(255,255,255,0.07)" strokeWidth="4" />
+        <circle
+          cx="24" cy="24" r={r} fill="none"
+          stroke={color} strokeWidth="4" strokeLinecap="round"
+          strokeDasharray={`${pct * circ} ${circ}`}
+          transform="rotate(-90 24 24)"
+          style={{ transition: 'stroke-dasharray 0.6s cubic-bezier(0.16,1,0.3,1), stroke 0.4s',
+                   filter: goalMet ? `drop-shadow(0 0 6px ${color})` : undefined }}
+        />
+      </svg>
+      <div className="absolute inset-0 flex flex-col items-center justify-center leading-none">
+        {goalMet
+          ? <span className="text-base">✓</span>
+          : <span className="font-display text-sm tracking-wide" style={{ color }}>{done}</span>
+        }
+      </div>
+    </div>
+  );
+}
 
 export default function App() {
   const [activeIndex, setActiveIndex]   = useState<number | null>(null);
@@ -13,7 +59,14 @@ export default function App() {
   const [diceRolling, setDiceRolling]   = useState(false);
   const [diceFace, setDiceFace]         = useState('🎲');
   const [btnAnim, setBtnAnim]           = useState(false);
+  const [dailyDone, setDailyDone]       = useState(getDailyProgress);
+  const [goalFlash, setGoalFlash]       = useState(false);
   const diceIntervalRef                 = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const goalMet = dailyDone >= DAILY_GOAL;
+
+  // Persist daily progress whenever it changes
+  useEffect(() => { saveDailyProgress(dailyDone); }, [dailyDone]);
 
   const pickRandom = useCallback(() => {
     if (diceRolling) return;
@@ -21,7 +74,6 @@ export default function App() {
     setDiceRolling(true);
     setBtnAnim(true);
 
-    // Cycle through dice faces rapidly while rolling
     let tick = 0;
     diceIntervalRef.current = setInterval(() => {
       setDiceFace(DICE_FACES[tick % DICE_FACES.length]);
@@ -42,6 +94,15 @@ export default function App() {
     setStreak((s) => s + 1);
     setStreakAnim(true);
     setTimeout(() => setStreakAnim(false), 400);
+
+    setDailyDone((prev) => {
+      const next = prev + 1;
+      if (next === DAILY_GOAL) {
+        setGoalFlash(true);
+        setTimeout(() => setGoalFlash(false), 600);
+      }
+      return next;
+    });
   }, []);
 
   const active = activeIndex !== null ? PARTICLES[activeIndex] : null;
@@ -69,6 +130,22 @@ export default function App() {
           </div>
 
           <div className="flex items-center gap-3">
+
+            {/* Daily goal ring */}
+            <div className={`flex items-center gap-2 px-3 py-1.5 rounded-xl glass border transition-all duration-500
+              ${goalMet ? 'border-glow-gold/40 shadow-[0_0_16px_rgba(212,160,23,0.3)]' : 'border-white/10'}`}>
+              <GoalRing done={dailyDone} total={DAILY_GOAL} goalMet={goalMet && !goalFlash} />
+              <div className="hidden sm:flex flex-col leading-none">
+                <span className={`text-[10px] font-semibold tracking-[0.18em] uppercase transition-colors duration-300
+                  ${goalMet ? 'text-glow-gold' : 'text-white/30'}`}>
+                  {goalMet ? 'Goal met! 🎉' : 'Daily goal'}
+                </span>
+                <span className="text-white/20 text-[9px] mt-0.5">
+                  {Math.min(dailyDone, DAILY_GOAL)}/{DAILY_GOAL} challenges
+                </span>
+              </div>
+            </div>
+
             {/* Streak counter */}
             {streak > 0 && (
               <div className={`flex items-center gap-1.5 px-3 py-2 rounded-xl glass border border-glow-gold/25 ${streakAnim ? 'animate-streakPop' : ''}`}>
