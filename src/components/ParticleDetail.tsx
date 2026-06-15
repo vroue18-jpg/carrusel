@@ -5,9 +5,10 @@ import { SpeakingTimer } from './SpeakingTimer';
 
 interface Props {
   data: ParticleData;
+  onChallengeComplete?: () => void;
 }
 
-export const ParticleDetail: React.FC<Props> = ({ data }) => {
+export const ParticleDetail: React.FC<Props> = ({ data, onChallengeComplete }) => {
   const [exampleSet, setExampleSet] = useState(0); // 0 = original, 1-2 = extras
   const [promptIndex, setPromptIndex] = useState(0);
 
@@ -116,6 +117,7 @@ export const ParticleDetail: React.FC<Props> = ({ data }) => {
         promptIndex={promptIndex}
         totalPrompts={data.speakingPrompts.length}
         onNewChallenge={handleNewChallenge}
+        onChallengeComplete={onChallengeComplete}
       />
     </div>
   );

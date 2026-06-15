@@ -6,9 +6,10 @@ interface Props {
   promptIndex: number;
   totalPrompts: number;
   onNewChallenge: () => void;
+  onChallengeComplete?: () => void;
 }
 
-export const SpeakingTimer: React.FC<Props> = ({ prompt, promptIndex, totalPrompts, onNewChallenge }) => {
+export const SpeakingTimer: React.FC<Props> = ({ prompt, promptIndex, totalPrompts, onNewChallenge, onChallengeComplete }) => {
   // ── Timer state ──────────────────────────────────────────────
   const [timeLeft, setTimeLeft] = useState(60);
   const [running, setRunning] = useState(false);
@@ -35,7 +36,7 @@ export const SpeakingTimer: React.FC<Props> = ({ prompt, promptIndex, totalPromp
     if (running) {
       intervalRef.current = setInterval(() => {
         setTimeLeft((t) => {
-          if (t <= 1) { setRunning(false); setDone(true); return 0; }
+          if (t <= 1) { setRunning(false); setDone(true); onChallengeComplete?.(); return 0; }
           if (t === 11 && !warningFiredRef.current) {
             warningFiredRef.current = true;
             playSound('warning');
