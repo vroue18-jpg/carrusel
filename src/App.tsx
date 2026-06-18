@@ -2,6 +2,7 @@ import { useState, useCallback, useRef, useEffect } from 'react';
 import { PARTICLES } from './data/particles';
 import { ParticleButton } from './components/ParticleButton';
 import { ParticleDetail } from './components/ParticleDetail';
+import { VerbOfTheDay } from './components/VerbOfTheDay';
 import { playSound } from './utils/sounds';
 
 const DICE_FACES = ['⚀', '⚁', '⚂', '⚃', '⚄', '⚅'];
@@ -105,6 +106,14 @@ export default function App() {
     });
   }, []);
 
+  const handlePracticeVerb = useCallback((particle: string) => {
+    const idx = PARTICLES.findIndex((p) => p.particle === particle);
+    if (idx !== -1) setActiveIndex(idx);
+    setTimeout(() => {
+      document.getElementById('speaking-challenge')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 100);
+  }, []);
+
   const active = activeIndex !== null ? PARTICLES[activeIndex] : null;
 
   return (
@@ -179,6 +188,9 @@ export default function App() {
       </header>
 
       <main className="max-w-4xl mx-auto px-5 py-10 space-y-8 relative z-10">
+
+        {/* Verb of the Day */}
+        <VerbOfTheDay onPractice={handlePracticeVerb} />
 
         {/* Hero label */}
         <div className="text-center space-y-2">
