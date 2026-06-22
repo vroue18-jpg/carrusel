@@ -11,8 +11,7 @@ function getVerbOfTheDay() {
     p.phrasalVerbs.map((v) => ({ ...v, particle: p.particle, emoji: p.emoji }))
   );
   const entry = all[dayOfYear % all.length];
-  const particleData = PARTICLES.find((p) => p.particle === entry.particle)!;
-  const prompt = particleData.speakingPrompts[dayOfYear % particleData.speakingPrompts.length];
+  const prompt = `Use the phrasal verb "${entry.verb}" in conversation. Talk for 1 minute — give examples from your life, explain its meaning, or describe situations where people use it.`;
   return { ...entry, prompt };
 }
 
