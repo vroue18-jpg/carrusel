@@ -125,7 +125,7 @@ export const SpeakingTimer: React.FC<Props> = ({ prompt, promptIndex, totalPromp
   const trackColor  = timeLeft > 30 ? 'rgba(232,98,10,0.10)' : timeLeft > 10 ? 'rgba(245,158,11,0.10)' : 'rgba(239,68,68,0.10)';
 
   return (
-    <div className="relative overflow-hidden rounded-3xl shadow-card border border-glow-orange/20"
+    <div id="speaking-challenge" className="relative overflow-hidden rounded-3xl shadow-card border border-glow-orange/20"
          style={{ background: 'linear-gradient(145deg, rgba(232,98,10,0.10) 0%, rgba(192,57,43,0.06) 50%, rgba(212,160,23,0.05) 100%)' }}>
 
       {/* Ambient blobs */}
@@ -156,13 +156,13 @@ export const SpeakingTimer: React.FC<Props> = ({ prompt, promptIndex, totalPromp
           </div>
           <button
             onClick={handleNewChallenge}
-            className="group flex items-center gap-2 px-4 py-2.5 rounded-xl shrink-0
-                       bg-white/5 border border-white/10 text-white/50 text-xs font-semibold tracking-wide
+            className="group flex items-center gap-2 px-5 py-3 rounded-xl shrink-0
+                       bg-white/5 border border-white/10 text-white/60 text-sm font-semibold tracking-wide
                        hover:bg-glow-orange/10 hover:border-glow-orange/30 hover:text-glow-orange transition-all duration-200"
-            title="Get a new speaking prompt"
+            title="Get a new question"
           >
-            <span className="text-sm transition-transform duration-500 group-hover:rotate-180 inline-block">🔀</span>
-            <span className="hidden sm:inline">New Challenge</span>
+            <span className="text-base transition-transform duration-500 group-hover:rotate-180 inline-block">🔀</span>
+            <span>New Question</span>
           </button>
         </div>
 
@@ -246,7 +246,7 @@ export const SpeakingTimer: React.FC<Props> = ({ prompt, promptIndex, totalPromp
                   <button onClick={handleNewChallenge}
                     className="flex-1 px-4 py-3 bg-glow-orange/10 border border-glow-orange/30 text-glow-orange
                                rounded-2xl font-bold text-sm tracking-wider hover:bg-glow-orange/20 transition-all duration-200">
-                    🔀 Next
+                    🔀 New Question
                   </button>
                 </div>
               </div>
