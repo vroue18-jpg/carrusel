@@ -6,78 +6,94 @@ import { playSound } from '../utils/sounds';
 
 type Color = { glow: string; bg: string; border: string; text: string };
 
-interface LeverProps {
+interface LockKeyProps {
   color: Color;
   spinning: boolean;
   hasSpun: boolean;
   onPull: () => void;
 }
 
-const Lever: React.FC<LeverProps> = ({ color, spinning, hasSpun, onPull }) => {
-  const [pulled, setPulled] = useState(false);
+const LockKey: React.FC<LockKeyProps> = ({ color, spinning, hasSpun, onPull }) => {
+  const [phase, setPhase] = useState<'idle' | 'inserting' | 'turning' | 'done'>('idle');
 
   const handleClick = () => {
-    if (spinning || pulled) return;
-    setPulled(true);
+    if (spinning || phase !== 'idle') return;
+    setPhase('inserting');
     playSound('leverPull');
-    onPull();
-    setTimeout(() => setPulled(false), 500);
+    setTimeout(() => setPhase('turning'), 300);
+    setTimeout(() => { onPull(); setPhase('done'); }, 650);
+    setTimeout(() => setPhase('idle'), 1800);
   };
 
+  const keyX = phase === 'idle' ? 0 : phase === 'inserting' || phase === 'turning' || phase === 'done' ? -18 : 0;
+  const keyRotate = phase === 'turning' || phase === 'done' ? 90 : 0;
+  const glowing = phase === 'turning' || phase === 'done';
+
   return (
-    <div className="flex flex-col items-center select-none" style={{ width: '56px' }}>
-      {/* Label */}
-      <span
-        className="text-[9px] font-semibold tracking-widest uppercase mb-2 text-center leading-tight"
-        style={{ color: color.text, opacity: spinning ? 0.3 : 0.7 }}
-      >
-        {spinning ? 'wait…' : hasSpun ? 'again!' : 'pull!'}
+    <div className="flex flex-col items-center gap-3 select-none" style={{ width: '72px' }}>
+      <span className="text-[9px] font-semibold tracking-widest uppercase text-center leading-tight"
+            style={{ color: color.text, opacity: spinning ? 0.3 : 0.65 }}>
+        {spinning ? 'wait…' : hasSpun ? 'again!' : 'unlock!'}
       </span>
 
-      {/* Lever assembly — clickable */}
-      <div
-        className="flex flex-col items-center cursor-pointer"
-        onClick={handleClick}
-        style={{ opacity: spinning ? 0.4 : 1 }}
-      >
-        {/* Ball knob */}
-        <div
-          className="w-10 h-10 rounded-full shadow-lg transition-all duration-300 flex items-center justify-center text-lg"
-          style={{
-            background: `radial-gradient(circle at 35% 35%, ${color.text}, ${color.glow})`,
-            boxShadow: pulled
-              ? `0 2px 8px ${color.glow}60`
-              : `0 6px 20px ${color.glow}80, 0 0 30px ${color.glow}40`,
-            transform: pulled ? 'translateY(70px)' : 'translateY(0)',
-            transition: pulled
-              ? 'transform 0.12s cubic-bezier(0.4,0,1,1), box-shadow 0.12s'
-              : 'transform 0.35s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.35s',
-          }}
-        >
-          🎰
+      {/* Lock + Key assembly */}
+      <div className="relative flex items-center justify-center cursor-pointer" style={{ width: '72px', height: '88px' }} onClick={handleClick}>
+
+        {/* Lock body */}
+        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 flex flex-col items-center" style={{ width: '44px' }}>
+          {/* Shackle */}
+          <div className="w-5 h-5 rounded-t-full border-[3px] mb-[-2px] transition-all duration-500"
+               style={{
+                 borderColor: glowing ? color.text : `${color.text}88`,
+                 boxShadow: glowing ? `0 0 12px ${color.glow}` : 'none',
+                 transform: glowing ? 'translateY(-3px)' : 'translateY(0)',
+                 transition: 'all 0.4s cubic-bezier(0.34,1.56,0.64,1)',
+               }} />
+          {/* Lock face */}
+          <div className="w-full rounded-xl flex items-center justify-center transition-all duration-500"
+               style={{
+                 height: '38px',
+                 background: glowing ? `linear-gradient(135deg, ${color.bg}, rgba(0,0,0,0.6))` : 'rgba(30,30,30,0.9)',
+                 border: `2px solid ${glowing ? color.text : color.text + '55'}`,
+                 boxShadow: glowing ? `0 0 20px ${color.glow}80, 0 0 40px ${color.glow}30` : 'none',
+               }}>
+            {/* Keyhole */}
+            <div className="flex flex-col items-center gap-0" style={{ opacity: glowing ? 0.4 : 0.9 }}>
+              <div className="w-3 h-3 rounded-full border-2" style={{ borderColor: color.text + 'cc' }} />
+              <div className="w-1.5 h-2.5 rounded-b-sm -mt-1" style={{ background: color.text + 'cc' }} />
+            </div>
+          </div>
         </div>
 
-        {/* Shaft */}
+        {/* Key — floats to the right, slides in and rotates */}
         <div
-          className="w-2 rounded-full transition-all duration-200"
+          className="absolute transition-all"
           style={{
-            height: pulled ? '30px' : '90px',
-            background: `linear-gradient(to bottom, ${color.text}cc, ${color.glow}44)`,
-            transition: pulled
-              ? 'height 0.12s cubic-bezier(0.4,0,1,1)'
-              : 'height 0.35s cubic-bezier(0.34,1.56,0.64,1)',
-            marginTop: '-2px',
+            right: '0px',
+            top: '12px',
+            transform: `translateX(${keyX}px) rotate(${keyRotate}deg)`,
+            transformOrigin: '12px 50%',
+            transition: phase === 'inserting'
+              ? 'transform 0.28s cubic-bezier(0.4,0,0.2,1)'
+              : phase === 'turning'
+              ? 'transform 0.35s cubic-bezier(0.34,1.56,0.64,1)'
+              : 'transform 0.4s cubic-bezier(0.34,1.56,0.64,1)',
+            filter: glowing ? `drop-shadow(0 0 6px ${color.glow})` : `drop-shadow(0 2px 4px ${color.glow}60)`,
           }}
-        />
-
-        {/* Base */}
-        <div
-          className="w-8 h-3 rounded-full mt-0"
-          style={{
-            background: `linear-gradient(to bottom, ${color.text}88, ${color.glow}22)`,
-            boxShadow: `0 0 10px ${color.glow}50`,
-          }}
-        />
+        >
+          <svg width="42" height="22" viewBox="0 0 42 22" fill="none">
+            {/* Key bow (ring) */}
+            <circle cx="33" cy="11" r="8" fill={color.glow} opacity="0.9" />
+            <circle cx="33" cy="11" r="5" fill="rgba(0,0,0,0.7)" />
+            <circle cx="33" cy="11" r="2" fill={color.text} opacity="0.6" />
+            {/* Key blade */}
+            <rect x="0" y="9" width="27" height="4" rx="2" fill={color.text} />
+            {/* Key teeth */}
+            <rect x="4"  y="13" width="3" height="4" rx="1" fill={color.text} />
+            <rect x="10" y="13" width="3" height="6" rx="1" fill={color.text} />
+            <rect x="16" y="13" width="3" height="3" rx="1" fill={color.text} />
+          </svg>
+        </div>
       </div>
     </div>
   );
@@ -280,8 +296,8 @@ export const ParticleSlotMachine: React.FC<Props> = ({
                style={{ background: `linear-gradient(to bottom, ${color.glow}80, ${color.glow}20)` }} />
         </div>
 
-        {/* Lever */}
-        <Lever color={color} spinning={spinning} onPull={handleSpin} hasSpun={hasSpun} />
+        {/* Lock & Key */}
+        <LockKey color={color} spinning={spinning} onPull={handleSpin} hasSpun={hasSpun} />
       </div>
 
       {/* Core meaning card */}
