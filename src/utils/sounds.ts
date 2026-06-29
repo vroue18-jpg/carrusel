@@ -160,38 +160,44 @@ const buildSlotTick = (c: AudioContext) => {
   src.start(); src.stop(c.currentTime + 0.09);
 };
 
-// Coin jingle — two or three quick metallic pings staggered
+// Whoosh then cling — wind sweep that lands on a metallic ping
 const buildLeverPull = (c: AudioContext) => {
-  // Metallic ping = sine + slight detuned overtone, fast attack, slow decay
-  const pings = [
-    { freq: 2100, detune: 2180, delay: 0,    vol: 0.18 },
-    { freq: 1760, detune: 1830, delay: 0.07, vol: 0.15 },
-    { freq: 2400, detune: 2500, delay: 0.13, vol: 0.12 },
-  ];
+  // Part 1: wind whoosh (0 → 0.35s)
+  const wDur = 0.38;
+  const wBuf = c.createBuffer(1, Math.floor(c.sampleRate * wDur), c.sampleRate);
+  const wData = wBuf.getChannelData(0);
+  for (let i = 0; i < wData.length; i++) wData[i] = Math.random() * 2 - 1;
+  const wSrc = c.createBufferSource(); wSrc.buffer = wBuf;
+  const wF = c.createBiquadFilter(); wF.type = 'bandpass';
+  wF.frequency.setValueAtTime(300, c.currentTime);
+  wF.frequency.exponentialRampToValueAtTime(2400, c.currentTime + 0.22);
+  wF.frequency.exponentialRampToValueAtTime(800, c.currentTime + wDur);
+  wF.Q.value = 2.5;
+  const wG = c.createGain();
+  wG.gain.setValueAtTime(0.0001, c.currentTime);
+  wG.gain.linearRampToValueAtTime(0.28, c.currentTime + 0.1);
+  wG.gain.exponentialRampToValueAtTime(0.001, c.currentTime + wDur);
+  wSrc.connect(wF); wF.connect(wG); wG.connect(c.destination);
+  wSrc.start(c.currentTime); wSrc.stop(c.currentTime + wDur);
 
-  pings.forEach(({ freq, detune, delay, vol }) => {
-    // Fundamental
-    const o1 = c.createOscillator();
-    const g1 = c.createGain();
-    o1.connect(g1); g1.connect(c.destination);
-    o1.type = 'sine';
-    o1.frequency.value = freq;
-    g1.gain.setValueAtTime(0.0001, c.currentTime + delay);
-    g1.gain.linearRampToValueAtTime(vol, c.currentTime + delay + 0.008);
-    g1.gain.exponentialRampToValueAtTime(0.001, c.currentTime + delay + 0.55);
-    o1.start(c.currentTime + delay); o1.stop(c.currentTime + delay + 0.58);
+  // Part 2: metallic cling at the end of the whoosh (0.3s)
+  const cDelay = 0.28;
+  const o1 = c.createOscillator(); const g1 = c.createGain();
+  o1.connect(g1); g1.connect(c.destination);
+  o1.type = 'sine'; o1.frequency.value = 1800;
+  g1.gain.setValueAtTime(0.0001, c.currentTime + cDelay);
+  g1.gain.linearRampToValueAtTime(0.22, c.currentTime + cDelay + 0.007);
+  g1.gain.exponentialRampToValueAtTime(0.001, c.currentTime + cDelay + 0.5);
+  o1.start(c.currentTime + cDelay); o1.stop(c.currentTime + cDelay + 0.52);
 
-    // Detuned overtone for metallic shimmer
-    const o2 = c.createOscillator();
-    const g2 = c.createGain();
-    o2.connect(g2); g2.connect(c.destination);
-    o2.type = 'sine';
-    o2.frequency.value = detune;
-    g2.gain.setValueAtTime(0.0001, c.currentTime + delay);
-    g2.gain.linearRampToValueAtTime(vol * 0.4, c.currentTime + delay + 0.008);
-    g2.gain.exponentialRampToValueAtTime(0.001, c.currentTime + delay + 0.35);
-    o2.start(c.currentTime + delay); o2.stop(c.currentTime + delay + 0.38);
-  });
+  // Overtone shimmer for the cling
+  const o2 = c.createOscillator(); const g2 = c.createGain();
+  o2.connect(g2); g2.connect(c.destination);
+  o2.type = 'sine'; o2.frequency.value = 2700;
+  g2.gain.setValueAtTime(0.0001, c.currentTime + cDelay);
+  g2.gain.linearRampToValueAtTime(0.09, c.currentTime + cDelay + 0.007);
+  g2.gain.exponentialRampToValueAtTime(0.001, c.currentTime + cDelay + 0.3);
+  o2.start(c.currentTime + cDelay); o2.stop(c.currentTime + cDelay + 0.32);
 };
 
 // Hard mechanical clunk when drum locks in place
