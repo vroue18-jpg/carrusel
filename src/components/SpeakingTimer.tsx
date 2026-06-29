@@ -120,6 +120,7 @@ export const SpeakingTimer: React.FC<Props> = ({
 
   const startRecording = async () => {
     setRecError(null); setAudioURL(null); chunksRef.current = [];
+    setTimeLeft(60); setDone(false); setRunning(true); warningFiredRef.current = false; playSound('startRecording');
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       const mr = new MediaRecorder(stream);
@@ -299,7 +300,7 @@ export const SpeakingTimer: React.FC<Props> = ({
               Voice Recorder
             </p>
             <button
-              onClick={recording ? stopRecording : () => { start(); startRecording(); }}
+              onClick={recording ? stopRecording : startRecording}
               className="relative w-full flex items-center justify-center gap-2 px-4 py-4 rounded-2xl font-bold text-sm tracking-wide transition-all duration-200"
               style={recording
                 ? { background: 'rgba(239,68,68,0.15)', border: '1px solid rgba(239,68,68,0.4)', color: '#f87171' }
