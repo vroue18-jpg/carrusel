@@ -105,7 +105,6 @@ export const ParticleSlotMachine: React.FC<Props> = ({
   const [hasSpun, setHasSpun] = useState(false);
   const rafRef = useRef<number | null>(null);
   const prevExternalSpin = useRef(externalSpin);
-  const lastTickTime = useRef(0);
 
   const color = getParticleColor(particles[currentIdx].particle);
 
@@ -142,25 +141,11 @@ export const ParticleSlotMachine: React.FC<Props> = ({
     // Ease out cubic
     const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
 
-    let lastTickOffset = startOffset;
-    const tickEvery = ITEM_HEIGHT; // play a tick every item passed
-
     const animate = (now: number) => {
       const elapsed = now - startTime;
       const t = Math.min(elapsed / duration, 1);
       const eased = easeOutCubic(t);
       const newOffset = startOffset + distance * eased;
-
-      // Tick sound each time we cross an item boundary, throttled to avoid rapid fire
-      const itemsCrossed = Math.floor((newOffset - lastTickOffset) / tickEvery);
-      if (itemsCrossed >= 1) {
-        const sinceLastTick = now - lastTickTime.current;
-        if (sinceLastTick > 80) {
-          playSound('slotTick');
-          lastTickTime.current = now;
-        }
-        lastTickOffset += itemsCrossed * tickEvery;
-      }
 
       setOffset(newOffset);
 

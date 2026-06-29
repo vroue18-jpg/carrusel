@@ -160,23 +160,54 @@ const buildSlotTick = (c: AudioContext) => {
   src.start(); src.stop(c.currentTime + 0.09);
 };
 
-// Lever pull sound — mechanical chunk
+// Big whoosh on lever pull — sweeping wind that rises then fades
 const buildLeverPull = (c: AudioContext) => {
-  const bufLen = Math.floor(c.sampleRate * 0.15);
+  const duration = 1.1;
+  const bufLen = Math.floor(c.sampleRate * duration);
   const buf = c.createBuffer(1, bufLen, c.sampleRate);
   const data = buf.getChannelData(0);
   for (let i = 0; i < bufLen; i++) data[i] = Math.random() * 2 - 1;
+
   const src = c.createBufferSource();
   src.buffer = buf;
-  const filter = c.createBiquadFilter();
-  filter.type = 'lowpass';
-  filter.frequency.setValueAtTime(300, c.currentTime);
-  const gain = c.createGain();
-  gain.gain.setValueAtTime(0.25, c.currentTime);
-  gain.gain.linearRampToValueAtTime(0.3, c.currentTime + 0.02);
-  gain.gain.exponentialRampToValueAtTime(0.001, c.currentTime + 0.15);
-  src.connect(filter); filter.connect(gain); gain.connect(c.destination);
-  src.start(); src.stop(c.currentTime + 0.16);
+
+  // Two bandpass layers for a rich airy texture
+  const hi = c.createBiquadFilter();
+  hi.type = 'bandpass';
+  hi.frequency.setValueAtTime(800, c.currentTime);
+  hi.frequency.exponentialRampToValueAtTime(3200, c.currentTime + 0.3);
+  hi.frequency.exponentialRampToValueAtTime(600, c.currentTime + duration);
+  hi.Q.value = 1.5;
+
+  const lo = c.createBiquadFilter();
+  lo.type = 'bandpass';
+  lo.frequency.setValueAtTime(200, c.currentTime);
+  lo.frequency.exponentialRampToValueAtTime(800, c.currentTime + 0.4);
+  lo.frequency.exponentialRampToValueAtTime(150, c.currentTime + duration);
+  lo.Q.value = 0.8;
+
+  const gainHi = c.createGain();
+  gainHi.gain.setValueAtTime(0.0001, c.currentTime);
+  gainHi.gain.linearRampToValueAtTime(0.22, c.currentTime + 0.18);
+  gainHi.gain.exponentialRampToValueAtTime(0.001, c.currentTime + duration);
+
+  const gainLo = c.createGain();
+  gainLo.gain.setValueAtTime(0.0001, c.currentTime);
+  gainLo.gain.linearRampToValueAtTime(0.18, c.currentTime + 0.25);
+  gainLo.gain.exponentialRampToValueAtTime(0.001, c.currentTime + duration);
+
+  // Need two sources (one per filter)
+  const bufLen2 = Math.floor(c.sampleRate * duration);
+  const buf2 = c.createBuffer(1, bufLen2, c.sampleRate);
+  const data2 = buf2.getChannelData(0);
+  for (let i = 0; i < bufLen2; i++) data2[i] = Math.random() * 2 - 1;
+  const src2 = c.createBufferSource();
+  src2.buffer = buf2;
+
+  src.connect(hi); hi.connect(gainHi); gainHi.connect(c.destination);
+  src2.connect(lo); lo.connect(gainLo); gainLo.connect(c.destination);
+  src.start(c.currentTime); src.stop(c.currentTime + duration);
+  src2.start(c.currentTime); src2.stop(c.currentTime + duration);
 };
 
 // Hard mechanical clunk when drum locks in place
