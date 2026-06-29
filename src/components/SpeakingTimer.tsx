@@ -9,7 +9,7 @@ const MiniLever: React.FC<{ color: AccentColor; shuffling: boolean; onClick: () 
   const handleClick = () => {
     if (shuffling || pulled) return;
     setPulled(true);
-    playSound('leverPull');
+    playSound('spaceSwipe');
     onClick();
     setTimeout(() => setPulled(false), 500);
   };

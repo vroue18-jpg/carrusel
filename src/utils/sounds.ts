@@ -160,44 +160,70 @@ const buildSlotTick = (c: AudioContext) => {
   src.start(); src.stop(c.currentTime + 0.09);
 };
 
-// Whoosh then cling — wind sweep that lands on a metallic ping
+// Whoosh + Bell — air rush that resolves into a bright bell
 const buildLeverPull = (c: AudioContext) => {
-  // Part 1: wind whoosh (0 → 0.35s)
-  const wDur = 0.38;
-  const wBuf = c.createBuffer(1, Math.floor(c.sampleRate * wDur), c.sampleRate);
-  const wData = wBuf.getChannelData(0);
-  for (let i = 0; i < wData.length; i++) wData[i] = Math.random() * 2 - 1;
+  const t = c.currentTime;
+  // Whoosh
+  const wLen = Math.floor(c.sampleRate * 0.35);
+  const wBuf = c.createBuffer(1, wLen, c.sampleRate);
+  const wd = wBuf.getChannelData(0);
+  for (let i = 0; i < wLen; i++) wd[i] = Math.random() * 2 - 1;
   const wSrc = c.createBufferSource(); wSrc.buffer = wBuf;
   const wF = c.createBiquadFilter(); wF.type = 'bandpass';
-  wF.frequency.setValueAtTime(300, c.currentTime);
-  wF.frequency.exponentialRampToValueAtTime(2400, c.currentTime + 0.22);
-  wF.frequency.exponentialRampToValueAtTime(800, c.currentTime + wDur);
-  wF.Q.value = 2.5;
+  wF.frequency.setValueAtTime(400, t);
+  wF.frequency.exponentialRampToValueAtTime(2200, t + 0.18);
+  wF.frequency.exponentialRampToValueAtTime(600, t + 0.35);
+  wF.Q.value = 2;
   const wG = c.createGain();
-  wG.gain.setValueAtTime(0.0001, c.currentTime);
-  wG.gain.linearRampToValueAtTime(0.28, c.currentTime + 0.1);
-  wG.gain.exponentialRampToValueAtTime(0.001, c.currentTime + wDur);
+  wG.gain.setValueAtTime(0.0001, t);
+  wG.gain.linearRampToValueAtTime(0.22, t + 0.08);
+  wG.gain.exponentialRampToValueAtTime(0.001, t + 0.35);
   wSrc.connect(wF); wF.connect(wG); wG.connect(c.destination);
-  wSrc.start(c.currentTime); wSrc.stop(c.currentTime + wDur);
+  wSrc.start(t); wSrc.stop(t + 0.37);
+  // Bell
+  const bell = c.createOscillator(); const bg = c.createGain();
+  bell.connect(bg); bg.connect(c.destination);
+  bell.type = 'sine'; bell.frequency.value = 1046;
+  bg.gain.setValueAtTime(0.0001, t + 0.3);
+  bg.gain.linearRampToValueAtTime(0.25, t + 0.308);
+  bg.gain.exponentialRampToValueAtTime(0.001, t + 1.1);
+  bell.start(t + 0.3); bell.stop(t + 1.15);
+  // Bell overtone
+  const b2 = c.createOscillator(); const b2g = c.createGain();
+  b2.connect(b2g); b2g.connect(c.destination);
+  b2.type = 'sine'; b2.frequency.value = 2637;
+  b2g.gain.setValueAtTime(0.0001, t + 0.3);
+  b2g.gain.linearRampToValueAtTime(0.09, t + 0.308);
+  b2g.gain.exponentialRampToValueAtTime(0.001, t + 0.7);
+  b2.start(t + 0.3); b2.stop(t + 0.75);
+};
 
-  // Part 2: metallic cling at the end of the whoosh (0.3s)
-  const cDelay = 0.28;
-  const o1 = c.createOscillator(); const g1 = c.createGain();
-  o1.connect(g1); g1.connect(c.destination);
-  o1.type = 'sine'; o1.frequency.value = 1800;
-  g1.gain.setValueAtTime(0.0001, c.currentTime + cDelay);
-  g1.gain.linearRampToValueAtTime(0.22, c.currentTime + cDelay + 0.007);
-  g1.gain.exponentialRampToValueAtTime(0.001, c.currentTime + cDelay + 0.5);
-  o1.start(c.currentTime + cDelay); o1.stop(c.currentTime + cDelay + 0.52);
-
-  // Overtone shimmer for the cling
-  const o2 = c.createOscillator(); const g2 = c.createGain();
-  o2.connect(g2); g2.connect(c.destination);
-  o2.type = 'sine'; o2.frequency.value = 2700;
-  g2.gain.setValueAtTime(0.0001, c.currentTime + cDelay);
-  g2.gain.linearRampToValueAtTime(0.09, c.currentTime + cDelay + 0.007);
-  g2.gain.exponentialRampToValueAtTime(0.001, c.currentTime + cDelay + 0.3);
-  o2.start(c.currentTime + cDelay); o2.stop(c.currentTime + cDelay + 0.32);
+// Space Swipe — laser whoosh landing on a deep thud (for challenge/mini lever)
+const buildSpaceSwipe = (c: AudioContext) => {
+  const t = c.currentTime;
+  const wLen = Math.floor(c.sampleRate * 0.4);
+  const wBuf = c.createBuffer(1, wLen, c.sampleRate);
+  const wd = wBuf.getChannelData(0);
+  for (let i = 0; i < wLen; i++) wd[i] = Math.random() * 2 - 1;
+  const wSrc = c.createBufferSource(); wSrc.buffer = wBuf;
+  const wF = c.createBiquadFilter(); wF.type = 'bandpass';
+  wF.frequency.setValueAtTime(3000, t);
+  wF.frequency.exponentialRampToValueAtTime(150, t + 0.4);
+  wF.Q.value = 3;
+  const wG = c.createGain();
+  wG.gain.setValueAtTime(0.0001, t);
+  wG.gain.linearRampToValueAtTime(0.3, t + 0.05);
+  wG.gain.exponentialRampToValueAtTime(0.001, t + 0.4);
+  wSrc.connect(wF); wF.connect(wG); wG.connect(c.destination);
+  wSrc.start(t); wSrc.stop(t + 0.42);
+  // Deep thud
+  const sub = c.createOscillator(); const sg = c.createGain();
+  sub.connect(sg); sg.connect(c.destination);
+  sub.type = 'sine'; sub.frequency.setValueAtTime(80, t + 0.35);
+  sub.frequency.exponentialRampToValueAtTime(30, t + 0.55);
+  sg.gain.setValueAtTime(0.4, t + 0.35);
+  sg.gain.exponentialRampToValueAtTime(0.001, t + 0.6);
+  sub.start(t + 0.35); sub.stop(t + 0.65);
 };
 
 // Hard mechanical clunk when drum locks in place
@@ -230,7 +256,7 @@ const buildSlotLand = (c: AudioContext) => {
   sub.start(c.currentTime); sub.stop(c.currentTime + 0.13);
 };
 
-export type SoundType = 'particleClick' | 'startRecording' | 'warning' | 'diceRoll' | 'slotTick' | 'slotLand' | 'leverPull';
+export type SoundType = 'particleClick' | 'startRecording' | 'warning' | 'diceRoll' | 'slotTick' | 'slotLand' | 'leverPull' | 'spaceSwipe';
 
 export const playSound = (type: SoundType) => {
   if (type === 'particleClick') play(buildClick);
@@ -240,4 +266,5 @@ export const playSound = (type: SoundType) => {
   else if (type === 'slotTick') play(buildSlotTick);
   else if (type === 'slotLand') play(buildSlotLand);
   else if (type === 'leverPull') play(buildLeverPull);
+  else if (type === 'spaceSwipe') play(buildSpaceSwipe);
 };
