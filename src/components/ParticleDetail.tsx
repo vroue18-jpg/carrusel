@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import type { ParticleData } from '../data/particles';
 import { PhrasalVerbCard } from './PhrasalVerbCard';
 import { SpeakingTimer } from './SpeakingTimer';
+import { getParticleColor } from './ParticleCarousel';
 
 interface Props {
   data: ParticleData;
@@ -9,6 +10,7 @@ interface Props {
 }
 
 export const ParticleDetail: React.FC<Props> = ({ data, onChallengeComplete }) => {
+  const c = getParticleColor(data.particle);
   const [exampleSet, setExampleSet] = useState(0); // 0 = original, 1-2 = extras
   const [promptIndex, setPromptIndex] = useState(0);
 
@@ -28,13 +30,24 @@ export const ParticleDetail: React.FC<Props> = ({ data, onChallengeComplete }) =
     <div className="animate-fadeIn space-y-5">
 
       {/* Hero banner */}
-      <div className="relative overflow-hidden rounded-3xl p-8 shadow-card border border-glow-orange/20"
-           style={{ background: 'linear-gradient(135deg, rgba(232,98,10,0.20) 0%, rgba(192,57,43,0.12) 60%, rgba(212,160,23,0.08) 100%)' }}>
-        <div className="absolute -top-12 -right-12 w-64 h-64 rounded-full bg-glow-orange/15 blur-3xl pointer-events-none" />
+      <div
+        className="relative overflow-hidden rounded-3xl p-8 shadow-card transition-all duration-700"
+        style={{
+          border: `1px solid ${c.border}`,
+          background: `linear-gradient(135deg, ${c.bg} 0%, rgba(0,0,0,0.4) 60%, ${c.bg.replace('0.15','0.05')} 100%)`,
+        }}
+      >
+        <div
+          className="absolute -top-12 -right-12 w-64 h-64 rounded-full blur-3xl pointer-events-none transition-all duration-700"
+          style={{ background: c.bg, opacity: 1.5 }}
+        />
         <div className="relative z-10 flex items-center gap-5">
           <div className="text-6xl drop-shadow-lg shrink-0">{data.emoji}</div>
           <div>
-            <div className="font-display text-6xl sm:text-7xl tracking-widest text-glow-orange text-glow leading-none">
+            <div
+              className="font-display text-6xl sm:text-7xl tracking-widest leading-none transition-all duration-700"
+              style={{ color: c.text, textShadow: `0 0 30px ${c.glow}80, 0 0 60px ${c.glow}40` }}
+            >
               {data.particle}
             </div>
             <p className="text-white/60 text-sm font-medium mt-2 leading-relaxed max-w-xl">
@@ -46,9 +59,13 @@ export const ParticleDetail: React.FC<Props> = ({ data, onChallengeComplete }) =
 
       {/* Two-col info row */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-        <div className="glass rounded-3xl p-6 shadow-card hover:shadow-card-hover hover:border-white/12 transition-all duration-300">
+        <div
+          className="rounded-3xl p-6 shadow-card transition-all duration-700"
+          style={{ background: 'rgba(255,255,255,0.04)', border: `1px solid ${c.border}` }}
+        >
           <div className="flex items-center gap-2.5 mb-4">
-            <div className="w-8 h-8 rounded-lg bg-glow-gold/10 border border-glow-gold/20 flex items-center justify-center text-sm">
+            <div className="w-8 h-8 rounded-lg flex items-center justify-center text-sm transition-all duration-700"
+                 style={{ background: c.bg, border: `1px solid ${c.border}` }}>
               🖼️
             </div>
             <h3 className="font-display text-xl tracking-wider text-white/80">Visual Metaphor</h3>
@@ -56,9 +73,13 @@ export const ParticleDetail: React.FC<Props> = ({ data, onChallengeComplete }) =
           <p className="text-white/45 text-sm leading-relaxed">{data.visualMetaphor}</p>
         </div>
 
-        <div className="glass rounded-3xl p-6 shadow-card hover:shadow-card-hover hover:border-white/12 transition-all duration-300">
+        <div
+          className="rounded-3xl p-6 shadow-card transition-all duration-700"
+          style={{ background: 'rgba(255,255,255,0.04)', border: `1px solid ${c.border}` }}
+        >
           <div className="flex items-center gap-2.5 mb-4">
-            <div className="w-8 h-8 rounded-lg bg-glow-orange/10 border border-glow-orange/20 flex items-center justify-center text-sm">
+            <div className="w-8 h-8 rounded-lg flex items-center justify-center text-sm transition-all duration-700"
+                 style={{ background: c.bg, border: `1px solid ${c.border}` }}>
               📐
             </div>
             <h3 className="font-display text-xl tracking-wider text-white/80">Pattern</h3>
@@ -81,10 +102,8 @@ export const ParticleDetail: React.FC<Props> = ({ data, onChallengeComplete }) =
 
           <button
             onClick={handleGenerateExamples}
-            className="group flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold tracking-wide
-                       bg-glow-orange/10 border border-glow-orange/25 text-glow-orange
-                       hover:bg-glow-orange/20 hover:border-glow-orange/50 hover:shadow-glow-sm
-                       transition-all duration-200"
+            className="group flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold tracking-wide transition-all duration-200"
+            style={{ background: c.bg, border: `1px solid ${c.border}`, color: c.text }}
           >
             <span className="transition-transform duration-300 group-hover:rotate-12">✨</span>
             New Examples
@@ -99,6 +118,7 @@ export const ParticleDetail: React.FC<Props> = ({ data, onChallengeComplete }) =
               verb={pv}
               index={i}
               exampleSet={exampleSet}
+              accentColor={c}
             />
           ))}
         </div>
@@ -106,9 +126,9 @@ export const ParticleDetail: React.FC<Props> = ({ data, onChallengeComplete }) =
 
       {/* Divider */}
       <div className="flex items-center gap-4 pt-4">
-        <div className="h-px flex-1 bg-gradient-to-r from-transparent via-glow-orange/30 to-transparent" />
+        <div className="h-px flex-1 transition-all duration-700" style={{ background: `linear-gradient(to right, transparent, ${c.border}, transparent)` }} />
         <span className="text-[10px] font-semibold tracking-[0.3em] uppercase text-white/20">Now practice</span>
-        <div className="h-px flex-1 bg-gradient-to-r from-transparent via-glow-orange/30 to-transparent" />
+        <div className="h-px flex-1 transition-all duration-700" style={{ background: `linear-gradient(to right, transparent, ${c.border}, transparent)` }} />
       </div>
 
       {/* Speaking Timer */}

@@ -1,13 +1,17 @@
 import React from 'react';
 import type { PhrasalVerb } from '../data/particles';
 
+interface AccentColor { glow: string; bg: string; border: string; text: string }
+
 interface Props {
   verb: PhrasalVerb;
   index: number;
-  exampleSet: number; // 0 = original, 1-2 = extraExamples[0-1]
+  exampleSet: number;
+  accentColor?: AccentColor;
 }
 
-export const PhrasalVerbCard: React.FC<Props> = ({ verb, index, exampleSet }) => {
+export const PhrasalVerbCard: React.FC<Props> = ({ verb, index, exampleSet, accentColor }) => {
+  const c = accentColor ?? { glow: '#e8620a', bg: 'rgba(232,98,10,0.15)', border: 'rgba(232,98,10,0.35)', text: '#e8620a' };
   const displayExample =
     exampleSet === 0
       ? verb.example
@@ -15,12 +19,15 @@ export const PhrasalVerbCard: React.FC<Props> = ({ verb, index, exampleSet }) =>
 
   return (
     <div
-      className="group glass rounded-2xl p-5 shadow-card hover:shadow-card-hover hover:border-glow-orange/20
-                 hover:-translate-y-0.5 transition-all duration-300 animate-fadeIn"
-      style={{ animationDelay: `${index * 50}ms` }}
+      className="group rounded-2xl p-5 shadow-card hover:-translate-y-0.5 transition-all duration-300 animate-fadeIn"
+      style={{
+        animationDelay: `${index * 50}ms`,
+        background: 'rgba(255,255,255,0.04)',
+        border: `1px solid ${c.border}`,
+      }}
     >
       <div className="flex items-start justify-between gap-2 mb-2.5">
-        <span className="font-handwritten text-2xl font-bold text-glow-orange group-hover:text-glow-gold transition-colors duration-200">
+        <span className="font-handwritten text-2xl font-bold transition-colors duration-200" style={{ color: c.text }}>
           {verb.verb}
         </span>
         <span className="text-[10px] font-semibold tracking-widest text-white/20 bg-white/5 px-2 py-1 rounded-full shrink-0 mt-1 uppercase">
@@ -28,7 +35,11 @@ export const PhrasalVerbCard: React.FC<Props> = ({ verb, index, exampleSet }) =>
         </span>
       </div>
       <p className="text-white/70 text-sm font-medium mb-2.5 leading-relaxed">{verb.meaning}</p>
-      <p className="text-white/35 text-sm italic leading-relaxed border-l-2 border-glow-orange/30 pl-3 animate-fadeIn" key={displayExample}>
+      <p
+        className="text-white/35 text-sm italic leading-relaxed pl-3 animate-fadeIn"
+        style={{ borderLeft: `2px solid ${c.border}` }}
+        key={displayExample}
+      >
         "{displayExample}"
       </p>
     </div>
