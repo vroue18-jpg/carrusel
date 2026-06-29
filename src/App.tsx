@@ -230,25 +230,6 @@ export default function App() {
               </div>
             )}
 
-            {/* Random / Dice button */}
-            <button
-              onClick={pickRandom}
-              disabled={diceRolling}
-              className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-sm text-white
-                         bg-btn-gradient shadow-glow-sm hover:shadow-glow-md
-                         active:scale-95 transition-all duration-200 disabled:cursor-not-allowed
-                         ${btnAnim ? 'animate-slideInRight' : ''}`}
-            >
-              <span
-                className="text-base inline-block"
-                style={{ animation: diceRolling ? 'diceRoll 0.6s cubic-bezier(0.16,1,0.3,1)' : 'none' }}
-              >
-                {diceFace}
-              </span>
-              <span className="hidden sm:inline tracking-wide">
-                {diceRolling ? 'Rolling…' : 'Random'}
-              </span>
-            </button>
           </div>
         </div>
       </header>
