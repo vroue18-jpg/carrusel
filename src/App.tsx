@@ -251,6 +251,9 @@ export default function App() {
 
       <main className="max-w-4xl mx-auto px-5 py-10 space-y-8 relative z-10">
 
+        {/* Did you know — always visible at the top */}
+        <DidYouKnow />
+
         {/* Slot machine — always visible */}
         <ParticleSlotMachine
           particles={PARTICLES}
@@ -261,17 +264,13 @@ export default function App() {
         />
 
         {/* Detail panel — appears below when a particle is selected */}
-        {active ? (
+        {active && (
           <div ref={detailRef}>
             <ParticleDetail
               key={active.particle}
               data={active}
               onChallengeComplete={handleStreakIncrement}
             />
-          </div>
-        ) : (
-          <div className="animate-fadeIn">
-            <DidYouKnow />
           </div>
         )}
       </main>
