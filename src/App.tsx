@@ -137,12 +137,16 @@ export default function App() {
       <header className="sticky top-0 z-50 glass border-b border-white/[0.07]">
         <div className="max-w-4xl mx-auto px-5 py-4 flex items-center justify-between gap-4">
           <div>
-            <h1 className="font-display text-3xl sm:text-4xl tracking-wider shimmer-text leading-none">
+            <h1 className="font-display text-3xl sm:text-4xl shimmer-text leading-none italic">
               Phrasal Verb Calculator
             </h1>
-            <p className="text-white/30 text-[10px] font-semibold tracking-[0.2em] uppercase mt-0.5">
-              by Craft English
-            </p>
+            <div className="flex items-center gap-2 mt-1">
+              <div className="h-px w-4 bg-glow-orange/40" />
+              <p className="text-white/30 text-[9px] font-semibold tracking-[0.25em] uppercase">
+                by Craft English
+              </p>
+              <div className="h-px w-4 bg-glow-orange/40" />
+            </div>
           </div>
 
           <div className="flex items-center gap-3">
@@ -206,13 +210,60 @@ export default function App() {
         />
 
         {/* Detail panel — appears below when a particle is selected */}
-        {active && (
+        {active ? (
           <div ref={detailRef}>
-          <ParticleDetail
-            key={active.particle}
-            data={active}
-            onChallengeComplete={handleStreakIncrement}
-          />
+            <ParticleDetail
+              key={active.particle}
+              data={active}
+              onChallengeComplete={handleStreakIncrement}
+            />
+          </div>
+        ) : (
+          <div className="animate-fadeIn space-y-8 pt-2">
+            {/* Decorative divider */}
+            <div className="flex items-center gap-4">
+              <div className="h-px flex-1 bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+              <span className="text-white/15 text-xs tracking-[0.35em] uppercase font-semibold">Pull the lever to begin</span>
+              <div className="h-px flex-1 bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+            </div>
+
+            {/* Particle preview pills */}
+            <div className="flex flex-wrap gap-2 justify-center">
+              {PARTICLES.map((p) => {
+                const colors: Record<string, string> = {
+                  UP:'#e8620a', OUT:'#c0392b', OFF:'#8e44ad', ON:'#27ae60',
+                  OVER:'#2980b9', THROUGH:'#d4a017', AWAY:'#16a085',
+                  BACK:'#e67e22', AROUND:'#e91e8c', DOWN:'#7f8c8d',
+                };
+                const col = colors[p.particle] ?? '#e8620a';
+                return (
+                  <button
+                    key={p.particle}
+                    onClick={() => { setSlotTarget(PARTICLES.indexOf(p)); setSlotSpinCount(c => c + 1); setActiveIndex(null); }}
+                    className="px-4 py-2 rounded-full text-sm font-semibold tracking-widest transition-all duration-200 hover:scale-105 active:scale-95"
+                    style={{
+                      background: `${col}18`,
+                      border: `1px solid ${col}40`,
+                      color: col,
+                    }}
+                  >
+                    {p.particle}
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Tagline */}
+            <div className="text-center space-y-2 pb-4">
+              <p className="font-display italic text-2xl sm:text-3xl text-white/20">
+                Master English, one particle at a time.
+              </p>
+              <div className="flex items-center justify-center gap-3">
+                <div className="h-px w-12 bg-gradient-to-r from-transparent to-glow-orange/30" />
+                <span className="text-glow-orange/40 text-lg">✦</span>
+                <div className="h-px w-12 bg-gradient-to-l from-transparent to-glow-orange/30" />
+              </div>
+            </div>
           </div>
         )}
       </main>
