@@ -1,6 +1,5 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { PARTICLES } from './data/particles';
-import { ParticleButton } from './components/ParticleButton';
 import { ParticleDetail } from './components/ParticleDetail';
 import { ParticleSlotMachine } from './components/ParticleSlotMachine';
 import { VerbOfTheDay } from './components/VerbOfTheDay';
@@ -56,7 +55,6 @@ function GoalRing({ done, total, goalMet }: { done: number; total: number; goalM
 
 export default function App() {
   const [activeIndex, setActiveIndex]   = useState<number | null>(null);
-  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [slotSpinCount, setSlotSpinCount] = useState(0);
   const [slotTarget, setSlotTarget]     = useState<number>(0);
   const [streak, setStreak]             = useState(0);
@@ -191,40 +189,21 @@ export default function App() {
         {/* Verb of the Day */}
         <VerbOfTheDay onChallengeComplete={handleStreakIncrement} />
 
-        {/* Particle selector panel */}
-        <div className="glass rounded-3xl p-6 shadow-card">
-          <p className="text-[10px] font-semibold tracking-[0.25em] uppercase text-white/25 mb-5">
-            Choose a Particle
-          </p>
-          <div className="flex flex-wrap gap-3 justify-center">
-            {PARTICLES.map((p, i) => (
-              <ParticleButton
-                key={p.particle}
-                particle={p.particle}
-                emoji={p.emoji}
-                coreMeaning={p.coreMeaning}
-                isActive={activeIndex === i}
-                isHovered={hoveredIndex === i}
-                onClick={() => setActiveIndex(activeIndex === i ? null : i)}
-                onHover={(hovering) => setHoveredIndex(hovering ? i : null)}
-              />
-            ))}
-          </div>
-        </div>
+        {/* Slot machine — always visible */}
+        <ParticleSlotMachine
+          particles={PARTICLES}
+          onSelect={(i) => setActiveIndex(i)}
+          activeIndex={activeIndex}
+          externalSpin={slotSpinCount}
+          externalTarget={slotTarget}
+        />
 
-        {/* Detail or slot machine */}
-        {active ? (
+        {/* Detail panel — appears below when a particle is selected */}
+        {active && (
           <ParticleDetail
             key={active.particle}
             data={active}
             onChallengeComplete={handleStreakIncrement}
-          />
-        ) : (
-          <ParticleSlotMachine
-            particles={PARTICLES}
-            onSelect={(i) => setActiveIndex(i)}
-            externalSpin={slotSpinCount}
-            externalTarget={slotTarget}
           />
         )}
       </main>

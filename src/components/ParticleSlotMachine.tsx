@@ -5,8 +5,9 @@ import { getParticleColor } from './ParticleCarousel';
 interface Props {
   particles: ParticleData[];
   onSelect: (index: number) => void;
-  externalSpin?: number; // increment to trigger spin from outside
-  externalTarget?: number; // which index to land on
+  activeIndex: number | null;
+  externalSpin?: number;
+  externalTarget?: number;
 }
 
 const ITEM_HEIGHT = 80; // px per slot item
@@ -14,7 +15,7 @@ const VISIBLE = 5;      // items visible at once
 const CENTER = Math.floor(VISIBLE / 2);
 
 export const ParticleSlotMachine: React.FC<Props> = ({
-  particles, onSelect, externalSpin = 0, externalTarget,
+  particles, onSelect, activeIndex, externalSpin = 0, externalTarget,
 }) => {
   const [currentIdx, setCurrentIdx] = useState(0);
   const [spinning, setSpinning] = useState(false);
@@ -74,6 +75,7 @@ export const ParticleSlotMachine: React.FC<Props> = ({
         setCurrentIdx(targetRealIdx);
         setSpinning(false);
         setTimeout(() => setIsAnimating(false), 200);
+        onSelect(targetRealIdx);
       }
     };
 
@@ -151,6 +153,7 @@ export const ParticleSlotMachine: React.FC<Props> = ({
 
   const windowHeight = VISIBLE * ITEM_HEIGHT;
   const p = particles[currentIdx];
+  const isActive = activeIndex === currentIdx;
 
   return (
     <div className="flex flex-col items-center gap-6 py-8">
@@ -210,7 +213,7 @@ export const ParticleSlotMachine: React.FC<Props> = ({
              style={{ background: `linear-gradient(to bottom, ${color.glow}80, ${color.glow}20)` }} />
       </div>
 
-      {/* Core meaning shown below drum */}
+      {/* Core meaning card */}
       <div
         className="text-center px-5 py-3 rounded-2xl max-w-xs transition-all duration-500"
         style={{
@@ -228,39 +231,36 @@ export const ParticleSlotMachine: React.FC<Props> = ({
         — {p.coreMeaning}
       </div>
 
-      {/* Spin + Explore buttons */}
-      <div className="flex items-center gap-3">
-        <button
-          onClick={handleSpin}
-          disabled={spinning}
-          className="flex items-center gap-2 px-6 py-3 rounded-2xl font-semibold text-sm tracking-wide transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed active:scale-95"
-          style={{
-            background: spinning
-              ? 'rgba(255,255,255,0.05)'
-              : `linear-gradient(135deg, ${color.bg}, rgba(255,255,255,0.04))`,
-            border: `1px solid ${color.border}`,
-            color: spinning ? 'rgba(255,255,255,0.3)' : color.text,
-            boxShadow: spinning ? 'none' : `0 0 16px ${color.glow}30`,
-          }}
-        >
-          <span className={spinning ? 'animate-spin' : ''} style={{ display: 'inline-block' }}>
-            {spinning ? '⟳' : '🎰'}
-          </span>
-          {spinning ? 'Spinning…' : hasSpun ? 'Spin again' : 'Spin!'}
-        </button>
+      {/* Spin button */}
+      <button
+        onClick={handleSpin}
+        disabled={spinning}
+        className="flex items-center gap-2 px-8 py-3 rounded-2xl font-semibold text-sm tracking-wide transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed active:scale-95"
+        style={{
+          background: spinning
+            ? 'rgba(255,255,255,0.05)'
+            : `linear-gradient(135deg, ${color.bg}, rgba(255,255,255,0.04))`,
+          border: `1px solid ${color.border}`,
+          color: spinning ? 'rgba(255,255,255,0.3)' : color.text,
+          boxShadow: spinning ? 'none' : `0 0 16px ${color.glow}30`,
+        }}
+      >
+        <span className={spinning ? 'animate-spin' : ''} style={{ display: 'inline-block' }}>
+          {spinning ? '⟳' : '🎰'}
+        </span>
+        {spinning ? 'Spinning…' : hasSpun ? 'Spin again' : 'Spin!'}
+      </button>
 
-        <button
-          onClick={() => onSelect(currentIdx)}
-          disabled={spinning}
-          className="flex items-center gap-2 px-6 py-3 rounded-2xl font-semibold text-sm tracking-wide transition-all duration-200 disabled:opacity-40 active:scale-95 text-white/70 hover:text-white"
-          style={{
-            background: 'rgba(255,255,255,0.05)',
-            border: '1px solid rgba(255,255,255,0.1)',
-          }}
+      {/* Scroll down hint when detail is loaded */}
+      {isActive && !spinning && (
+        <div
+          className="flex flex-col items-center gap-1 animate-bounce"
+          style={{ color: color.text, opacity: 0.6, fontSize: '0.75rem' }}
         >
-          Explore {p.particle} →
-        </button>
-      </div>
+          <span className="font-semibold tracking-widest uppercase">Scroll down</span>
+          <span>↓</span>
+        </div>
+      )}
     </div>
   );
 };
