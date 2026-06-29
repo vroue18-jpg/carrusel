@@ -4,6 +4,85 @@ import { getParticleColor } from './ParticleCarousel';
 import { playSound } from '../utils/sounds';
 
 
+type Color = { glow: string; bg: string; border: string; text: string };
+
+interface LeverProps {
+  color: Color;
+  spinning: boolean;
+  hasSpun: boolean;
+  onPull: () => void;
+}
+
+const Lever: React.FC<LeverProps> = ({ color, spinning, hasSpun, onPull }) => {
+  const [pulled, setPulled] = useState(false);
+
+  const handleClick = () => {
+    if (spinning || pulled) return;
+    setPulled(true);
+    playSound('leverPull');
+    onPull();
+    setTimeout(() => setPulled(false), 500);
+  };
+
+  return (
+    <div className="flex flex-col items-center select-none" style={{ width: '56px' }}>
+      {/* Label */}
+      <span
+        className="text-[9px] font-semibold tracking-widest uppercase mb-2 text-center leading-tight"
+        style={{ color: color.text, opacity: spinning ? 0.3 : 0.7 }}
+      >
+        {spinning ? 'wait…' : hasSpun ? 'again!' : 'pull!'}
+      </span>
+
+      {/* Lever assembly — clickable */}
+      <div
+        className="flex flex-col items-center cursor-pointer"
+        onClick={handleClick}
+        style={{ opacity: spinning ? 0.4 : 1 }}
+      >
+        {/* Ball knob */}
+        <div
+          className="w-10 h-10 rounded-full shadow-lg transition-all duration-300 flex items-center justify-center text-lg"
+          style={{
+            background: `radial-gradient(circle at 35% 35%, ${color.text}, ${color.glow})`,
+            boxShadow: pulled
+              ? `0 2px 8px ${color.glow}60`
+              : `0 6px 20px ${color.glow}80, 0 0 30px ${color.glow}40`,
+            transform: pulled ? 'translateY(70px)' : 'translateY(0)',
+            transition: pulled
+              ? 'transform 0.12s cubic-bezier(0.4,0,1,1), box-shadow 0.12s'
+              : 'transform 0.35s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.35s',
+          }}
+        >
+          🎰
+        </div>
+
+        {/* Shaft */}
+        <div
+          className="w-2 rounded-full transition-all duration-200"
+          style={{
+            height: pulled ? '30px' : '90px',
+            background: `linear-gradient(to bottom, ${color.text}cc, ${color.glow}44)`,
+            transition: pulled
+              ? 'height 0.12s cubic-bezier(0.4,0,1,1)'
+              : 'height 0.35s cubic-bezier(0.34,1.56,0.64,1)',
+            marginTop: '-2px',
+          }}
+        />
+
+        {/* Base */}
+        <div
+          className="w-8 h-3 rounded-full mt-0"
+          style={{
+            background: `linear-gradient(to bottom, ${color.text}88, ${color.glow}22)`,
+            boxShadow: `0 0 10px ${color.glow}50`,
+          }}
+        />
+      </div>
+    </div>
+  );
+};
+
 interface Props {
   particles: ParticleData[];
   onSelect: (index: number) => void;
@@ -176,59 +255,48 @@ export const ParticleSlotMachine: React.FC<Props> = ({
   return (
     <div className="flex flex-col items-center gap-6 py-8">
 
-      {/* Machine body */}
-      <div className="relative" style={{ width: '320px' }}>
+      {/* Drum + Lever side by side */}
+      <div className="flex items-center gap-4">
 
-        {/* Ambient glow behind machine */}
-        <div
-          className="absolute inset-0 rounded-3xl pointer-events-none transition-all duration-700 blur-2xl"
-          style={{ background: color.bg, opacity: 0.6 }}
-        />
-
-        {/* Slot window */}
-        <div
-          className="relative rounded-3xl overflow-hidden shadow-2xl"
-          style={{
-            height: `${windowHeight}px`,
-            border: `2px solid ${color.border}`,
-            background: 'rgba(5,5,5,0.85)',
-            backdropFilter: 'blur(16px)',
-          }}
-        >
-          {/* Top/bottom fade masks */}
-          <div className="absolute inset-x-0 top-0 h-20 z-10 pointer-events-none"
-               style={{ background: 'linear-gradient(to bottom, rgba(5,5,5,0.95), transparent)' }} />
-          <div className="absolute inset-x-0 bottom-0 h-20 z-10 pointer-events-none"
-               style={{ background: 'linear-gradient(to top, rgba(5,5,5,0.95), transparent)' }} />
-
-          {/* Center highlight band */}
+        {/* Machine body */}
+        <div className="relative" style={{ width: '300px' }}>
           <div
-            className="absolute inset-x-0 z-10 pointer-events-none transition-all duration-700"
-            style={{
-              top: `${CENTER * ITEM_HEIGHT}px`,
-              height: `${ITEM_HEIGHT}px`,
-              borderTop: `1px solid ${color.border}`,
-              borderBottom: `1px solid ${color.border}`,
-              background: `linear-gradient(to right, transparent, ${color.bg}, transparent)`,
-            }}
+            className="absolute inset-0 rounded-3xl pointer-events-none transition-all duration-700 blur-2xl"
+            style={{ background: color.bg, opacity: 0.6 }}
           />
-
-          {/* Drum */}
           <div
+            className="relative rounded-3xl overflow-hidden shadow-2xl"
             style={{
-              transform: `translateY(${CENTER * ITEM_HEIGHT - offset}px)`,
-              willChange: 'transform',
+              height: `${windowHeight}px`,
+              border: `2px solid ${color.border}`,
+              background: 'rgba(5,5,5,0.85)',
+              backdropFilter: 'blur(16px)',
             }}
           >
-            {renderItems()}
+            <div className="absolute inset-x-0 top-0 h-20 z-10 pointer-events-none"
+                 style={{ background: 'linear-gradient(to bottom, rgba(5,5,5,0.95), transparent)' }} />
+            <div className="absolute inset-x-0 bottom-0 h-20 z-10 pointer-events-none"
+                 style={{ background: 'linear-gradient(to top, rgba(5,5,5,0.95), transparent)' }} />
+            <div
+              className="absolute inset-x-0 z-10 pointer-events-none transition-all duration-700"
+              style={{
+                top: `${CENTER * ITEM_HEIGHT}px`,
+                height: `${ITEM_HEIGHT}px`,
+                borderTop: `1px solid ${color.border}`,
+                borderBottom: `1px solid ${color.border}`,
+                background: `linear-gradient(to right, transparent, ${color.bg}, transparent)`,
+              }}
+            />
+            <div style={{ transform: `translateY(${CENTER * ITEM_HEIGHT - offset}px)`, willChange: 'transform' }}>
+              {renderItems()}
+            </div>
           </div>
+          <div className="absolute -left-3 top-1/2 -translate-y-1/2 w-3 h-16 rounded-l-lg opacity-60"
+               style={{ background: `linear-gradient(to bottom, ${color.glow}80, ${color.glow}20)` }} />
         </div>
 
-        {/* Left/right side decorations */}
-        <div className="absolute -left-3 top-1/2 -translate-y-1/2 w-3 h-16 rounded-l-lg opacity-60"
-             style={{ background: `linear-gradient(to bottom, ${color.glow}80, ${color.glow}20)` }} />
-        <div className="absolute -right-3 top-1/2 -translate-y-1/2 w-3 h-16 rounded-r-lg opacity-60"
-             style={{ background: `linear-gradient(to bottom, ${color.glow}80, ${color.glow}20)` }} />
+        {/* Lever */}
+        <Lever color={color} spinning={spinning} onPull={handleSpin} hasSpun={hasSpun} />
       </div>
 
       {/* Core meaning card */}
@@ -248,26 +316,6 @@ export const ParticleSlotMachine: React.FC<Props> = ({
         </span>
         — {p.coreMeaning}
       </div>
-
-      {/* Spin button */}
-      <button
-        onClick={handleSpin}
-        disabled={spinning}
-        className="flex items-center gap-2 px-8 py-3 rounded-2xl font-semibold text-sm tracking-wide transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed active:scale-95"
-        style={{
-          background: spinning
-            ? 'rgba(255,255,255,0.05)'
-            : `linear-gradient(135deg, ${color.bg}, rgba(255,255,255,0.04))`,
-          border: `1px solid ${color.border}`,
-          color: spinning ? 'rgba(255,255,255,0.3)' : color.text,
-          boxShadow: spinning ? 'none' : `0 0 16px ${color.glow}30`,
-        }}
-      >
-        <span className={spinning ? 'animate-spin' : ''} style={{ display: 'inline-block' }}>
-          {spinning ? '⟳' : '🎰'}
-        </span>
-        {spinning ? 'Spinning…' : hasSpun ? 'Spin again' : 'Spin!'}
-      </button>
 
       {/* Scroll down hint when detail is loaded */}
       {isActive && !spinning && (

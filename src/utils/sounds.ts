@@ -140,45 +140,76 @@ const buildBeeps = (c: AudioContext) => {
   });
 };
 
-// Soft sine pop per reel step — quiet, low pitch, very short
+// Whoosh of wind — filtered noise that sweeps down in pitch
 const buildSlotTick = (c: AudioContext) => {
-  const osc = c.createOscillator();
+  const bufLen = Math.floor(c.sampleRate * 0.08);
+  const buf = c.createBuffer(1, bufLen, c.sampleRate);
+  const data = buf.getChannelData(0);
+  for (let i = 0; i < bufLen; i++) data[i] = Math.random() * 2 - 1;
+  const src = c.createBufferSource();
+  src.buffer = buf;
+  const filter = c.createBiquadFilter();
+  filter.type = 'bandpass';
+  filter.frequency.setValueAtTime(1800, c.currentTime);
+  filter.frequency.exponentialRampToValueAtTime(400, c.currentTime + 0.08);
+  filter.Q.value = 2;
   const gain = c.createGain();
-  osc.connect(gain); gain.connect(c.destination);
-  osc.type = 'sine';
-  osc.frequency.setValueAtTime(180, c.currentTime);
-  osc.frequency.exponentialRampToValueAtTime(100, c.currentTime + 0.03);
-  gain.gain.setValueAtTime(0.09, c.currentTime);
-  gain.gain.exponentialRampToValueAtTime(0.001, c.currentTime + 0.04);
-  osc.start(c.currentTime); osc.stop(c.currentTime + 0.05);
+  gain.gain.setValueAtTime(0.12, c.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, c.currentTime + 0.08);
+  src.connect(filter); filter.connect(gain); gain.connect(c.destination);
+  src.start(); src.stop(c.currentTime + 0.09);
 };
 
-// Clean mechanical thud + brief warm tone when drum stops
+// Lever pull sound — mechanical chunk
+const buildLeverPull = (c: AudioContext) => {
+  const bufLen = Math.floor(c.sampleRate * 0.15);
+  const buf = c.createBuffer(1, bufLen, c.sampleRate);
+  const data = buf.getChannelData(0);
+  for (let i = 0; i < bufLen; i++) data[i] = Math.random() * 2 - 1;
+  const src = c.createBufferSource();
+  src.buffer = buf;
+  const filter = c.createBiquadFilter();
+  filter.type = 'lowpass';
+  filter.frequency.setValueAtTime(300, c.currentTime);
+  const gain = c.createGain();
+  gain.gain.setValueAtTime(0.25, c.currentTime);
+  gain.gain.linearRampToValueAtTime(0.3, c.currentTime + 0.02);
+  gain.gain.exponentialRampToValueAtTime(0.001, c.currentTime + 0.15);
+  src.connect(filter); filter.connect(gain); gain.connect(c.destination);
+  src.start(); src.stop(c.currentTime + 0.16);
+};
+
+// Hard mechanical clunk when drum locks in place
 const buildSlotLand = (c: AudioContext) => {
-  // Low thud
-  const thud = c.createOscillator();
-  const tg = c.createGain();
-  thud.connect(tg); tg.connect(c.destination);
-  thud.type = 'sine';
-  thud.frequency.setValueAtTime(80, c.currentTime);
-  thud.frequency.exponentialRampToValueAtTime(40, c.currentTime + 0.12);
-  tg.gain.setValueAtTime(0.28, c.currentTime);
-  tg.gain.exponentialRampToValueAtTime(0.001, c.currentTime + 0.14);
-  thud.start(c.currentTime); thud.stop(c.currentTime + 0.15);
+  // Noise clunk
+  const bufLen = Math.floor(c.sampleRate * 0.12);
+  const buf = c.createBuffer(1, bufLen, c.sampleRate);
+  const d = buf.getChannelData(0);
+  for (let i = 0; i < bufLen; i++) d[i] = Math.random() * 2 - 1;
+  const src = c.createBufferSource();
+  src.buffer = buf;
+  const filter = c.createBiquadFilter();
+  filter.type = 'lowpass';
+  filter.frequency.setValueAtTime(500, c.currentTime);
+  const gain = c.createGain();
+  gain.gain.setValueAtTime(0.35, c.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, c.currentTime + 0.12);
+  src.connect(filter); filter.connect(gain); gain.connect(c.destination);
+  src.start(); src.stop(c.currentTime + 0.13);
 
-  // Single warm ding slightly after
-  const ding = c.createOscillator();
-  const dg = c.createGain();
-  ding.connect(dg); dg.connect(c.destination);
-  ding.type = 'sine';
-  ding.frequency.setValueAtTime(660, c.currentTime + 0.06);
-  dg.gain.setValueAtTime(0.0001, c.currentTime + 0.06);
-  dg.gain.linearRampToValueAtTime(0.13, c.currentTime + 0.09);
-  dg.gain.exponentialRampToValueAtTime(0.001, c.currentTime + 0.45);
-  ding.start(c.currentTime + 0.06); ding.stop(c.currentTime + 0.48);
+  // Sub-bass punch underneath
+  const sub = c.createOscillator();
+  const sg = c.createGain();
+  sub.connect(sg); sg.connect(c.destination);
+  sub.type = 'sine';
+  sub.frequency.setValueAtTime(60, c.currentTime);
+  sub.frequency.exponentialRampToValueAtTime(30, c.currentTime + 0.1);
+  sg.gain.setValueAtTime(0.3, c.currentTime);
+  sg.gain.exponentialRampToValueAtTime(0.001, c.currentTime + 0.12);
+  sub.start(c.currentTime); sub.stop(c.currentTime + 0.13);
 };
 
-export type SoundType = 'particleClick' | 'startRecording' | 'warning' | 'diceRoll' | 'slotTick' | 'slotLand';
+export type SoundType = 'particleClick' | 'startRecording' | 'warning' | 'diceRoll' | 'slotTick' | 'slotLand' | 'leverPull';
 
 export const playSound = (type: SoundType) => {
   if (type === 'particleClick') play(buildClick);
@@ -187,4 +218,5 @@ export const playSound = (type: SoundType) => {
   else if (type === 'diceRoll') play(buildDiceRoll);
   else if (type === 'slotTick') play(buildSlotTick);
   else if (type === 'slotLand') play(buildSlotLand);
+  else if (type === 'leverPull') play(buildLeverPull);
 };
