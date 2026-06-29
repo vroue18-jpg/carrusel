@@ -1,12 +1,10 @@
-import { useState, useCallback, useRef, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { PARTICLES } from './data/particles';
 import { ParticleButton } from './components/ParticleButton';
 import { ParticleDetail } from './components/ParticleDetail';
 import { ParticleSlotMachine } from './components/ParticleSlotMachine';
 import { VerbOfTheDay } from './components/VerbOfTheDay';
-import { playSound } from './utils/sounds';
 
-const DICE_FACES = ['⚀', '⚁', '⚂', '⚃', '⚄', '⚅'];
 const DAILY_GOAL = 3;
 
 function getDailyProgress(): number {
@@ -107,48 +105,20 @@ export default function App() {
   const [showWelcome, setShowWelcome] = useState(() => !localStorage.getItem('craftEnglishSeen_v2'));
   const [activeIndex, setActiveIndex]   = useState<number | null>(null);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
-  const [slotSpinCount, setSlotSpinCount] = useState(0);
-  const [slotTarget, setSlotTarget]     = useState<number>(0);
+  const [slotSpinCount] = useState(0);
+  const [slotTarget]    = useState<number>(0);
   const [streak, setStreak]             = useState(0);
   const [streakAnim, setStreakAnim]     = useState(false);
-  const [diceRolling, setDiceRolling]   = useState(false);
-  const [diceFace, setDiceFace]         = useState('🎲');
-  const [btnAnim, setBtnAnim]           = useState(false);
   const [dailyDone, setDailyDone]       = useState(getDailyProgress);
   const [goalFlash, setGoalFlash]       = useState(false);
-  const diceIntervalRef                 = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const goalMet = dailyDone >= DAILY_GOAL;
 
   // Persist daily progress whenever it changes
   useEffect(() => { saveDailyProgress(dailyDone); }, [dailyDone]);
 
-  const pickRandom = useCallback(() => {
-    if (diceRolling) return;
-    playSound('diceRoll');
-    setDiceRolling(true);
-    setBtnAnim(true);
 
-    let tick = 0;
-    diceIntervalRef.current = setInterval(() => {
-      setDiceFace(DICE_FACES[tick % DICE_FACES.length]);
-      tick++;
-    }, 80);
-
-    setTimeout(() => {
-      if (diceIntervalRef.current) clearInterval(diceIntervalRef.current);
-      const idx = Math.floor(Math.random() * PARTICLES.length);
-      setDiceFace(DICE_FACES[idx % DICE_FACES.length]);
-      setDiceRolling(false);
-      setBtnAnim(false);
-      // If slot machine is visible (no active detail), spin it; otherwise go directly
-      setSlotTarget(idx);
-      setSlotSpinCount((c) => c + 1);
-      setActiveIndex(null); // show slot machine if hidden
-    }, 600);
-  }, [diceRolling]);
-
-  const handleStreakIncrement = useCallback(() => {
+  const handleStreakIncrement = () => {
     setStreak((s) => s + 1);
     setStreakAnim(true);
     setTimeout(() => setStreakAnim(false), 400);
@@ -161,7 +131,7 @@ export default function App() {
       }
       return next;
     });
-  }, []);
+  };
 
   const active = activeIndex !== null ? PARTICLES[activeIndex] : null;
 
