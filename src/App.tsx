@@ -4,6 +4,7 @@ import { ParticleDetail } from './components/ParticleDetail';
 import { ParticleSlotMachine } from './components/ParticleSlotMachine';
 
 import { playSound } from './utils/sounds';
+import { SpiralField } from './components/SpiralField';
 
 const DICE_FACES = ['⚀', '⚁', '⚂', '⚃', '⚄', '⚅'];
 const DAILY_GOAL = 3;
@@ -176,6 +177,9 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-cinema-gradient font-sans relative overflow-x-hidden">
+
+      {/* Spiral particle field */}
+      <SpiralField />
 
       {/* Dot grid background */}
       <div className="pointer-events-none fixed inset-0"
