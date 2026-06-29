@@ -3,6 +3,7 @@ import type { ParticleData } from '../data/particles';
 import { getParticleColor } from './ParticleCarousel';
 import { playSound } from '../utils/sounds';
 
+
 interface Props {
   particles: ParticleData[];
   onSelect: (index: number) => void;
@@ -25,6 +26,7 @@ export const ParticleSlotMachine: React.FC<Props> = ({
   const [hasSpun, setHasSpun] = useState(false);
   const rafRef = useRef<number | null>(null);
   const prevExternalSpin = useRef(externalSpin);
+  const lastTickTime = useRef(0);
 
   const color = getParticleColor(particles[currentIdx].particle);
 
@@ -70,10 +72,14 @@ export const ParticleSlotMachine: React.FC<Props> = ({
       const eased = easeOutCubic(t);
       const newOffset = startOffset + distance * eased;
 
-      // Tick sound each time we cross an item boundary
+      // Tick sound each time we cross an item boundary, throttled to avoid rapid fire
       const itemsCrossed = Math.floor((newOffset - lastTickOffset) / tickEvery);
       if (itemsCrossed >= 1) {
-        playSound('slotTick');
+        const sinceLastTick = now - lastTickTime.current;
+        if (sinceLastTick > 80) {
+          playSound('slotTick');
+          lastTickTime.current = now;
+        }
         lastTickOffset += itemsCrossed * tickEvery;
       }
 

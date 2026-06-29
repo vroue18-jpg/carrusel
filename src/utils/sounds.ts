@@ -140,45 +140,42 @@ const buildBeeps = (c: AudioContext) => {
   });
 };
 
-// Short mechanical tick — called rapidly during spin
+// Soft sine pop per reel step — quiet, low pitch, very short
 const buildSlotTick = (c: AudioContext) => {
   const osc = c.createOscillator();
   const gain = c.createGain();
   osc.connect(gain); gain.connect(c.destination);
-  osc.type = 'square';
-  osc.frequency.setValueAtTime(200, c.currentTime);
-  osc.frequency.exponentialRampToValueAtTime(120, c.currentTime + 0.04);
-  gain.gain.setValueAtTime(0.07, c.currentTime);
-  gain.gain.exponentialRampToValueAtTime(0.001, c.currentTime + 0.05);
-  osc.start(c.currentTime); osc.stop(c.currentTime + 0.06);
+  osc.type = 'sine';
+  osc.frequency.setValueAtTime(180, c.currentTime);
+  osc.frequency.exponentialRampToValueAtTime(100, c.currentTime + 0.03);
+  gain.gain.setValueAtTime(0.09, c.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, c.currentTime + 0.04);
+  osc.start(c.currentTime); osc.stop(c.currentTime + 0.05);
 };
 
-// Victory ding when slot lands
+// Clean mechanical thud + brief warm tone when drum stops
 const buildSlotLand = (c: AudioContext) => {
-  const freqs = [523, 659, 784, 1047]; // C5 E5 G5 C6
-  freqs.forEach((freq, i) => {
-    const delay = i * 0.09;
-    const osc = c.createOscillator();
-    const gain = c.createGain();
-    osc.connect(gain); gain.connect(c.destination);
-    osc.type = 'sine';
-    osc.frequency.setValueAtTime(freq, c.currentTime + delay);
-    gain.gain.setValueAtTime(0.0001, c.currentTime + delay);
-    gain.gain.linearRampToValueAtTime(0.18, c.currentTime + delay + 0.03);
-    gain.gain.exponentialRampToValueAtTime(0.001, c.currentTime + delay + 0.35);
-    osc.start(c.currentTime + delay);
-    osc.stop(c.currentTime + delay + 0.38);
-  });
-  // Extra thud on land
+  // Low thud
   const thud = c.createOscillator();
   const tg = c.createGain();
   thud.connect(tg); tg.connect(c.destination);
   thud.type = 'sine';
-  thud.frequency.setValueAtTime(110, c.currentTime);
-  thud.frequency.exponentialRampToValueAtTime(55, c.currentTime + 0.08);
-  tg.gain.setValueAtTime(0.22, c.currentTime);
-  tg.gain.exponentialRampToValueAtTime(0.001, c.currentTime + 0.1);
-  thud.start(c.currentTime); thud.stop(c.currentTime + 0.12);
+  thud.frequency.setValueAtTime(80, c.currentTime);
+  thud.frequency.exponentialRampToValueAtTime(40, c.currentTime + 0.12);
+  tg.gain.setValueAtTime(0.28, c.currentTime);
+  tg.gain.exponentialRampToValueAtTime(0.001, c.currentTime + 0.14);
+  thud.start(c.currentTime); thud.stop(c.currentTime + 0.15);
+
+  // Single warm ding slightly after
+  const ding = c.createOscillator();
+  const dg = c.createGain();
+  ding.connect(dg); dg.connect(c.destination);
+  ding.type = 'sine';
+  ding.frequency.setValueAtTime(660, c.currentTime + 0.06);
+  dg.gain.setValueAtTime(0.0001, c.currentTime + 0.06);
+  dg.gain.linearRampToValueAtTime(0.13, c.currentTime + 0.09);
+  dg.gain.exponentialRampToValueAtTime(0.001, c.currentTime + 0.45);
+  ding.start(c.currentTime + 0.06); ding.stop(c.currentTime + 0.48);
 };
 
 export type SoundType = 'particleClick' | 'startRecording' | 'warning' | 'diceRoll' | 'slotTick' | 'slotLand';
