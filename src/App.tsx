@@ -2,7 +2,7 @@ import { useState, useCallback, useRef, useEffect } from 'react';
 import { PARTICLES } from './data/particles';
 import { ParticleButton } from './components/ParticleButton';
 import { ParticleDetail } from './components/ParticleDetail';
-import { ParticleCarousel } from './components/ParticleCarousel';
+import { ParticleSlotMachine } from './components/ParticleSlotMachine';
 import { VerbOfTheDay } from './components/VerbOfTheDay';
 import { playSound } from './utils/sounds';
 
@@ -57,6 +57,8 @@ function GoalRing({ done, total, goalMet }: { done: number; total: number; goalM
 export default function App() {
   const [activeIndex, setActiveIndex]   = useState<number | null>(null);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const [slotSpinCount, setSlotSpinCount] = useState(0);
+  const [slotTarget, setSlotTarget]     = useState<number>(0);
   const [streak, setStreak]             = useState(0);
   const [streakAnim, setStreakAnim]     = useState(false);
   const [diceRolling, setDiceRolling]   = useState(false);
@@ -87,9 +89,12 @@ export default function App() {
       if (diceIntervalRef.current) clearInterval(diceIntervalRef.current);
       const idx = Math.floor(Math.random() * PARTICLES.length);
       setDiceFace(DICE_FACES[idx % DICE_FACES.length]);
-      setActiveIndex(idx);
       setDiceRolling(false);
       setBtnAnim(false);
+      // If slot machine is visible (no active detail), spin it; otherwise go directly
+      setSlotTarget(idx);
+      setSlotSpinCount((c) => c + 1);
+      setActiveIndex(null); // show slot machine if hidden
     }, 600);
   }, [diceRolling]);
 
@@ -207,7 +212,7 @@ export default function App() {
           </div>
         </div>
 
-        {/* Detail or carousel empty state */}
+        {/* Detail or slot machine */}
         {active ? (
           <ParticleDetail
             key={active.particle}
@@ -215,10 +220,11 @@ export default function App() {
             onChallengeComplete={handleStreakIncrement}
           />
         ) : (
-          <ParticleCarousel
+          <ParticleSlotMachine
             particles={PARTICLES}
-            hoveredIndex={hoveredIndex}
             onSelect={(i) => setActiveIndex(i)}
+            externalSpin={slotSpinCount}
+            externalTarget={slotTarget}
           />
         )}
       </main>
