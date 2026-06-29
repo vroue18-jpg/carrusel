@@ -160,33 +160,38 @@ const buildSlotTick = (c: AudioContext) => {
   src.start(); src.stop(c.currentTime + 0.09);
 };
 
-// Snappy upward zing — short spring-like pitch sweep
+// Coin jingle — two or three quick metallic pings staggered
 const buildLeverPull = (c: AudioContext) => {
-  // Sine sweep: low to high fast, tail fades
-  const osc = c.createOscillator();
-  const gain = c.createGain();
-  osc.connect(gain); gain.connect(c.destination);
-  osc.type = 'sine';
-  osc.frequency.setValueAtTime(120, c.currentTime);
-  osc.frequency.exponentialRampToValueAtTime(900, c.currentTime + 0.12);
-  osc.frequency.exponentialRampToValueAtTime(400, c.currentTime + 0.28);
-  gain.gain.setValueAtTime(0.0001, c.currentTime);
-  gain.gain.linearRampToValueAtTime(0.2, c.currentTime + 0.04);
-  gain.gain.exponentialRampToValueAtTime(0.001, c.currentTime + 0.32);
-  osc.start(c.currentTime); osc.stop(c.currentTime + 0.34);
+  // Metallic ping = sine + slight detuned overtone, fast attack, slow decay
+  const pings = [
+    { freq: 2100, detune: 2180, delay: 0,    vol: 0.18 },
+    { freq: 1760, detune: 1830, delay: 0.07, vol: 0.15 },
+    { freq: 2400, detune: 2500, delay: 0.13, vol: 0.12 },
+  ];
 
-  // Subtle noise layer for texture
-  const bufLen = Math.floor(c.sampleRate * 0.18);
-  const buf = c.createBuffer(1, bufLen, c.sampleRate);
-  const d = buf.getChannelData(0);
-  for (let i = 0; i < bufLen; i++) d[i] = Math.random() * 2 - 1;
-  const src = c.createBufferSource(); src.buffer = buf;
-  const f = c.createBiquadFilter(); f.type = 'highpass'; f.frequency.value = 2000;
-  const ng = c.createGain();
-  ng.gain.setValueAtTime(0.07, c.currentTime);
-  ng.gain.exponentialRampToValueAtTime(0.001, c.currentTime + 0.18);
-  src.connect(f); f.connect(ng); ng.connect(c.destination);
-  src.start(c.currentTime); src.stop(c.currentTime + 0.19);
+  pings.forEach(({ freq, detune, delay, vol }) => {
+    // Fundamental
+    const o1 = c.createOscillator();
+    const g1 = c.createGain();
+    o1.connect(g1); g1.connect(c.destination);
+    o1.type = 'sine';
+    o1.frequency.value = freq;
+    g1.gain.setValueAtTime(0.0001, c.currentTime + delay);
+    g1.gain.linearRampToValueAtTime(vol, c.currentTime + delay + 0.008);
+    g1.gain.exponentialRampToValueAtTime(0.001, c.currentTime + delay + 0.55);
+    o1.start(c.currentTime + delay); o1.stop(c.currentTime + delay + 0.58);
+
+    // Detuned overtone for metallic shimmer
+    const o2 = c.createOscillator();
+    const g2 = c.createGain();
+    o2.connect(g2); g2.connect(c.destination);
+    o2.type = 'sine';
+    o2.frequency.value = detune;
+    g2.gain.setValueAtTime(0.0001, c.currentTime + delay);
+    g2.gain.linearRampToValueAtTime(vol * 0.4, c.currentTime + delay + 0.008);
+    g2.gain.exponentialRampToValueAtTime(0.001, c.currentTime + delay + 0.35);
+    o2.start(c.currentTime + delay); o2.stop(c.currentTime + delay + 0.38);
+  });
 };
 
 // Hard mechanical clunk when drum locks in place
