@@ -256,58 +256,117 @@ const buildSlotLand = (c: AudioContext) => {
   sub.start(c.currentTime); sub.stop(c.currentTime + 0.13);
 };
 
-// Whoosh insert + metal scrape + click of a key turning in a lock
+// Luxury mechanical lock: insertion click → rotation scrape → latch clack
 const buildKeyTurn = (c: AudioContext) => {
   const t = c.currentTime;
-  // Quick whoosh as key slides in
-  const wLen = Math.floor(c.sampleRate * 0.18);
-  const wBuf = c.createBuffer(1, wLen, c.sampleRate);
-  const wd = wBuf.getChannelData(0);
-  for (let i = 0; i < wLen; i++) wd[i] = Math.random() * 2 - 1;
-  const wSrc = c.createBufferSource(); wSrc.buffer = wBuf;
-  const wF = c.createBiquadFilter(); wF.type = 'bandpass';
-  wF.frequency.setValueAtTime(2000, t); wF.frequency.exponentialRampToValueAtTime(500, t + 0.18); wF.Q.value = 2;
-  const wG = c.createGain();
-  wG.gain.setValueAtTime(0.0001, t); wG.gain.linearRampToValueAtTime(0.12, t + 0.04); wG.gain.exponentialRampToValueAtTime(0.001, t + 0.18);
-  wSrc.connect(wF); wF.connect(wG); wG.connect(c.destination);
-  wSrc.start(t); wSrc.stop(t + 0.2);
+  const sr = c.sampleRate;
 
-  // Metallic scrape as key turns — bandpass noise sweep
-  const scrapeLen = Math.floor(c.sampleRate * 0.22);
-  const scrapeBuf = c.createBuffer(1, scrapeLen, c.sampleRate);
-  const sd = scrapeBuf.getChannelData(0);
-  for (let i = 0; i < scrapeLen; i++) sd[i] = Math.random() * 2 - 1;
-  const scrapeSrc = c.createBufferSource(); scrapeSrc.buffer = scrapeBuf;
-  const scrapeF = c.createBiquadFilter(); scrapeF.type = 'bandpass';
-  scrapeF.frequency.setValueAtTime(1200, t + 0.15);
-  scrapeF.frequency.exponentialRampToValueAtTime(600, t + 0.37);
-  scrapeF.Q.value = 4;
-  const scrapeG = c.createGain();
-  scrapeG.gain.setValueAtTime(0.0001, t + 0.15);
-  scrapeG.gain.linearRampToValueAtTime(0.08, t + 0.19);
-  scrapeG.gain.exponentialRampToValueAtTime(0.001, t + 0.37);
-  scrapeSrc.connect(scrapeF); scrapeF.connect(scrapeG); scrapeG.connect(c.destination);
-  scrapeSrc.start(t + 0.15); scrapeSrc.stop(t + 0.39);
+  const noise = (dur: number) => {
+    const buf = c.createBuffer(1, Math.floor(sr * dur), sr);
+    const d = buf.getChannelData(0);
+    for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+    return buf;
+  };
 
-  // Satisfying click/clunk at the end when it locks
-  const clickLen = Math.floor(c.sampleRate * 0.06);
-  const clickBuf = c.createBuffer(1, clickLen, c.sampleRate);
-  const cd = clickBuf.getChannelData(0);
-  for (let i = 0; i < clickLen; i++) cd[i] = (Math.random() * 2 - 1) * (1 - i / clickLen);
-  const clickSrc = c.createBufferSource(); clickSrc.buffer = clickBuf;
-  const clickF = c.createBiquadFilter(); clickF.type = 'lowpass'; clickF.frequency.value = 700;
-  const clickG = c.createGain(); clickG.gain.setValueAtTime(0.28, t + 0.35); clickG.gain.exponentialRampToValueAtTime(0.001, t + 0.43);
-  clickSrc.connect(clickF); clickF.connect(clickG); clickG.connect(c.destination);
-  clickSrc.start(t + 0.35); clickSrc.stop(t + 0.45);
+  const connect = (...nodes: AudioNode[]) => {
+    for (let i = 0; i < nodes.length - 1; i++) nodes[i].connect(nodes[i + 1]);
+  };
 
-  // Tiny metallic ring after the click
-  const ring = c.createOscillator(); const rg = c.createGain();
-  ring.connect(rg); rg.connect(c.destination);
-  ring.type = 'sine'; ring.frequency.value = 2200;
-  rg.gain.setValueAtTime(0.0001, t + 0.37);
-  rg.gain.linearRampToValueAtTime(0.07, t + 0.376);
-  rg.gain.exponentialRampToValueAtTime(0.001, t + 0.65);
-  ring.start(t + 0.37); ring.stop(t + 0.7);
+  // ── Phase 1: KEY INSERTION (0 – 90ms) ──────────────────────────────
+  // Sharp metallic "tick" as key enters keyhole — two stacked transients
+  // First: high-freq click (pin tumblers catching)
+  const ins1 = c.createBufferSource(); ins1.buffer = noise(0.012);
+  const insF1 = c.createBiquadFilter(); insF1.type = 'bandpass'; insF1.frequency.value = 3800; insF1.Q.value = 3;
+  const insG1 = c.createGain();
+  insG1.gain.setValueAtTime(0.55, t); insG1.gain.exponentialRampToValueAtTime(0.001, t + 0.012);
+  connect(ins1, insF1, insG1, c.destination);
+  ins1.start(t); ins1.stop(t + 0.014);
+
+  // Second: low body thud immediately after (brass body contact)
+  const ins2 = c.createBufferSource(); ins2.buffer = noise(0.025);
+  const insF2 = c.createBiquadFilter(); insF2.type = 'bandpass'; insF2.frequency.value = 420; insF2.Q.value = 2;
+  const insG2 = c.createGain();
+  insG2.gain.setValueAtTime(0.0001, t + 0.008); insG2.gain.linearRampToValueAtTime(0.32, t + 0.013);
+  insG2.gain.exponentialRampToValueAtTime(0.001, t + 0.05);
+  connect(ins2, insF2, insG2, c.destination);
+  ins2.start(t + 0.008); ins2.stop(t + 0.055);
+
+  // Subtle metallic resonance from insertion
+  const insOsc = c.createOscillator(); const insOscG = c.createGain();
+  insOsc.type = 'sine'; insOsc.frequency.value = 1100;
+  insOscG.gain.setValueAtTime(0.0001, t + 0.01); insOscG.gain.linearRampToValueAtTime(0.06, t + 0.014);
+  insOscG.gain.exponentialRampToValueAtTime(0.001, t + 0.08);
+  connect(insOsc, insOscG, c.destination);
+  insOsc.start(t + 0.01); insOsc.stop(t + 0.09);
+
+  // ── Phase 2: KEY ROTATION SCRAPE (100 – 340ms) ─────────────────────
+  // Narrow bandpass noise — metal pin tumblers sliding against the key's cuts
+  const scrBuf = noise(0.24);
+  const scr = c.createBufferSource(); scr.buffer = scrBuf;
+  const scrF1 = c.createBiquadFilter(); scrF1.type = 'bandpass'; scrF1.Q.value = 6;
+  scrF1.frequency.setValueAtTime(950, t + 0.10);
+  scrF1.frequency.linearRampToValueAtTime(700, t + 0.34);
+  // Second bandpass for metallic texture
+  const scrF2 = c.createBiquadFilter(); scrF2.type = 'bandpass'; scrF2.Q.value = 8;
+  scrF2.frequency.setValueAtTime(2100, t + 0.10);
+  scrF2.frequency.linearRampToValueAtTime(1600, t + 0.34);
+  const scrMix = c.createGain(); scrMix.gain.value = 1;
+  const scrG = c.createGain();
+  scrG.gain.setValueAtTime(0.0001, t + 0.10);
+  scrG.gain.linearRampToValueAtTime(0.055, t + 0.15);
+  scrG.gain.setValueAtTime(0.055, t + 0.28);
+  scrG.gain.exponentialRampToValueAtTime(0.001, t + 0.34);
+
+  // Parallel filter paths merged into scrG
+  const scrF1G = c.createGain(); scrF1G.gain.value = 0.65;
+  const scrF2G = c.createGain(); scrF2G.gain.value = 0.35;
+  scr.connect(scrF1); scrF1.connect(scrF1G); scrF1G.connect(scrG);
+  scr.connect(scrF2); scrF2.connect(scrF2G); scrF2G.connect(scrG);
+  scrG.connect(c.destination);
+  scr.start(t + 0.10); scr.stop(t + 0.36);
+
+  // Faint low rumble during rotation (cylinder turning)
+  const rumBuf = noise(0.22);
+  const rum = c.createBufferSource(); rum.buffer = rumBuf;
+  const rumF = c.createBiquadFilter(); rumF.type = 'lowpass'; rumF.frequency.value = 180;
+  const rumG = c.createGain();
+  rumG.gain.setValueAtTime(0.0001, t + 0.11); rumG.gain.linearRampToValueAtTime(0.04, t + 0.17);
+  rumG.gain.exponentialRampToValueAtTime(0.001, t + 0.33);
+  connect(rum, rumF, rumG, c.destination);
+  rum.start(t + 0.11); rum.stop(t + 0.35);
+
+  // ── Phase 3: LATCH CLACK (340 – 520ms) ─────────────────────────────
+  // Main impact: heavy brass bolt snapping into place
+  const clkBuf = noise(0.018);
+  const clk = c.createBufferSource(); clk.buffer = clkBuf;
+  const clkHP = c.createBiquadFilter(); clkHP.type = 'highpass'; clkHP.frequency.value = 180;
+  const clkLP = c.createBiquadFilter(); clkLP.type = 'lowpass'; clkLP.frequency.value = 2800;
+  const clkG = c.createGain();
+  clkG.gain.setValueAtTime(0.7, t + 0.345); clkG.gain.exponentialRampToValueAtTime(0.001, t + 0.38);
+  connect(clk, clkHP, clkLP, clkG, c.destination);
+  clk.start(t + 0.345); clk.stop(t + 0.39);
+
+  // Body resonance after clack — the lock housing rings
+  [620, 1340, 2580].forEach((freq, i) => {
+    const vol = [0.18, 0.09, 0.04][i];
+    const decay = [0.14, 0.09, 0.06][i];
+    const o = c.createOscillator(); const g = c.createGain();
+    o.type = 'sine'; o.frequency.value = freq;
+    g.gain.setValueAtTime(0.0001, t + 0.348);
+    g.gain.linearRampToValueAtTime(vol, t + 0.351);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.348 + decay);
+    connect(o, g, c.destination);
+    o.start(t + 0.348); o.stop(t + 0.348 + decay + 0.01);
+  });
+
+  // Secondary micro-clack 45ms later (bolt settles fully into receiver)
+  const clk2Buf = noise(0.01);
+  const clk2 = c.createBufferSource(); clk2.buffer = clk2Buf;
+  const clk2F = c.createBiquadFilter(); clk2F.type = 'bandpass'; clk2F.frequency.value = 1800; clk2F.Q.value = 2;
+  const clk2G = c.createGain();
+  clk2G.gain.setValueAtTime(0.22, t + 0.39); clk2G.gain.exponentialRampToValueAtTime(0.001, t + 0.42);
+  connect(clk2, clk2F, clk2G, c.destination);
+  clk2.start(t + 0.39); clk2.stop(t + 0.43);
 };
 
 export type SoundType = 'particleClick' | 'startRecording' | 'warning' | 'diceRoll' | 'slotTick' | 'slotLand' | 'leverPull' | 'spaceSwipe' | 'keyTurn';
