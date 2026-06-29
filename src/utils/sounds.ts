@@ -140,11 +140,54 @@ const buildBeeps = (c: AudioContext) => {
   });
 };
 
-export type SoundType = 'particleClick' | 'startRecording' | 'warning' | 'diceRoll';
+// Short mechanical tick — called rapidly during spin
+const buildSlotTick = (c: AudioContext) => {
+  const osc = c.createOscillator();
+  const gain = c.createGain();
+  osc.connect(gain); gain.connect(c.destination);
+  osc.type = 'square';
+  osc.frequency.setValueAtTime(200, c.currentTime);
+  osc.frequency.exponentialRampToValueAtTime(120, c.currentTime + 0.04);
+  gain.gain.setValueAtTime(0.07, c.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, c.currentTime + 0.05);
+  osc.start(c.currentTime); osc.stop(c.currentTime + 0.06);
+};
+
+// Victory ding when slot lands
+const buildSlotLand = (c: AudioContext) => {
+  const freqs = [523, 659, 784, 1047]; // C5 E5 G5 C6
+  freqs.forEach((freq, i) => {
+    const delay = i * 0.09;
+    const osc = c.createOscillator();
+    const gain = c.createGain();
+    osc.connect(gain); gain.connect(c.destination);
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(freq, c.currentTime + delay);
+    gain.gain.setValueAtTime(0.0001, c.currentTime + delay);
+    gain.gain.linearRampToValueAtTime(0.18, c.currentTime + delay + 0.03);
+    gain.gain.exponentialRampToValueAtTime(0.001, c.currentTime + delay + 0.35);
+    osc.start(c.currentTime + delay);
+    osc.stop(c.currentTime + delay + 0.38);
+  });
+  // Extra thud on land
+  const thud = c.createOscillator();
+  const tg = c.createGain();
+  thud.connect(tg); tg.connect(c.destination);
+  thud.type = 'sine';
+  thud.frequency.setValueAtTime(110, c.currentTime);
+  thud.frequency.exponentialRampToValueAtTime(55, c.currentTime + 0.08);
+  tg.gain.setValueAtTime(0.22, c.currentTime);
+  tg.gain.exponentialRampToValueAtTime(0.001, c.currentTime + 0.1);
+  thud.start(c.currentTime); thud.stop(c.currentTime + 0.12);
+};
+
+export type SoundType = 'particleClick' | 'startRecording' | 'warning' | 'diceRoll' | 'slotTick' | 'slotLand';
 
 export const playSound = (type: SoundType) => {
   if (type === 'particleClick') play(buildClick);
   else if (type === 'startRecording') play(buildChime);
   else if (type === 'warning') play(buildBeeps);
   else if (type === 'diceRoll') play(buildDiceRoll);
+  else if (type === 'slotTick') play(buildSlotTick);
+  else if (type === 'slotLand') play(buildSlotLand);
 };

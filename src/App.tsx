@@ -65,11 +65,21 @@ export default function App() {
   const [dailyDone, setDailyDone]       = useState(getDailyProgress);
   const [goalFlash, setGoalFlash]       = useState(false);
   const diceIntervalRef                 = useRef<ReturnType<typeof setInterval> | null>(null);
+  const detailRef                       = useRef<HTMLDivElement>(null);
 
   const goalMet = dailyDone >= DAILY_GOAL;
 
   // Persist daily progress whenever it changes
   useEffect(() => { saveDailyProgress(dailyDone); }, [dailyDone]);
+
+  // Auto-scroll to detail panel when a particle is selected
+  useEffect(() => {
+    if (activeIndex !== null && detailRef.current) {
+      setTimeout(() => {
+        detailRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 300);
+    }
+  }, [activeIndex]);
 
   const pickRandom = useCallback(() => {
     if (diceRolling) return;
@@ -200,11 +210,13 @@ export default function App() {
 
         {/* Detail panel — appears below when a particle is selected */}
         {active && (
+          <div ref={detailRef}>
           <ParticleDetail
             key={active.particle}
             data={active}
             onChallengeComplete={handleStreakIncrement}
           />
+          </div>
         )}
       </main>
 

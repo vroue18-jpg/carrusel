@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import type { ParticleData } from '../data/particles';
 import { getParticleColor } from './ParticleCarousel';
+import { playSound } from '../utils/sounds';
 
 interface Props {
   particles: ParticleData[];
@@ -60,11 +61,21 @@ export const ParticleSlotMachine: React.FC<Props> = ({
     // Ease out cubic
     const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
 
+    let lastTickOffset = startOffset;
+    const tickEvery = ITEM_HEIGHT; // play a tick every item passed
+
     const animate = (now: number) => {
       const elapsed = now - startTime;
       const t = Math.min(elapsed / duration, 1);
       const eased = easeOutCubic(t);
       const newOffset = startOffset + distance * eased;
+
+      // Tick sound each time we cross an item boundary
+      const itemsCrossed = Math.floor((newOffset - lastTickOffset) / tickEvery);
+      if (itemsCrossed >= 1) {
+        playSound('slotTick');
+        lastTickOffset += itemsCrossed * tickEvery;
+      }
 
       setOffset(newOffset);
 
@@ -75,6 +86,7 @@ export const ParticleSlotMachine: React.FC<Props> = ({
         setCurrentIdx(targetRealIdx);
         setSpinning(false);
         setTimeout(() => setIsAnimating(false), 200);
+        playSound('slotLand');
         onSelect(targetRealIdx);
       }
     };
