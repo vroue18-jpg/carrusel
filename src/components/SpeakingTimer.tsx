@@ -21,6 +21,7 @@ export const SpeakingTimer: React.FC<Props> = ({
 }) => {
   const c = accentColor ?? DEFAULT_COLOR;
 
+  const [shuffling, setShuffling] = useState(false);
   const [timeLeft, setTimeLeft]   = useState(60);
   const [running, setRunning]     = useState(false);
   const [done, setDone]           = useState(false);
@@ -55,7 +56,12 @@ export const SpeakingTimer: React.FC<Props> = ({
   useEffect(() => { reset(); stopRecording(); setAudioURL(null); setRecError(null); }, [prompt]);
   useEffect(() => { if (audioRef.current) { audioRef.current.pause(); audioRef.current = null; } setPlaying(false); }, [audioURL]);
 
-  const handleNewChallenge = () => { reset(); stopRecording(); setAudioURL(null); onNewChallenge(); };
+  const handleNewChallenge = () => {
+    if (shuffling) return;
+    setShuffling(true);
+    setTimeout(() => { reset(); stopRecording(); setAudioURL(null); onNewChallenge(); }, 220);
+    setTimeout(() => setShuffling(false), 600);
+  };
 
   const startRecording = async () => {
     setRecError(null); setAudioURL(null); chunksRef.current = [];
@@ -125,19 +131,41 @@ export const SpeakingTimer: React.FC<Props> = ({
 
           <button
             onClick={handleNewChallenge}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold tracking-wide transition-all duration-200"
-            style={{ background: c.bg, border: `1px solid ${c.border}`, color: c.text }}
-            title="New question"
+            disabled={shuffling}
+            className="group relative flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold tracking-wide transition-all duration-200 overflow-hidden active:scale-95 disabled:cursor-not-allowed"
+            style={{
+              background: shuffling ? c.bg : `linear-gradient(135deg, ${c.bg}, rgba(255,255,255,0.03))`,
+              border: `1px solid ${c.border}`,
+              color: c.text,
+              boxShadow: shuffling ? 'none' : `0 0 14px ${c.glow}25`,
+            }}
           >
-            <span className="text-base">🔀</span>
-            <span className="hidden sm:inline">New Question</span>
+            {/* Shimmer sweep on hover */}
+            <span
+              className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+              style={{ background: `linear-gradient(105deg, transparent 40%, ${c.glow}30 50%, transparent 60%)`, backgroundSize: '200% 100%' }}
+            />
+            <span
+              className="text-base inline-block transition-transform duration-500"
+              style={{ transform: shuffling ? 'rotate(180deg)' : 'rotate(0deg)' }}
+            >
+              🔀
+            </span>
+            <span className="hidden sm:inline relative z-10">
+              {shuffling ? 'Shuffling…' : 'New Question'}
+            </span>
           </button>
         </div>
 
         {/* Prompt card — the hero of this section */}
         <div
-          className="relative rounded-2xl p-6 transition-all duration-500"
-          style={{ background: 'rgba(0,0,0,0.35)', border: `1px solid ${c.border}` }}
+          className="relative rounded-2xl p-6 transition-all duration-300"
+          style={{
+            background: 'rgba(0,0,0,0.35)',
+            border: `1px solid ${c.border}`,
+            opacity: shuffling ? 0 : 1,
+            transform: shuffling ? 'translateY(-8px) scale(0.98)' : 'translateY(0) scale(1)',
+          }}
         >
           {/* Dot nav */}
           <div className="flex items-center gap-1.5 mb-4">
