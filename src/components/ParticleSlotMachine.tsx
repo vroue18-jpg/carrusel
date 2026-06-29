@@ -19,7 +19,6 @@ const LockKey: React.FC<LockKeyProps> = ({ color, spinning, hasSpun, onPull }) =
   const handleClick = () => {
     if (spinning || phase !== 'idle') return;
     setPhase('inserting');
-    playSound('leverPull');
     setTimeout(() => { setPhase('turning'); playSound('keyTurn'); }, 300);
     setTimeout(() => { onPull(); setPhase('done'); }, 650);
     setTimeout(() => setPhase('idle'), 1800);

@@ -256,9 +256,22 @@ const buildSlotLand = (c: AudioContext) => {
   sub.start(c.currentTime); sub.stop(c.currentTime + 0.13);
 };
 
-// Metal scrape + click of a key turning in a lock
+// Whoosh insert + metal scrape + click of a key turning in a lock
 const buildKeyTurn = (c: AudioContext) => {
   const t = c.currentTime;
+  // Quick whoosh as key slides in
+  const wLen = Math.floor(c.sampleRate * 0.18);
+  const wBuf = c.createBuffer(1, wLen, c.sampleRate);
+  const wd = wBuf.getChannelData(0);
+  for (let i = 0; i < wLen; i++) wd[i] = Math.random() * 2 - 1;
+  const wSrc = c.createBufferSource(); wSrc.buffer = wBuf;
+  const wF = c.createBiquadFilter(); wF.type = 'bandpass';
+  wF.frequency.setValueAtTime(2000, t); wF.frequency.exponentialRampToValueAtTime(500, t + 0.18); wF.Q.value = 2;
+  const wG = c.createGain();
+  wG.gain.setValueAtTime(0.0001, t); wG.gain.linearRampToValueAtTime(0.12, t + 0.04); wG.gain.exponentialRampToValueAtTime(0.001, t + 0.18);
+  wSrc.connect(wF); wF.connect(wG); wG.connect(c.destination);
+  wSrc.start(t); wSrc.stop(t + 0.2);
+
   // Metallic scrape as key turns — bandpass noise sweep
   const scrapeLen = Math.floor(c.sampleRate * 0.22);
   const scrapeBuf = c.createBuffer(1, scrapeLen, c.sampleRate);
@@ -266,15 +279,15 @@ const buildKeyTurn = (c: AudioContext) => {
   for (let i = 0; i < scrapeLen; i++) sd[i] = Math.random() * 2 - 1;
   const scrapeSrc = c.createBufferSource(); scrapeSrc.buffer = scrapeBuf;
   const scrapeF = c.createBiquadFilter(); scrapeF.type = 'bandpass';
-  scrapeF.frequency.setValueAtTime(1200, t);
-  scrapeF.frequency.exponentialRampToValueAtTime(600, t + 0.22);
+  scrapeF.frequency.setValueAtTime(1200, t + 0.15);
+  scrapeF.frequency.exponentialRampToValueAtTime(600, t + 0.37);
   scrapeF.Q.value = 4;
   const scrapeG = c.createGain();
-  scrapeG.gain.setValueAtTime(0.0001, t);
-  scrapeG.gain.linearRampToValueAtTime(0.08, t + 0.04);
-  scrapeG.gain.exponentialRampToValueAtTime(0.001, t + 0.22);
+  scrapeG.gain.setValueAtTime(0.0001, t + 0.15);
+  scrapeG.gain.linearRampToValueAtTime(0.08, t + 0.19);
+  scrapeG.gain.exponentialRampToValueAtTime(0.001, t + 0.37);
   scrapeSrc.connect(scrapeF); scrapeF.connect(scrapeG); scrapeG.connect(c.destination);
-  scrapeSrc.start(t); scrapeSrc.stop(t + 0.24);
+  scrapeSrc.start(t + 0.15); scrapeSrc.stop(t + 0.39);
 
   // Satisfying click/clunk at the end when it locks
   const clickLen = Math.floor(c.sampleRate * 0.06);
@@ -283,18 +296,18 @@ const buildKeyTurn = (c: AudioContext) => {
   for (let i = 0; i < clickLen; i++) cd[i] = (Math.random() * 2 - 1) * (1 - i / clickLen);
   const clickSrc = c.createBufferSource(); clickSrc.buffer = clickBuf;
   const clickF = c.createBiquadFilter(); clickF.type = 'lowpass'; clickF.frequency.value = 700;
-  const clickG = c.createGain(); clickG.gain.setValueAtTime(0.28, t + 0.2); clickG.gain.exponentialRampToValueAtTime(0.001, t + 0.28);
+  const clickG = c.createGain(); clickG.gain.setValueAtTime(0.28, t + 0.35); clickG.gain.exponentialRampToValueAtTime(0.001, t + 0.43);
   clickSrc.connect(clickF); clickF.connect(clickG); clickG.connect(c.destination);
-  clickSrc.start(t + 0.2); clickSrc.stop(t + 0.3);
+  clickSrc.start(t + 0.35); clickSrc.stop(t + 0.45);
 
   // Tiny metallic ring after the click
   const ring = c.createOscillator(); const rg = c.createGain();
   ring.connect(rg); rg.connect(c.destination);
   ring.type = 'sine'; ring.frequency.value = 2200;
-  rg.gain.setValueAtTime(0.0001, t + 0.22);
-  rg.gain.linearRampToValueAtTime(0.07, t + 0.226);
-  rg.gain.exponentialRampToValueAtTime(0.001, t + 0.5);
-  ring.start(t + 0.22); ring.stop(t + 0.55);
+  rg.gain.setValueAtTime(0.0001, t + 0.37);
+  rg.gain.linearRampToValueAtTime(0.07, t + 0.376);
+  rg.gain.exponentialRampToValueAtTime(0.001, t + 0.65);
+  ring.start(t + 0.37); ring.stop(t + 0.7);
 };
 
 export type SoundType = 'particleClick' | 'startRecording' | 'warning' | 'diceRoll' | 'slotTick' | 'slotLand' | 'leverPull' | 'spaceSwipe' | 'keyTurn';
