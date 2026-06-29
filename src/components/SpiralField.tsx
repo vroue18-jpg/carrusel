@@ -18,7 +18,7 @@ interface Particle {
   blur: boolean;
 }
 
-function buildParticles(cx: number, cy: number, maxR: number): Particle[] {
+function buildParticles(maxR: number): Particle[] {
   const particles: Particle[] = [];
   for (let i = 0; i < PARTICLE_COUNT; i++) {
     const arm = i % ARMS;
@@ -69,7 +69,7 @@ export function SpiralField() {
     canvas.width = W;
     canvas.height = H;
 
-    let particles = buildParticles(cx, cy, maxR);
+    let particles = buildParticles(maxR);
 
     const onResize = () => {
       W = window.innerWidth;
@@ -78,7 +78,7 @@ export function SpiralField() {
       canvas.height = H;
       cx = W / 2;
       cy = H / 2;
-      particles = buildParticles(cx, cy, Math.sqrt(W * W + H * H) * 0.52);
+      particles = buildParticles(Math.sqrt(W * W + H * H) * 0.52);
     };
     window.addEventListener('resize', onResize);
 
