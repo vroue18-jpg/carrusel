@@ -267,7 +267,6 @@ function playAncient() {
 // 8 · Digital Unlock — ascending beeps → confirm chime
 function playDigital() {
   const c = C(), t = c.currentTime;
-  // Fast ascending sequence
   [440, 554, 659, 880].forEach((freq, i) => {
     const o = c.createOscillator(), g = c.createGain();
     o.type = 'sine'; o.frequency.value = freq;
@@ -276,13 +275,14 @@ function playDigital() {
     g.gain.exponentialRampToValueAtTime(0.001, t+d+0.055);
     ch(o, g, c.destination); o.start(t+d); o.stop(t+d+0.07);
   });
-  // Confirm chime (two-tone)
-  [[1047, 0.3], [1319, 0.36]].forEach(([freq, delay]) => {
+  const pairs = [[1047, 0.3], [1319, 0.36]];
+  pairs.forEach(function(pair) {
+    const freq = pair[0], delay = pair[1];
     const o = c.createOscillator(), g = c.createGain();
-    o.type = 'sine'; o.frequency.value = freq as number;
-    g.gain.setValueAtTime(0.0001, t+(delay as number)); g.gain.linearRampToValueAtTime(0.18, t+(delay as number)+0.01);
-    g.gain.exponentialRampToValueAtTime(0.001, t+(delay as number)+0.45);
-    ch(o, g, c.destination); o.start(t+(delay as number)); o.stop(t+(delay as number)+0.48);
+    o.type = 'sine'; o.frequency.value = freq;
+    g.gain.setValueAtTime(0.0001, t+delay); g.gain.linearRampToValueAtTime(0.18, t+delay+0.01);
+    g.gain.exponentialRampToValueAtTime(0.001, t+delay+0.45);
+    ch(o, g, c.destination); o.start(t+delay); o.stop(t+delay+0.48);
   });
 }
 </script>
