@@ -3,6 +3,61 @@ import { playSound } from '../utils/sounds';
 
 interface AccentColor { glow: string; bg: string; border: string; text: string }
 
+const MiniLever: React.FC<{ color: AccentColor; shuffling: boolean; onClick: () => void }> = ({ color: c, shuffling, onClick }) => {
+  const [pulled, setPulled] = useState(false);
+
+  const handleClick = () => {
+    if (shuffling || pulled) return;
+    setPulled(true);
+    playSound('leverPull');
+    onClick();
+    setTimeout(() => setPulled(false), 500);
+  };
+
+  return (
+    <div className="flex flex-col items-center justify-center gap-1 select-none" style={{ width: '44px' }}>
+      <span className="text-[8px] font-semibold tracking-widest uppercase text-center leading-tight"
+            style={{ color: c.text, opacity: shuffling ? 0.3 : 0.6 }}>
+        {shuffling ? '…' : 'new'}
+      </span>
+      <div
+        className="flex flex-col items-center cursor-pointer"
+        onClick={handleClick}
+        style={{ opacity: shuffling ? 0.4 : 1 }}
+      >
+        {/* Knob */}
+        <div
+          className="w-8 h-8 rounded-full flex items-center justify-center text-sm shadow-lg"
+          style={{
+            background: `radial-gradient(circle at 35% 35%, ${c.text}, ${c.glow})`,
+            boxShadow: pulled ? `0 2px 6px ${c.glow}40` : `0 4px 14px ${c.glow}70`,
+            transform: pulled ? 'translateY(50px)' : 'translateY(0)',
+            transition: pulled
+              ? 'transform 0.11s cubic-bezier(0.4,0,1,1)'
+              : 'transform 0.32s cubic-bezier(0.34,1.56,0.64,1)',
+          }}
+        >
+          🔀
+        </div>
+        {/* Shaft */}
+        <div className="w-1.5 rounded-full"
+          style={{
+            height: pulled ? '20px' : '60px',
+            background: `linear-gradient(to bottom, ${c.text}cc, ${c.glow}33)`,
+            transition: pulled
+              ? 'height 0.11s cubic-bezier(0.4,0,1,1)'
+              : 'height 0.32s cubic-bezier(0.34,1.56,0.64,1)',
+            marginTop: '-1px',
+          }}
+        />
+        {/* Base */}
+        <div className="w-6 h-2.5 rounded-full"
+          style={{ background: `linear-gradient(to bottom, ${c.text}77, ${c.glow}11)`, boxShadow: `0 0 8px ${c.glow}40` }} />
+      </div>
+    </div>
+  );
+};
+
 interface Props {
   prompt: string;
   promptIndex: number;
@@ -129,62 +184,41 @@ export const SpeakingTimer: React.FC<Props> = ({
             </div>
           </div>
 
-          <button
-            onClick={handleNewChallenge}
-            disabled={shuffling}
-            className="group relative flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold tracking-wide transition-all duration-200 overflow-hidden active:scale-95 disabled:cursor-not-allowed"
-            style={{
-              background: shuffling ? c.bg : `linear-gradient(135deg, ${c.bg}, rgba(255,255,255,0.03))`,
-              border: `1px solid ${c.border}`,
-              color: c.text,
-              boxShadow: shuffling ? 'none' : `0 0 14px ${c.glow}25`,
-            }}
-          >
-            {/* Shimmer sweep on hover */}
-            <span
-              className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-              style={{ background: `linear-gradient(105deg, transparent 40%, ${c.glow}30 50%, transparent 60%)`, backgroundSize: '200% 100%' }}
-            />
-            <span
-              className="text-base inline-block transition-transform duration-500"
-              style={{ transform: shuffling ? 'rotate(180deg)' : 'rotate(0deg)' }}
-            >
-              🔀
-            </span>
-            <span className="hidden sm:inline relative z-10">
-              {shuffling ? 'Shuffling…' : 'New Question'}
-            </span>
-          </button>
         </div>
 
-        {/* Prompt card — the hero of this section */}
-        <div
-          className="relative rounded-2xl p-6 transition-all duration-300"
-          style={{
-            background: 'rgba(0,0,0,0.35)',
-            border: `1px solid ${c.border}`,
-            opacity: shuffling ? 0 : 1,
-            transform: shuffling ? 'translateY(-8px) scale(0.98)' : 'translateY(0) scale(1)',
-          }}
-        >
-          {/* Dot nav */}
-          <div className="flex items-center gap-1.5 mb-4">
-            {Array.from({ length: totalPrompts }).map((_, i) => (
-              <div key={i} className="rounded-full transition-all duration-300"
-                   style={{ width: i === promptIndex ? '18px' : '5px', height: '5px',
-                            background: i === promptIndex ? c.text : 'rgba(255,255,255,0.15)' }} />
-            ))}
-            <span className="ml-2 text-[10px] text-white/25 font-semibold tracking-wider">{promptIndex + 1}/{totalPrompts}</span>
+        {/* Prompt card + mini lever side by side */}
+        <div className="flex items-stretch gap-3">
+
+          {/* Prompt card */}
+          <div
+            className="flex-1 relative rounded-2xl p-6 transition-all duration-300"
+            style={{
+              background: 'rgba(0,0,0,0.35)',
+              border: `1px solid ${c.border}`,
+              opacity: shuffling ? 0 : 1,
+              transform: shuffling ? 'translateY(-8px) scale(0.98)' : 'translateY(0) scale(1)',
+            }}
+          >
+            {/* Dot nav */}
+            <div className="flex items-center gap-1.5 mb-4">
+              {Array.from({ length: totalPrompts }).map((_, i) => (
+                <div key={i} className="rounded-full transition-all duration-300"
+                     style={{ width: i === promptIndex ? '18px' : '5px', height: '5px',
+                              background: i === promptIndex ? c.text : 'rgba(255,255,255,0.15)' }} />
+              ))}
+              <span className="ml-2 text-[10px] text-white/25 font-semibold tracking-wider">{promptIndex + 1}/{totalPrompts}</span>
+            </div>
+            <p
+              className="text-white/90 text-xl sm:text-2xl leading-snug font-light animate-fadeIn"
+              key={prompt}
+              style={{ borderLeft: `3px solid ${c.text}`, paddingLeft: '1rem' }}
+            >
+              {prompt}
+            </p>
           </div>
 
-          {/* The question itself — big and bold */}
-          <p
-            className="text-white/90 text-xl sm:text-2xl leading-snug font-light animate-fadeIn"
-            key={prompt}
-            style={{ borderLeft: `3px solid ${c.text}`, paddingLeft: '1rem' }}
-          >
-            {prompt}
-          </p>
+          {/* Mini lever for new question */}
+          <MiniLever color={c} shuffling={shuffling} onClick={handleNewChallenge} />
         </div>
 
         {/* Timer + controls row */}
