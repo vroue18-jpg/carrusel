@@ -137,16 +137,12 @@ export default function App() {
       <header className="sticky top-0 z-50 glass border-b border-white/[0.07]">
         <div className="max-w-4xl mx-auto px-5 py-4 flex items-center justify-between gap-4">
           <div>
-            <h1 className="font-title text-3xl sm:text-4xl shimmer-text leading-none italic">
+            <h1 className="font-display text-3xl sm:text-4xl tracking-wider shimmer-text leading-none">
               Phrasal Verb Calculator
             </h1>
-            <div className="flex items-center gap-2 mt-1">
-              <div className="h-px w-4 bg-glow-orange/40" />
-              <p className="text-white/30 text-[9px] font-semibold tracking-[0.25em] uppercase">
-                by Craft English
-              </p>
-              <div className="h-px w-4 bg-glow-orange/40" />
-            </div>
+            <p className="text-white/30 text-[10px] font-semibold tracking-[0.2em] uppercase mt-0.5">
+              by Craft English
+            </p>
           </div>
 
           <div className="flex items-center gap-3">
