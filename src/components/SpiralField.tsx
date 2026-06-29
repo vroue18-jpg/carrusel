@@ -1,13 +1,22 @@
 import { useEffect, useRef } from 'react';
 
-const PARTICLE_COUNT = 420;
 const ARMS = 3;
+const MAX_PARTICLES = 380;
+const MIN_PARTICLES = 80;
+const ROTATION_PERIOD = 90_000;
+
+// Quality tiers — stepped down automatically when FPS drops
+const TIERS = [
+  { count: 380, glow: true,  drift: true  },  // HIGH
+  { count: 220, glow: true,  drift: false },  // MEDIUM
+  { count: 120, glow: false, drift: false },  // LOW
+  { count: MIN_PARTICLES, glow: false, drift: false }, // MINIMAL
+];
 
 interface Particle {
-  arm: number;
-  t: number;        // position along spiral (0–1)
-  r: number;        // computed radius
-  angle: number;    // computed angle
+  t: number;
+  r: number;
+  angle: number;
   size: number;
   baseBrightness: number;
   twinkleSpeed: number;
@@ -15,37 +24,35 @@ interface Particle {
   driftAngle: number;
   driftSpeed: number;
   driftRadius: number;
-  blur: boolean;
+  // pre-baked color ints
+  cr: number; cg: number; cb: number;
 }
 
 function buildParticles(maxR: number): Particle[] {
-  const particles: Particle[] = [];
-  for (let i = 0; i < PARTICLE_COUNT; i++) {
+  const out: Particle[] = [];
+  for (let i = 0; i < MAX_PARTICLES; i++) {
     const arm = i % ARMS;
-    // Bias toward inner spiral — cube-root so core is denser
     const t = Math.pow(Math.random(), 0.7);
     const r = t * maxR;
-    // Logarithmic spiral: angle grows as log of radius
     const spiralAngle = (arm * (2 * Math.PI / ARMS)) + 4.5 * Math.log(1 + t * 6);
-    // Small scatter around the arm
     const scatter = (1 - t * 0.6) * 0.45;
     const angle = spiralAngle + (Math.random() - 0.5) * scatter;
-    particles.push({
-      arm,
-      t,
-      r,
-      angle,
-      size: 0.6 + Math.random() * (t < 0.3 ? 2.2 : 1.4),
+    const warmth = 1 - t * 0.35;
+    out.push({
+      t, r, angle,
+      size: 0.7 + Math.random() * (t < 0.3 ? 2.0 : 1.2),
       baseBrightness: 0.3 + Math.random() * 0.7,
-      twinkleSpeed: 0.4 + Math.random() * 1.6,
+      twinkleSpeed: 0.4 + Math.random() * 1.5,
       twinkleOffset: Math.random() * Math.PI * 2,
       driftAngle: Math.random() * Math.PI * 2,
       driftSpeed: 0.1 + Math.random() * 0.3,
-      driftRadius: 0.5 + Math.random() * (r * 0.015),
-      blur: t > 0.55 && Math.random() < 0.4,
+      driftRadius: 0.6 + Math.random() * (r * 0.014),
+      cr: 255,
+      cg: Math.round((122 + (157 - 122) * (1 - t)) * warmth),
+      cb: Math.round(t * 8),
     });
   }
-  return particles;
+  return out;
 }
 
 export function SpiralField() {
@@ -55,85 +62,106 @@ export function SpiralField() {
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext('2d', { alpha: true });
     if (!ctx) return;
 
     const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     let W = window.innerWidth;
     let H = window.innerHeight;
-    const maxR = Math.sqrt(W * W + H * H) * 0.52;
     let cx = W / 2;
     let cy = H / 2;
-
     canvas.width = W;
     canvas.height = H;
 
-    let particles = buildParticles(maxR);
+    let particles = buildParticles(Math.sqrt(W * W + H * H) * 0.52);
+
+    // ── Adaptive quality ──────────────────────────────────────────────
+    let tierIdx = 0;
+    let fpsSamples: number[] = [];
+    let lastTs = 0;
+    let frameCount = 0;
+    // Check every 60 frames, upgrade every 300 frames if stable
+    const MEASURE_INTERVAL = 60;
+    const UPGRADE_INTERVAL = 300;
 
     const onResize = () => {
-      W = window.innerWidth;
-      H = window.innerHeight;
-      canvas.width = W;
-      canvas.height = H;
-      cx = W / 2;
-      cy = H / 2;
+      W = window.innerWidth; H = window.innerHeight;
+      canvas.width = W; canvas.height = H;
+      cx = W / 2; cy = H / 2;
       particles = buildParticles(Math.sqrt(W * W + H * H) * 0.52);
     };
     window.addEventListener('resize', onResize);
 
-    // Rotation period: 90s clockwise
-    const ROTATION_PERIOD = 90_000;
-
     const draw = (ts: number) => {
+      // ── FPS measurement & adaptive tier ──────────────────────────
+      if (lastTs > 0) {
+        const fps = 1000 / (ts - lastTs);
+        fpsSamples.push(fps);
+        if (fpsSamples.length >= MEASURE_INTERVAL) {
+          const avg = fpsSamples.reduce((a, b) => a + b, 0) / fpsSamples.length;
+          fpsSamples = [];
+          if (avg < 30 && tierIdx < TIERS.length - 1) {
+            tierIdx++;   // drop quality
+          } else if (avg > 55 && frameCount % UPGRADE_INTERVAL === 0 && tierIdx > 0) {
+            tierIdx--;   // try upgrading
+          }
+        }
+      }
+      lastTs = ts;
+      frameCount++;
+
+      const tier = TIERS[tierIdx];
+      const count = tier.count;
+
       ctx.clearRect(0, 0, W, H);
 
-      const globalRotation = prefersReduced ? 0 : ((ts % ROTATION_PERIOD) / ROTATION_PERIOD) * Math.PI * 2;
+      const globalRotation = prefersReduced
+        ? 0
+        : ((ts % ROTATION_PERIOD) / ROTATION_PERIOD) * Math.PI * 2;
 
-      for (const p of particles) {
+      for (let i = 0; i < count; i++) {
+        const p = particles[i];
+
         const twinkle = 0.55 + 0.45 * Math.sin(ts * 0.001 * p.twinkleSpeed + p.twinkleOffset);
         const brightness = p.baseBrightness * twinkle;
 
-        // Drift: tiny circular oscillation around the particle's home position
-        const driftPhase = ts * 0.001 * p.driftSpeed + p.driftAngle;
-        const dx = Math.cos(driftPhase) * p.driftRadius;
-        const dy = Math.sin(driftPhase) * p.driftRadius;
-
         const angle = p.angle + globalRotation;
-        const x = cx + Math.cos(angle) * p.r + dx;
-        const y = cy + Math.sin(angle) * p.r + dy;
+        let x = cx + Math.cos(angle) * p.r;
+        let y = cy + Math.sin(angle) * p.r;
 
-        // Orange palette: inner core warmer, outer arms cooler orange
-        const warmth = 1 - p.t * 0.35;
-        const r = Math.round(255);
-        const g = Math.round((122 + (157 - 122) * (1 - p.t)) * warmth);
-        const b = Math.round(0 + p.t * 8);
-
-        const alpha = brightness * (p.blur ? 0.35 : 0.75);
-        const color = `rgba(${r},${g},${b},${alpha})`;
-
-        if (p.blur) {
-          ctx.filter = 'blur(1.5px)';
+        if (tier.drift) {
+          const driftPhase = ts * 0.001 * p.driftSpeed + p.driftAngle;
+          x += Math.cos(driftPhase) * p.driftRadius;
+          y += Math.sin(driftPhase) * p.driftRadius;
         }
 
-        // Glow: large soft halo
-        const glow = ctx.createRadialGradient(x, y, 0, x, y, p.size * 4);
-        glow.addColorStop(0, `rgba(${r},${g},${b},${alpha * 0.9})`);
-        glow.addColorStop(0.4, `rgba(${r},${g},${b},${alpha * 0.3})`);
-        glow.addColorStop(1, `rgba(${r},${g},${b},0)`);
-        ctx.fillStyle = glow;
-        ctx.beginPath();
-        ctx.arc(x, y, p.size * 4, 0, Math.PI * 2);
-        ctx.fill();
+        const alpha = brightness * 0.82;
+
+        if (tier.glow) {
+          // Soft glow: draw two overlapping circles instead of RadialGradient
+          // (much cheaper — no gradient object allocation per frame)
+          ctx.globalAlpha = alpha * 0.22;
+          ctx.fillStyle = `rgb(${p.cr},${p.cg},${p.cb})`;
+          ctx.beginPath();
+          ctx.arc(x, y, p.size * 5, 0, Math.PI * 2);
+          ctx.fill();
+
+          ctx.globalAlpha = alpha * 0.45;
+          ctx.beginPath();
+          ctx.arc(x, y, p.size * 2.5, 0, Math.PI * 2);
+          ctx.fill();
+        }
 
         // Core dot
-        ctx.filter = 'none';
-        ctx.fillStyle = color;
+        ctx.globalAlpha = alpha;
+        ctx.fillStyle = `rgb(${p.cr},${p.cg},${p.cb})`;
         ctx.beginPath();
         ctx.arc(x, y, p.size, 0, Math.PI * 2);
         ctx.fill();
       }
 
+      ctx.globalAlpha = 1;
       rafRef.current = requestAnimationFrame(draw);
     };
 
@@ -149,7 +177,7 @@ export function SpiralField() {
     <canvas
       ref={canvasRef}
       className="pointer-events-none fixed inset-0 z-0"
-      style={{ opacity: 0.13, mixBlendMode: 'screen' }}
+      style={{ opacity: 0.14, mixBlendMode: 'screen' }}
     />
   );
 }
