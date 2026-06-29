@@ -5,7 +5,8 @@ export default {
     extend: {
       fontFamily: {
         sans: ['Inter', 'sans-serif'],
-        display: ['"Playfair Display"', 'Georgia', 'serif'],
+        display: ['"Bebas Neue"', 'sans-serif'],
+        title: ['"Playfair Display"', 'Georgia', 'serif'],
         handwritten: ['Caveat', 'cursive'],
       },
       colors: {
