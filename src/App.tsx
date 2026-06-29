@@ -2,6 +2,7 @@ import { useState, useCallback, useRef, useEffect } from 'react';
 import { PARTICLES } from './data/particles';
 import { ParticleButton } from './components/ParticleButton';
 import { ParticleDetail } from './components/ParticleDetail';
+import { ParticleCarousel } from './components/ParticleCarousel';
 import { VerbOfTheDay } from './components/VerbOfTheDay';
 import { playSound } from './utils/sounds';
 
@@ -55,6 +56,7 @@ function GoalRing({ done, total, goalMet }: { done: number; total: number; goalM
 
 export default function App() {
   const [activeIndex, setActiveIndex]   = useState<number | null>(null);
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [streak, setStreak]             = useState(0);
   const [streakAnim, setStreakAnim]     = useState(false);
   const [diceRolling, setDiceRolling]   = useState(false);
@@ -184,14 +186,6 @@ export default function App() {
         {/* Verb of the Day */}
         <VerbOfTheDay onChallengeComplete={handleStreakIncrement} />
 
-        {/* Hero label */}
-        <div className="text-center space-y-2">
-          <p className="text-sm font-light tracking-[0.25em] uppercase text-white/35">
-            Select a particle to unlock its meaning{' '}
-            <span className="text-glow-orange/60">✦</span>
-          </p>
-        </div>
-
         {/* Particle selector panel */}
         <div className="glass rounded-3xl p-6 shadow-card">
           <p className="text-[10px] font-semibold tracking-[0.25em] uppercase text-white/25 mb-5">
@@ -203,14 +197,17 @@ export default function App() {
                 key={p.particle}
                 particle={p.particle}
                 emoji={p.emoji}
+                coreMeaning={p.coreMeaning}
                 isActive={activeIndex === i}
+                isHovered={hoveredIndex === i}
                 onClick={() => setActiveIndex(activeIndex === i ? null : i)}
+                onHover={(hovering) => setHoveredIndex(hovering ? i : null)}
               />
             ))}
           </div>
         </div>
 
-        {/* Detail or empty state */}
+        {/* Detail or carousel empty state */}
         {active ? (
           <ParticleDetail
             key={active.particle}
@@ -218,13 +215,11 @@ export default function App() {
             onChallengeComplete={handleStreakIncrement}
           />
         ) : (
-          <div className="text-center py-24">
-            <div className="text-7xl mb-6 animate-pulse2 inline-block">🔤</div>
-            <p className="font-display text-3xl tracking-widest text-white/20">
-              PICK A PARTICLE
-            </p>
-            <p className="text-white/20 text-sm mt-2 font-light">or hit the 🎲 Random button above</p>
-          </div>
+          <ParticleCarousel
+            particles={PARTICLES}
+            hoveredIndex={hoveredIndex}
+            onSelect={(i) => setActiveIndex(i)}
+          />
         )}
       </main>
 
