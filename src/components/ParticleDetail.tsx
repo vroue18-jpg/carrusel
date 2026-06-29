@@ -138,6 +138,7 @@ export const ParticleDetail: React.FC<Props> = ({ data, onChallengeComplete }) =
         totalPrompts={data.speakingPrompts.length}
         onNewChallenge={handleNewChallenge}
         onChallengeComplete={onChallengeComplete}
+        accentColor={c}
       />
     </div>
   );
