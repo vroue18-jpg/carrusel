@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Key Sound Tester</title>
+<title>Unlock Sound Tester</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
@@ -20,9 +20,9 @@
   h1 { font-size: 1.3rem; color: #e8620a; letter-spacing: 0.15em; margin-bottom: 4px; }
   p { color: rgba(255,255,255,0.35); font-size: 0.8rem; margin-bottom: 20px; text-align: center; }
   .btn {
-    width: 340px;
-    padding: 14px 20px;
-    border-radius: 14px;
+    width: 360px;
+    padding: 16px 22px;
+    border-radius: 16px;
     border: 1px solid rgba(255,255,255,0.1);
     background: rgba(255,255,255,0.04);
     color: #fff;
@@ -30,200 +30,260 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 3px;
+    gap: 4px;
     transition: all 0.15s;
     text-align: left;
   }
-  .btn:hover { background: rgba(255,255,255,0.09); border-color: rgba(232,98,10,0.4); }
-  .btn:active { transform: scale(0.97); }
-  .btn .name { font-weight: 600; font-size: 0.95rem; }
-  .btn .desc { color: rgba(255,255,255,0.3); font-size: 0.72rem; }
+  .btn:hover { background: rgba(255,255,255,0.09); border-color: rgba(232,98,10,0.45); }
+  .btn:active { transform: scale(0.97); background: rgba(232,98,10,0.1); }
+  .btn .name { font-weight: 700; font-size: 1rem; }
+  .btn .desc { color: rgba(255,255,255,0.3); font-size: 0.73rem; line-height: 1.4; }
 </style>
 </head>
 <body>
-<h1>🔑 Key Sound Tester</h1>
-<p>Click to preview each sound. Tell me which one you like!</p>
+<h1>🔓 Unlock Sound Tester</h1>
+<p>Each sound should feel like revealing or unlocking something. Click to preview!</p>
 
-<button class="btn" onclick="playSnap()">
-  <span class="name">1 · Snap Click</span>
-  <span class="desc">Single sharp metallic snap — very short (&lt;100ms)</span>
+<button class="btn" onclick="playTumblers()">
+  <span class="name">1 · Vault Tumblers</span>
+  <span class="desc">3 quick pin clicks → heavy bolt release. Like cracking a safe.</span>
 </button>
 
-<button class="btn" onclick="playClickClack()">
-  <span class="name">2 · Click + Clack</span>
-  <span class="desc">Two-hit: insertion tick then lock clack (~200ms)</span>
+<button class="btn" onclick="playMagicUnlock()">
+  <span class="name">2 · Magic Unlock</span>
+  <span class="desc">Rising shimmer of tones → bright chime burst. Feels like a spell breaking.</span>
 </button>
 
-<button class="btn" onclick="playScrapeClick()">
-  <span class="name">3 · Scrape + Click</span>
-  <span class="desc">Brief metal scrape as it turns, ends with click (~250ms)</span>
+<button class="btn" onclick="playPowerUp()">
+  <span class="name">3 · Power Surge</span>
+  <span class="desc">Low hum builds → electrical crack → release. Like charging and firing.</span>
 </button>
 
-<button class="btn" onclick="playThunk()">
-  <span class="name">4 · Heavy Thunk</span>
-  <span class="desc">Solid low-end mechanical thunk, like a deadbolt (~150ms)</span>
+<button class="btn" onclick="playChestOpen()">
+  <span class="name">4 · Chest Open</span>
+  <span class="desc">Creak of a lid → golden shimmer. Like opening a treasure chest.</span>
 </button>
 
-<button class="btn" onclick="playTick()">
-  <span class="name">5 · Crisp Tick</span>
-  <span class="desc">Thin, precise metal tick — minimal and clean (~80ms)</span>
+<button class="btn" onclick="playSwooshReveal()">
+  <span class="name">5 · Swoosh Reveal</span>
+  <span class="desc">Whoosh inward → bright impact → halo ring. Clean and satisfying.</span>
 </button>
 
-<button class="btn" onclick="playRatchet()">
-  <span class="name">6 · Ratchet</span>
-  <span class="desc">Two quick ratchet clicks, like a bike lock (~180ms)</span>
+<button class="btn" onclick="playMechOpen()">
+  <span class="name">6 · Mechanical Open</span>
+  <span class="desc">Ratchet sequence → spring release → metal ring. Industrial satisfying feel.</span>
 </button>
 
-<button class="btn" onclick="playBrass()">
-  <span class="name">7 · Brass Ring</span>
-  <span class="desc">Soft brass impact with a warm ring decay (~300ms)</span>
+<button class="btn" onclick="playAncient()">
+  <span class="name">7 · Ancient Key</span>
+  <span class="desc">Deep scrape → chunk → low brass resonance. Heavy, ancient, powerful.</span>
 </button>
 
-<button class="btn" onclick="playSafe()">
-  <span class="name">8 · Safe Lock</span>
-  <span class="desc">Deep click + heavy bolt settling, premium feel (~280ms)</span>
+<button class="btn" onclick="playDigital()">
+  <span class="name">8 · Digital Unlock</span>
+  <span class="desc">Fast ascending beep sequence → confirm chime. Modern & crisp.</span>
 </button>
 
 <script>
 let ctx;
-function getCtx() {
+function C() {
   if (!ctx) ctx = new AudioContext();
   if (ctx.state === 'suspended') ctx.resume();
   return ctx;
 }
 function noise(c, dur) {
-  const buf = c.createBuffer(1, Math.floor(c.sampleRate * dur), c.sampleRate);
-  const d = buf.getChannelData(0);
+  const b = c.createBuffer(1, Math.floor(c.sampleRate * dur), c.sampleRate);
+  const d = b.getChannelData(0);
   for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
-  return buf;
+  return b;
 }
-function chain(nodes) {
-  for (let i = 0; i < nodes.length - 1; i++) nodes[i].connect(nodes[i+1]);
-}
+function ch(...nodes) { for (let i = 0; i < nodes.length-1; i++) nodes[i].connect(nodes[i+1]); }
 
-// 1 · Single sharp metallic snap
-function playSnap() {
-  const c = getCtx(), t = c.currentTime;
-  const src = c.createBufferSource(); src.buffer = noise(c, 0.018);
-  const hp = c.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 1800;
-  const lp = c.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 5000;
-  const g = c.createGain(); g.gain.setValueAtTime(0.6, t); g.gain.exponentialRampToValueAtTime(0.001, t + 0.07);
-  chain([src, hp, lp, g, c.destination]);
-  src.start(t); src.stop(t + 0.08);
-}
-
-// 2 · Click + Clack (two hits)
-function playClickClack() {
-  const c = getCtx(), t = c.currentTime;
-  // Insert click
-  const s1 = c.createBufferSource(); s1.buffer = noise(c, 0.012);
-  const f1 = c.createBiquadFilter(); f1.type = 'bandpass'; f1.frequency.value = 3200; f1.Q.value = 2;
-  const g1 = c.createGain(); g1.gain.setValueAtTime(0.5, t); g1.gain.exponentialRampToValueAtTime(0.001, t + 0.05);
-  chain([s1, f1, g1, c.destination]); s1.start(t); s1.stop(t + 0.06);
-  // Lock clack
-  const s2 = c.createBufferSource(); s2.buffer = noise(c, 0.02);
-  const f2 = c.createBiquadFilter(); f2.type = 'bandpass'; f2.frequency.value = 800; f2.Q.value = 1.5;
-  const g2 = c.createGain(); g2.gain.setValueAtTime(0.55, t+0.16); g2.gain.exponentialRampToValueAtTime(0.001, t + 0.22);
-  chain([s2, f2, g2, c.destination]); s2.start(t+0.16); s2.stop(t + 0.23);
-  // Ring on clack
+// 1 · Vault Tumblers — 3 clicks then bolt thud
+function playTumblers() {
+  const c = C(), t = c.currentTime;
+  // Three tumbler clicks
+  [0, 0.09, 0.18].forEach((d, i) => {
+    const s = c.createBufferSource(); s.buffer = noise(c, 0.014);
+    const f = c.createBiquadFilter(); f.type = 'bandpass';
+    f.frequency.value = 2800 - i * 300; f.Q.value = 3;
+    const g = c.createGain(); g.gain.setValueAtTime(0.35 + i*0.08, t+d); g.gain.exponentialRampToValueAtTime(0.001, t+d+0.06);
+    ch(s, f, g, c.destination); s.start(t+d); s.stop(t+d+0.07);
+  });
+  // Heavy bolt release
+  const sb = c.createBufferSource(); sb.buffer = noise(c, 0.03);
+  const lp = c.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 600;
+  const sg = c.createGain(); sg.gain.setValueAtTime(0.65, t+0.32); sg.gain.exponentialRampToValueAtTime(0.001, t+0.48);
+  ch(sb, lp, sg, c.destination); sb.start(t+0.32); sb.stop(t+0.5);
+  // Bolt resonance
   const o = c.createOscillator(), og = c.createGain();
-  o.type = 'sine'; o.frequency.value = 980;
-  og.gain.setValueAtTime(0.0001, t+0.16); og.gain.linearRampToValueAtTime(0.08, t+0.164); og.gain.exponentialRampToValueAtTime(0.001, t+0.32);
-  chain([o, og, c.destination]); o.start(t+0.16); o.stop(t+0.35);
+  o.type = 'sine'; o.frequency.setValueAtTime(120, t+0.32); o.frequency.exponentialRampToValueAtTime(55, t+0.48);
+  og.gain.setValueAtTime(0.3, t+0.32); og.gain.exponentialRampToValueAtTime(0.001, t+0.5);
+  ch(o, og, c.destination); o.start(t+0.32); o.stop(t+0.52);
 }
 
-// 3 · Scrape + Click
-function playScrapeClick() {
-  const c = getCtx(), t = c.currentTime;
-  const scr = c.createBufferSource(); scr.buffer = noise(c, 0.14);
-  const sf = c.createBiquadFilter(); sf.type = 'bandpass'; sf.Q.value = 5;
-  sf.frequency.setValueAtTime(1100, t); sf.frequency.linearRampToValueAtTime(650, t+0.14);
-  const sg = c.createGain(); sg.gain.setValueAtTime(0.0001, t); sg.gain.linearRampToValueAtTime(0.06, t+0.03); sg.gain.exponentialRampToValueAtTime(0.001, t+0.14);
-  chain([scr, sf, sg, c.destination]); scr.start(t); scr.stop(t+0.16);
-  // Final click
-  const ck = c.createBufferSource(); ck.buffer = noise(c, 0.015);
-  const ckf = c.createBiquadFilter(); ckf.type = 'lowpass'; ckf.frequency.value = 2000;
-  const ckg = c.createGain(); ckg.gain.setValueAtTime(0.5, t+0.15); ckg.gain.exponentialRampToValueAtTime(0.001, t+0.22);
-  chain([ck, ckf, ckg, c.destination]); ck.start(t+0.15); ck.stop(t+0.23);
-}
-
-// 4 · Heavy Thunk (deadbolt)
-function playThunk() {
-  const c = getCtx(), t = c.currentTime;
-  const src = c.createBufferSource(); src.buffer = noise(c, 0.025);
-  const lp = c.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 500;
-  const g = c.createGain(); g.gain.setValueAtTime(0.7, t); g.gain.exponentialRampToValueAtTime(0.001, t+0.13);
-  chain([src, lp, g, c.destination]); src.start(t); src.stop(t+0.14);
-  const sub = c.createOscillator(), sg = c.createGain();
-  sub.type = 'sine'; sub.frequency.setValueAtTime(90, t); sub.frequency.exponentialRampToValueAtTime(40, t+0.12);
-  sg.gain.setValueAtTime(0.35, t); sg.gain.exponentialRampToValueAtTime(0.001, t+0.15);
-  chain([sub, sg, c.destination]); sub.start(t); sub.stop(t+0.16);
-}
-
-// 5 · Crisp Tick
-function playTick() {
-  const c = getCtx(), t = c.currentTime;
-  const src = c.createBufferSource(); src.buffer = noise(c, 0.008);
-  const hp = c.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 3500;
-  const g = c.createGain(); g.gain.setValueAtTime(0.45, t); g.gain.exponentialRampToValueAtTime(0.001, t+0.045);
-  chain([src, hp, g, c.destination]); src.start(t); src.stop(t+0.05);
-  const o = c.createOscillator(), og = c.createGain();
-  o.type = 'sine'; o.frequency.value = 2800;
-  og.gain.setValueAtTime(0.0001, t); og.gain.linearRampToValueAtTime(0.05, t+0.003); og.gain.exponentialRampToValueAtTime(0.001, t+0.06);
-  chain([o, og, c.destination]); o.start(t); o.stop(t+0.07);
-}
-
-// 6 · Ratchet (two quick clicks)
-function playRatchet() {
-  const c = getCtx(), t = c.currentTime;
-  [0, 0.1].forEach(delay => {
-    const src = c.createBufferSource(); src.buffer = noise(c, 0.012);
-    const bp = c.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = 2200; bp.Q.value = 3;
-    const g = c.createGain(); g.gain.setValueAtTime(0.45, t+delay); g.gain.exponentialRampToValueAtTime(0.001, t+delay+0.06);
-    chain([src, bp, g, c.destination]); src.start(t+delay); src.stop(t+delay+0.07);
-    const o = c.createOscillator(), og = c.createGain();
-    o.type = 'sine'; o.frequency.value = 1200;
-    og.gain.setValueAtTime(0.0001, t+delay); og.gain.linearRampToValueAtTime(0.04, t+delay+0.003); og.gain.exponentialRampToValueAtTime(0.001, t+delay+0.07);
-    chain([o, og, c.destination]); o.start(t+delay); o.stop(t+delay+0.08);
+// 2 · Magic Unlock — rising shimmer + bright burst
+function playMagicUnlock() {
+  const c = C(), t = c.currentTime;
+  // Ascending shimmer
+  [0, 0.07, 0.14, 0.2].forEach((d, i) => {
+    const o = c.createOscillator(), g = c.createGain();
+    o.type = 'sine'; o.frequency.value = 400 + i * 220;
+    g.gain.setValueAtTime(0.0001, t+d); g.gain.linearRampToValueAtTime(0.09, t+d+0.03);
+    g.gain.exponentialRampToValueAtTime(0.001, t+d+0.18);
+    ch(o, g, c.destination); o.start(t+d); o.stop(t+d+0.2);
+  });
+  // Bright burst at the end
+  [0, 0.05, 0.10].forEach((d, i) => {
+    const o = c.createOscillator(), g = c.createGain();
+    o.type = 'sine'; o.frequency.value = 880 + i * 440;
+    g.gain.setValueAtTime(0.0001, t+0.3+d); g.gain.linearRampToValueAtTime(0.18-i*0.04, t+0.3+d+0.008);
+    g.gain.exponentialRampToValueAtTime(0.001, t+0.3+d+0.4);
+    ch(o, g, c.destination); o.start(t+0.3+d); o.stop(t+0.3+d+0.42);
   });
 }
 
-// 7 · Brass Ring
-function playBrass() {
-  const c = getCtx(), t = c.currentTime;
-  const src = c.createBufferSource(); src.buffer = noise(c, 0.02);
-  const bp = c.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = 600; bp.Q.value = 1.2;
-  const g = c.createGain(); g.gain.setValueAtTime(0.4, t); g.gain.exponentialRampToValueAtTime(0.001, t+0.07);
-  chain([src, bp, g, c.destination]); src.start(t); src.stop(t+0.08);
-  [520, 1050, 2100].forEach((freq, i) => {
-    const o = c.createOscillator(), og = c.createGain();
+// 3 · Power Surge — hum build → crack → release
+function playPowerUp() {
+  const c = C(), t = c.currentTime;
+  // Rising hum
+  const hum = c.createOscillator(), hg = c.createGain();
+  hum.type = 'sawtooth'; hum.frequency.setValueAtTime(60, t); hum.frequency.linearRampToValueAtTime(180, t+0.25);
+  hg.gain.setValueAtTime(0.0001, t); hg.gain.linearRampToValueAtTime(0.1, t+0.25); hg.gain.exponentialRampToValueAtTime(0.001, t+0.28);
+  ch(hum, hg, c.destination); hum.start(t); hum.stop(t+0.29);
+  // Electrical crack
+  const cr = c.createBufferSource(); cr.buffer = noise(c, 0.018);
+  const crf = c.createBiquadFilter(); crf.type = 'highpass'; crf.frequency.value = 4000;
+  const crg = c.createGain(); crg.gain.setValueAtTime(0.55, t+0.27); crg.gain.exponentialRampToValueAtTime(0.001, t+0.32);
+  ch(cr, crf, crg, c.destination); cr.start(t+0.27); cr.stop(t+0.33);
+  // Release — bright tone cascade
+  [0, 0.04, 0.09].forEach((d, i) => {
+    const o = c.createOscillator(), g = c.createGain();
+    o.type = 'sine'; o.frequency.value = 660 + i*330;
+    g.gain.setValueAtTime(0.0001, t+0.3+d); g.gain.linearRampToValueAtTime(0.15-i*0.04, t+0.3+d+0.006);
+    g.gain.exponentialRampToValueAtTime(0.001, t+0.3+d+0.35);
+    ch(o, g, c.destination); o.start(t+0.3+d); o.stop(t+0.3+d+0.37);
+  });
+}
+
+// 4 · Chest Open — creak + golden shimmer
+function playChestOpen() {
+  const c = C(), t = c.currentTime;
+  // Creak (freq-modulated noise)
+  const cr = c.createBufferSource(); cr.buffer = noise(c, 0.2);
+  const crf = c.createBiquadFilter(); crf.type = 'bandpass'; crf.Q.value = 8;
+  crf.frequency.setValueAtTime(300, t); crf.frequency.exponentialRampToValueAtTime(900, t+0.2);
+  const crg = c.createGain(); crg.gain.setValueAtTime(0.0001, t); crg.gain.linearRampToValueAtTime(0.08, t+0.05);
+  crg.gain.linearRampToValueAtTime(0.04, t+0.18); crg.gain.exponentialRampToValueAtTime(0.001, t+0.22);
+  ch(cr, crf, crg, c.destination); cr.start(t); cr.stop(t+0.24);
+  // Golden shimmer — warm harmonics
+  [523, 659, 784, 1047].forEach((freq, i) => {
+    const o = c.createOscillator(), g = c.createGain();
     o.type = 'sine'; o.frequency.value = freq;
-    const vol = [0.14, 0.07, 0.03][i];
-    const dec = [0.28, 0.18, 0.10][i];
-    og.gain.setValueAtTime(0.0001, t); og.gain.linearRampToValueAtTime(vol, t+0.005); og.gain.exponentialRampToValueAtTime(0.001, t+dec);
-    chain([o, og, c.destination]); o.start(t); o.stop(t+dec+0.01);
+    const delay = 0.18 + i * 0.04;
+    g.gain.setValueAtTime(0.0001, t+delay); g.gain.linearRampToValueAtTime(0.12-i*0.02, t+delay+0.01);
+    g.gain.exponentialRampToValueAtTime(0.001, t+delay+0.5-i*0.05);
+    ch(o, g, c.destination); o.start(t+delay); o.stop(t+delay+0.55);
   });
 }
 
-// 8 · Safe Lock (deep click + bolt)
-function playSafe() {
-  const c = getCtx(), t = c.currentTime;
-  // Body impact
-  const s1 = c.createBufferSource(); s1.buffer = noise(c, 0.022);
-  const hp = c.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 200;
-  const lp = c.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 1800;
-  const g1 = c.createGain(); g1.gain.setValueAtTime(0.6, t); g1.gain.exponentialRampToValueAtTime(0.001, t+0.09);
-  chain([s1, hp, lp, g1, c.destination]); s1.start(t); s1.stop(t+0.1);
-  // Deep resonance
-  const sub = c.createOscillator(), sg = c.createGain();
-  sub.type = 'sine'; sub.frequency.setValueAtTime(110, t); sub.frequency.exponentialRampToValueAtTime(55, t+0.18);
-  sg.gain.setValueAtTime(0.28, t); sg.gain.exponentialRampToValueAtTime(0.001, t+0.2);
-  chain([sub, sg, c.destination]); sub.start(t); sub.stop(t+0.22);
-  // Bolt settling micro-click
-  const s2 = c.createBufferSource(); s2.buffer = noise(c, 0.01);
-  const bf = c.createBiquadFilter(); bf.type = 'bandpass'; bf.frequency.value = 1400; bf.Q.value = 2;
-  const g2 = c.createGain(); g2.gain.setValueAtTime(0.25, t+0.19); g2.gain.exponentialRampToValueAtTime(0.001, t+0.27);
-  chain([s2, bf, g2, c.destination]); s2.start(t+0.19); s2.stop(t+0.28);
+// 5 · Swoosh Reveal — whoosh in → bright impact → ring
+function playSwooshReveal() {
+  const c = C(), t = c.currentTime;
+  // Whoosh (descending filter noise)
+  const ws = c.createBufferSource(); ws.buffer = noise(c, 0.22);
+  const wf = c.createBiquadFilter(); wf.type = 'bandpass'; wf.Q.value = 2;
+  wf.frequency.setValueAtTime(3500, t); wf.frequency.exponentialRampToValueAtTime(400, t+0.22);
+  const wg = c.createGain(); wg.gain.setValueAtTime(0.0001, t); wg.gain.linearRampToValueAtTime(0.22, t+0.06);
+  wg.gain.exponentialRampToValueAtTime(0.001, t+0.22);
+  ch(ws, wf, wg, c.destination); ws.start(t); ws.stop(t+0.24);
+  // Impact
+  const is = c.createBufferSource(); is.buffer = noise(c, 0.015);
+  const ihp = c.createBiquadFilter(); ihp.type = 'highpass'; ihp.frequency.value = 1000;
+  const ig = c.createGain(); ig.gain.setValueAtTime(0.5, t+0.21); ig.gain.exponentialRampToValueAtTime(0.001, t+0.28);
+  ch(is, ihp, ig, c.destination); is.start(t+0.21); is.stop(t+0.29);
+  // Halo ring
+  [880, 1760].forEach((freq, i) => {
+    const o = c.createOscillator(), g = c.createGain();
+    o.type = 'sine'; o.frequency.value = freq;
+    g.gain.setValueAtTime(0.0001, t+0.22); g.gain.linearRampToValueAtTime(0.16-i*0.06, t+0.226);
+    g.gain.exponentialRampToValueAtTime(0.001, t+0.22+0.5-i*0.1);
+    ch(o, g, c.destination); o.start(t+0.22); o.stop(t+0.75);
+  });
+}
+
+// 6 · Mechanical Open — ratchet sequence → spring → ring
+function playMechOpen() {
+  const c = C(), t = c.currentTime;
+  // Fast ratchet clicks
+  [0, 0.06, 0.11, 0.15].forEach((d, i) => {
+    const s = c.createBufferSource(); s.buffer = noise(c, 0.01);
+    const f = c.createBiquadFilter(); f.type = 'bandpass'; f.frequency.value = 1800+i*200; f.Q.value = 4;
+    const g = c.createGain(); g.gain.setValueAtTime(0.28+i*0.05, t+d); g.gain.exponentialRampToValueAtTime(0.001, t+d+0.05);
+    ch(s, f, g, c.destination); s.start(t+d); s.stop(t+d+0.06);
+  });
+  // Spring release (rising pitch burst)
+  const sp = c.createOscillator(), sg = c.createGain();
+  sp.type = 'sine'; sp.frequency.setValueAtTime(200, t+0.2); sp.frequency.exponentialRampToValueAtTime(1400, t+0.32);
+  sg.gain.setValueAtTime(0.0001, t+0.2); sg.gain.linearRampToValueAtTime(0.2, t+0.22);
+  sg.gain.exponentialRampToValueAtTime(0.001, t+0.32);
+  ch(sp, sg, c.destination); sp.start(t+0.2); sp.stop(t+0.34);
+  // Metal ring at end
+  [1200, 2400].forEach((freq, i) => {
+    const o = c.createOscillator(), g = c.createGain();
+    o.type = 'sine'; o.frequency.value = freq;
+    g.gain.setValueAtTime(0.0001, t+0.31); g.gain.linearRampToValueAtTime(0.1-i*0.03, t+0.315);
+    g.gain.exponentialRampToValueAtTime(0.001, t+0.31+0.3-i*0.05);
+    ch(o, g, c.destination); o.start(t+0.31); o.stop(t+0.65);
+  });
+}
+
+// 7 · Ancient Key — deep scrape → chunk → brass resonance
+function playAncient() {
+  const c = C(), t = c.currentTime;
+  // Deep scrape
+  const sc = c.createBufferSource(); sc.buffer = noise(c, 0.18);
+  const sf = c.createBiquadFilter(); sf.type = 'bandpass'; sf.Q.value = 5;
+  sf.frequency.setValueAtTime(400, t); sf.frequency.exponentialRampToValueAtTime(180, t+0.18);
+  const sg = c.createGain(); sg.gain.setValueAtTime(0.0001, t); sg.gain.linearRampToValueAtTime(0.12, t+0.04);
+  sg.gain.exponentialRampToValueAtTime(0.001, t+0.18);
+  ch(sc, sf, sg, c.destination); sc.start(t); sc.stop(t+0.2);
+  // Heavy chunk
+  const ck = c.createBufferSource(); ck.buffer = noise(c, 0.025);
+  const ckf = c.createBiquadFilter(); ckf.type = 'lowpass'; ckf.frequency.value = 500;
+  const ckg = c.createGain(); ckg.gain.setValueAtTime(0.7, t+0.2); ckg.gain.exponentialRampToValueAtTime(0.001, t+0.32);
+  ch(ck, ckf, ckg, c.destination); ck.start(t+0.2); ck.stop(t+0.34);
+  // Brass resonance
+  [110, 220, 330].forEach((freq, i) => {
+    const o = c.createOscillator(), g = c.createGain();
+    o.type = 'sine'; o.frequency.value = freq;
+    const vol = [0.22, 0.1, 0.05][i];
+    g.gain.setValueAtTime(0.0001, t+0.21); g.gain.linearRampToValueAtTime(vol, t+0.215);
+    g.gain.exponentialRampToValueAtTime(0.001, t+0.21+0.45-i*0.1);
+    ch(o, g, c.destination); o.start(t+0.21); o.stop(t+0.7);
+  });
+}
+
+// 8 · Digital Unlock — ascending beeps → confirm chime
+function playDigital() {
+  const c = C(), t = c.currentTime;
+  // Fast ascending sequence
+  [440, 554, 659, 880].forEach((freq, i) => {
+    const o = c.createOscillator(), g = c.createGain();
+    o.type = 'sine'; o.frequency.value = freq;
+    const d = i * 0.065;
+    g.gain.setValueAtTime(0.0001, t+d); g.gain.linearRampToValueAtTime(0.1, t+d+0.008);
+    g.gain.exponentialRampToValueAtTime(0.001, t+d+0.055);
+    ch(o, g, c.destination); o.start(t+d); o.stop(t+d+0.07);
+  });
+  // Confirm chime (two-tone)
+  [[1047, 0.3], [1319, 0.36]].forEach(([freq, delay]) => {
+    const o = c.createOscillator(), g = c.createGain();
+    o.type = 'sine'; o.frequency.value = freq as number;
+    g.gain.setValueAtTime(0.0001, t+(delay as number)); g.gain.linearRampToValueAtTime(0.18, t+(delay as number)+0.01);
+    g.gain.exponentialRampToValueAtTime(0.001, t+(delay as number)+0.45);
+    ch(o, g, c.destination); o.start(t+(delay as number)); o.stop(t+(delay as number)+0.48);
+  });
 }
 </script>
 </body>
