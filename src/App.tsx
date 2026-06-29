@@ -2,7 +2,7 @@ import { useState, useCallback, useRef, useEffect } from 'react';
 import { PARTICLES } from './data/particles';
 import { ParticleDetail } from './components/ParticleDetail';
 import { ParticleSlotMachine } from './components/ParticleSlotMachine';
-import { VerbOfTheDay } from './components/VerbOfTheDay';
+
 import { playSound } from './utils/sounds';
 
 const DICE_FACES = ['⚀', '⚁', '⚂', '⚃', '⚄', '⚅'];
@@ -195,9 +195,6 @@ export default function App() {
       </header>
 
       <main className="max-w-4xl mx-auto px-5 py-10 space-y-8 relative z-10">
-
-        {/* Verb of the Day */}
-        <VerbOfTheDay onChallengeComplete={handleStreakIncrement} />
 
         {/* Slot machine — always visible */}
         <ParticleSlotMachine
