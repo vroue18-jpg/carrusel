@@ -127,7 +127,7 @@ function WelcomeModal({ onClose }: { onClose: () => void }) {
         <div className="relative z-10">
           <p className="text-[10px] font-semibold tracking-[0.3em] uppercase text-center mb-1" style={{ color: 'rgba(232,98,10,0.7)' }}>How it works</p>
           <h2 className="font-display text-3xl tracking-wider text-white/90 text-center mb-7 leading-tight">
-            3 steps to fluency
+            3 steps to phrasal verb mastery
           </h2>
 
           <div className="space-y-4 mb-8">
@@ -159,10 +159,10 @@ function WelcomeModal({ onClose }: { onClose: () => void }) {
 }
 
 export default function App() {
-  const [showWelcome, setShowWelcome] = useState(() => !localStorage.getItem('craftEnglishSeen'));
+  const [showWelcome, setShowWelcome] = useState(() => !localStorage.getItem('craftEnglishSeen_v2'));
 
   const handleCloseWelcome = () => {
-    localStorage.setItem('craftEnglishSeen', '1');
+    localStorage.setItem('craftEnglishSeen_v2', '1');
     setShowWelcome(false);
   };
   const [activeIndex, setActiveIndex]   = useState<number | null>(null);
