@@ -62,6 +62,7 @@ export const SpeakingTimer: React.FC<Props> = ({ prompt, promptIndex, totalPromp
     setRecError(null);
     setAudioURL(null);
     chunksRef.current = [];
+    setTimeLeft(60); setDone(false); setRunning(true); warningFiredRef.current = false; playSound('startRecording');
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       const mr = new MediaRecorder(stream);

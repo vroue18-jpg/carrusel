@@ -54,7 +54,57 @@ function GoalRing({ done, total, goalMet }: { done: number; total: number; goalM
   );
 }
 
+function WelcomeModal({ onClose }: { onClose: () => void }) {
+  const steps = [
+    { n: '1', icon: '🎰', title: 'Unlock the particle', desc: 'Spin the slot machine to reveal a particle like UP, OUT or THROUGH.' },
+    { n: '2', icon: '📖', title: 'Learn the meaning', desc: 'See the visual metaphor, pattern and 10 phrasal verbs with real examples.' },
+    { n: '3', icon: '🎙️', title: 'Practice speaking!', desc: 'Hit Record — the 1-minute timer starts automatically. Talk and get fluent.' },
+  ];
+  return (
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4"
+         style={{ background: 'rgba(0,0,0,0.75)', backdropFilter: 'blur(6px)' }}
+         onClick={onClose}>
+      <div
+        className="relative max-w-sm w-full rounded-3xl p-8 shadow-2xl"
+        style={{ background: 'linear-gradient(145deg, rgba(232,98,10,0.12) 0%, rgba(0,0,0,0.85) 60%)', border: '1px solid rgba(232,98,10,0.3)' }}
+        onClick={e => e.stopPropagation()}
+      >
+        <div className="pointer-events-none absolute -top-16 -right-16 w-56 h-56 rounded-full blur-3xl"
+             style={{ background: 'radial-gradient(circle, rgba(232,98,10,0.25) 0%, transparent 70%)' }} />
+        <div className="relative z-10">
+          <p className="text-[10px] font-semibold tracking-[0.3em] uppercase text-center mb-1" style={{ color: 'rgba(232,98,10,0.7)' }}>How it works</p>
+          <h2 className="font-display text-2xl tracking-wider text-white/90 text-center mb-7 leading-tight">
+            3 steps to phrasal verb mastery
+          </h2>
+          <div className="space-y-4 mb-8">
+            {steps.map(({ n, icon, title, desc }) => (
+              <div key={n} className="flex gap-4 items-start">
+                <div className="shrink-0 w-9 h-9 rounded-xl flex items-center justify-center font-bold"
+                     style={{ background: 'rgba(232,98,10,0.15)', border: '1px solid rgba(232,98,10,0.3)', color: '#e8620a' }}>
+                  {n}
+                </div>
+                <div>
+                  <p className="text-white/85 font-semibold text-sm mb-0.5">{icon} {title}</p>
+                  <p className="text-white/40 text-xs leading-relaxed">{desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+          <button
+            onClick={onClose}
+            className="w-full py-3.5 rounded-2xl font-bold text-white tracking-wider text-sm transition-all duration-200 hover:scale-[1.02] active:scale-95"
+            style={{ background: 'linear-gradient(135deg, #e8620a, #e8620a88)', boxShadow: '0 4px 24px rgba(232,98,10,0.4)' }}
+          >
+            Let's go! 🚀
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function App() {
+  const [showWelcome, setShowWelcome] = useState(() => !localStorage.getItem('craftEnglishSeen_v2'));
   const [activeIndex, setActiveIndex]   = useState<number | null>(null);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [slotSpinCount, setSlotSpinCount] = useState(0);
@@ -115,8 +165,11 @@ export default function App() {
 
   const active = activeIndex !== null ? PARTICLES[activeIndex] : null;
 
+  const handleCloseWelcome = () => { localStorage.setItem('craftEnglishSeen_v2', '1'); setShowWelcome(false); };
+
   return (
     <div className="min-h-screen bg-cinema-gradient font-sans relative overflow-x-hidden">
+      {showWelcome && <WelcomeModal onClose={handleCloseWelcome} />}
 
       {/* Ambient orbs */}
       <div className="pointer-events-none fixed inset-0 overflow-hidden">
@@ -163,25 +216,6 @@ export default function App() {
               </div>
             )}
 
-            {/* Random / Dice button */}
-            <button
-              onClick={pickRandom}
-              disabled={diceRolling}
-              className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-sm text-white
-                         bg-btn-gradient shadow-glow-sm hover:shadow-glow-md
-                         active:scale-95 transition-all duration-200 disabled:cursor-not-allowed
-                         ${btnAnim ? 'animate-slideInRight' : ''}`}
-            >
-              <span
-                className="text-base inline-block"
-                style={{ animation: diceRolling ? 'diceRoll 0.6s cubic-bezier(0.16,1,0.3,1)' : 'none' }}
-              >
-                {diceFace}
-              </span>
-              <span className="hidden sm:inline tracking-wide">
-                {diceRolling ? 'Rolling…' : 'Random'}
-              </span>
-            </button>
           </div>
         </div>
       </header>
