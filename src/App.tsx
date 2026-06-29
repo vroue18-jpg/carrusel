@@ -255,7 +255,7 @@ export default function App() {
 
             {/* Tagline */}
             <div className="text-center space-y-2 pb-4">
-              <p className="font-display italic text-2xl sm:text-3xl text-white/20">
+              <p className="font-title italic text-2xl sm:text-3xl text-white/20">
                 Master English, one particle at a time.
               </p>
               <div className="flex items-center justify-center gap-3">
