@@ -8,6 +8,57 @@ import { playSound } from './utils/sounds';
 const DICE_FACES = ['⚀', '⚁', '⚂', '⚃', '⚄', '⚅'];
 const DAILY_GOAL = 3;
 
+const FUN_FACTS = [
+  { emoji: '📚', fact: 'English has over 5,000 phrasal verbs — more than any other language in the world.' },
+  { emoji: '🧠', fact: 'Native speakers use phrasal verbs 3× more often than single-word verbs in everyday conversation.' },
+  { emoji: '🌍', fact: 'The same particle can change a verb\'s meaning completely — "give up", "give in", and "give out" are totally different!' },
+  { emoji: '⏳', fact: 'Phrasal verbs have been evolving since Old English — "give up" dates back to the 1600s.' },
+  { emoji: '🎯', fact: 'Mastering just 10 particles unlocks the meaning of hundreds of phrasal verbs at once.' },
+];
+
+function DidYouKnow() {
+  const [idx, setIdx] = useState(() => Math.floor(Math.random() * FUN_FACTS.length));
+  const [visible, setVisible] = useState(true);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setVisible(false);
+      setTimeout(() => {
+        setIdx((i) => (i + 1) % FUN_FACTS.length);
+        setVisible(true);
+      }, 400);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const { emoji, fact } = FUN_FACTS[idx];
+  return (
+    <div className="rounded-2xl p-5 flex items-start gap-4 transition-all duration-700"
+         style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)' }}>
+      <div className="shrink-0 w-9 h-9 rounded-xl flex items-center justify-center text-lg"
+           style={{ background: 'rgba(232,98,10,0.12)', border: '1px solid rgba(232,98,10,0.25)' }}>
+        {emoji}
+      </div>
+      <div>
+        <p className="text-[10px] font-semibold tracking-[0.25em] uppercase text-glow-orange/60 mb-1.5">Did you know?</p>
+        <p
+          className="text-white/45 text-sm leading-relaxed transition-all duration-400"
+          style={{ opacity: visible ? 1 : 0, transform: visible ? 'translateY(0)' : 'translateY(6px)' }}
+        >
+          {fact}
+        </p>
+        <div className="flex gap-1.5 mt-3">
+          {FUN_FACTS.map((_, i) => (
+            <button key={i} onClick={() => { setVisible(false); setTimeout(() => { setIdx(i); setVisible(true); }, 400); }}
+              className="h-1 rounded-full transition-all duration-300"
+              style={{ width: i === idx ? '20px' : '6px', background: i === idx ? '#e8620a' : 'rgba(255,255,255,0.15)' }} />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function getDailyProgress(): number {
   const today = new Date().toISOString().slice(0, 10);
   try {
@@ -126,6 +177,10 @@ export default function App() {
   return (
     <div className="min-h-screen bg-cinema-gradient font-sans relative overflow-x-hidden">
 
+      {/* Dot grid background */}
+      <div className="pointer-events-none fixed inset-0"
+           style={{ backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.07) 1px, transparent 1px)', backgroundSize: '28px 28px' }} />
+
       {/* Ambient orbs */}
       <div className="pointer-events-none fixed inset-0 overflow-hidden">
         <div className="animate-orb absolute -top-32 left-1/4 w-96 h-96 rounded-full bg-glow-orange/10 blur-3xl" />
@@ -206,13 +261,17 @@ export default function App() {
         />
 
         {/* Detail panel — appears below when a particle is selected */}
-        {active && (
+        {active ? (
           <div ref={detailRef}>
             <ParticleDetail
               key={active.particle}
               data={active}
               onChallengeComplete={handleStreakIncrement}
             />
+          </div>
+        ) : (
+          <div className="animate-fadeIn">
+            <DidYouKnow />
           </div>
         )}
       </main>
