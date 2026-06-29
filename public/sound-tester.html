@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lever Sound Tester</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #0d0d14;
+    color: #fff;
+    font-family: system-ui, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 20px;
+    gap: 16px;
+  }
+  h1 { font-size: 1.4rem; color: #e8620a; letter-spacing: 0.15em; margin-bottom: 8px; }
+  p { color: rgba(255,255,255,0.4); font-size: 0.85rem; margin-bottom: 24px; text-align: center; }
+  .btn {
+    width: 320px;
+    padding: 16px 24px;
+    border-radius: 16px;
+    border: 1px solid rgba(255,255,255,0.12);
+    background: rgba(255,255,255,0.05);
+    color: #fff;
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    transition: all 0.15s;
+  }
+  .btn:hover { background: rgba(255,255,255,0.1); border-color: rgba(232,98,10,0.5); }
+  .btn:active { transform: scale(0.97); }
+  .btn .name { font-weight: 600; font-size: 1rem; }
+  .btn .desc { color: rgba(255,255,255,0.35); font-size: 0.75rem; }
+</style>
+</head>
+<body>
+<h1>🎛 Lever Sound Tester</h1>
+<p>Click each button to preview the sound. Tell me which one you like!</p>
+
+<button class="btn" onclick="playMagic()">
+  <span class="name">✨ Magic Spell</span>
+  <span class="desc">Rising shimmer + sparkle burst at the end</span>
+</button>
+
+<button class="btn" onclick="playSlap()">
+  <span class="name">🎸 Thwack & Reverb</span>
+  <span class="desc">Sharp snap + warm reverb tail</span>
+</button>
+
+<button class="btn" onclick="playSpace()">
+  <span class="name">🚀 Space Swipe</span>
+  <span class="desc">Sci-fi laser whoosh that lands on a deep thud</span>
+</button>
+
+<button class="btn" onclick="playCasino()">
+  <span class="name">🎰 Casino Lever</span>
+  <span class="desc">Classic mechanical clunk + coin shimmer</span>
+</button>
+
+<button class="btn" onclick="playWhooshBell()">
+  <span class="name">🔔 Whoosh + Bell</span>
+  <span class="desc">Air rush that resolves into a bright bell</span>
+</button>
+
+<button class="btn" onclick="playZenBowl()">
+  <span class="name">🎵 Zen Bowl</span>
+  <span class="desc">Soft knock followed by a singing bowl resonance</span>
+</button>
+
+<button class="btn" onclick="playPop()">
+  <span class="name">🫧 Poppy Spring</span>
+  <span class="desc">Quick cartoon spring bounce with a pop</span>
+</button>
+
+<button class="btn" onclick="playDrumroll()">
+  <span class="name">🥁 Mini Drumroll</span>
+  <span class="desc">Fast snare flutter + punch at the end</span>
+</button>
+
+<script>
+let ctx;
+function getCtx() {
+  if (!ctx) ctx = new AudioContext();
+  if (ctx.state === 'suspended') ctx.resume();
+  return ctx;
+}
+
+// ✨ Magic Spell — rising shimmer + sparkle burst
+function playMagic() {
+  const c = getCtx();
+  const t = c.currentTime;
+  // Rising frequency sweep
+  [0, 0.06, 0.12, 0.18, 0.24].forEach((delay, i) => {
+    const osc = c.createOscillator();
+    const g = c.createGain();
+    osc.connect(g); g.connect(c.destination);
+    osc.type = 'sine';
+    const baseFreq = 300 + i * 180;
+    osc.frequency.setValueAtTime(baseFreq, t + delay);
+    osc.frequency.linearRampToValueAtTime(baseFreq * 2.2, t + delay + 0.18);
+    g.gain.setValueAtTime(0.0001, t + delay);
+    g.gain.linearRampToValueAtTime(0.13 - i * 0.01, t + delay + 0.04);
+    g.gain.exponentialRampToValueAtTime(0.001, t + delay + 0.22);
+    osc.start(t + delay); osc.stop(t + delay + 0.25);
+  });
+  // Sparkle burst at end
+  [0, 0.04, 0.08].forEach((d, i) => {
+    const o = c.createOscillator(); const g = c.createGain();
+    o.connect(g); g.connect(c.destination);
+    o.type = 'sine';
+    o.frequency.value = 1400 + i * 400;
+    g.gain.setValueAtTime(0.0001, t + 0.32 + d);
+    g.gain.linearRampToValueAtTime(0.12, t + 0.32 + d + 0.008);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.32 + d + 0.35);
+    o.start(t + 0.32 + d); o.stop(t + 0.32 + d + 0.38);
+  });
+}
+
+// 🎸 Thwack & Reverb — sharp transient + warm tail
+function playSlap() {
+  const c = getCtx();
+  const t = c.currentTime;
+  // Sharp thwack
+  const bufLen = Math.floor(c.sampleRate * 0.05);
+  const buf = c.createBuffer(1, bufLen, c.sampleRate);
+  const d = buf.getChannelData(0);
+  for (let i = 0; i < bufLen; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / bufLen);
+  const src = c.createBufferSource(); src.buffer = buf;
+  const filt = c.createBiquadFilter(); filt.type = 'bandpass'; filt.frequency.value = 900; filt.Q.value = 1;
+  const g = c.createGain(); g.gain.setValueAtTime(0.5, t); g.gain.exponentialRampToValueAtTime(0.001, t + 0.05);
+  src.connect(filt); filt.connect(g); g.connect(c.destination);
+  src.start(t); src.stop(t + 0.06);
+  // Warm reverb tail
+  const o = c.createOscillator(); const og = c.createGain();
+  o.connect(og); og.connect(c.destination);
+  o.type = 'triangle'; o.frequency.setValueAtTime(180, t + 0.02);
+  o.frequency.exponentialRampToValueAtTime(80, t + 0.4);
+  og.gain.setValueAtTime(0.0001, t + 0.02);
+  og.gain.linearRampToValueAtTime(0.18, t + 0.05);
+  og.gain.exponentialRampToValueAtTime(0.001, t + 0.45);
+  o.start(t + 0.02); o.stop(t + 0.5);
+}
+
+// 🚀 Space Swipe — laser whoosh + deep thud
+function playSpace() {
+  const c = getCtx();
+  const t = c.currentTime;
+  // Laser whoosh
+  const wLen = Math.floor(c.sampleRate * 0.4);
+  const wBuf = c.createBuffer(1, wLen, c.sampleRate);
+  const wd = wBuf.getChannelData(0);
+  for (let i = 0; i < wLen; i++) wd[i] = Math.random() * 2 - 1;
+  const wSrc = c.createBufferSource(); wSrc.buffer = wBuf;
+  const wF = c.createBiquadFilter(); wF.type = 'bandpass';
+  wF.frequency.setValueAtTime(3000, t);
+  wF.frequency.exponentialRampToValueAtTime(150, t + 0.4);
+  wF.Q.value = 3;
+  const wG = c.createGain();
+  wG.gain.setValueAtTime(0.0001, t);
+  wG.gain.linearRampToValueAtTime(0.3, t + 0.05);
+  wG.gain.exponentialRampToValueAtTime(0.001, t + 0.4);
+  wSrc.connect(wF); wF.connect(wG); wG.connect(c.destination);
+  wSrc.start(t); wSrc.stop(t + 0.42);
+  // Deep thud
+  const sub = c.createOscillator(); const sg = c.createGain();
+  sub.connect(sg); sg.connect(c.destination);
+  sub.type = 'sine'; sub.frequency.setValueAtTime(80, t + 0.35);
+  sub.frequency.exponentialRampToValueAtTime(30, t + 0.55);
+  sg.gain.setValueAtTime(0.4, t + 0.35);
+  sg.gain.exponentialRampToValueAtTime(0.001, t + 0.6);
+  sub.start(t + 0.35); sub.stop(t + 0.65);
+}
+
+// 🎰 Casino Lever — mechanical + coins
+function playCasino() {
+  const c = getCtx();
+  const t = c.currentTime;
+  // Clunk
+  const cLen = Math.floor(c.sampleRate * 0.08);
+  const cBuf = c.createBuffer(1, cLen, c.sampleRate);
+  const cd = cBuf.getChannelData(0);
+  for (let i = 0; i < cLen; i++) cd[i] = Math.random() * 2 - 1;
+  const cSrc = c.createBufferSource(); cSrc.buffer = cBuf;
+  const cf = c.createBiquadFilter(); cf.type = 'lowpass'; cf.frequency.value = 400;
+  const cg = c.createGain(); cg.gain.setValueAtTime(0.4, t); cg.gain.exponentialRampToValueAtTime(0.001, t + 0.08);
+  cSrc.connect(cf); cf.connect(cg); cg.connect(c.destination);
+  cSrc.start(t); cSrc.stop(t + 0.09);
+  // Coin shimmer — staggered high pings
+  [0.1, 0.19, 0.27, 0.34, 0.40].forEach((delay, i) => {
+    const o = c.createOscillator(); const g = c.createGain();
+    o.connect(g); g.connect(c.destination);
+    o.type = 'sine'; o.frequency.value = 1200 + Math.random() * 600;
+    g.gain.setValueAtTime(0.0001, t + delay);
+    g.gain.linearRampToValueAtTime(0.1 - i * 0.01, t + delay + 0.006);
+    g.gain.exponentialRampToValueAtTime(0.001, t + delay + 0.28);
+    o.start(t + delay); o.stop(t + delay + 0.3);
+  });
+}
+
+// 🔔 Whoosh + Bell
+function playWhooshBell() {
+  const c = getCtx();
+  const t = c.currentTime;
+  // Whoosh
+  const wLen = Math.floor(c.sampleRate * 0.35);
+  const wBuf = c.createBuffer(1, wLen, c.sampleRate);
+  const wd = wBuf.getChannelData(0);
+  for (let i = 0; i < wLen; i++) wd[i] = Math.random() * 2 - 1;
+  const wSrc = c.createBufferSource(); wSrc.buffer = wBuf;
+  const wF = c.createBiquadFilter(); wF.type = 'bandpass';
+  wF.frequency.setValueAtTime(400, t);
+  wF.frequency.exponentialRampToValueAtTime(2200, t + 0.18);
+  wF.frequency.exponentialRampToValueAtTime(600, t + 0.35);
+  wF.Q.value = 2;
+  const wG = c.createGain();
+  wG.gain.setValueAtTime(0.0001, t);
+  wG.gain.linearRampToValueAtTime(0.22, t + 0.08);
+  wG.gain.exponentialRampToValueAtTime(0.001, t + 0.35);
+  wSrc.connect(wF); wF.connect(wG); wG.connect(c.destination);
+  wSrc.start(t); wSrc.stop(t + 0.37);
+  // Bell
+  const bell = c.createOscillator(); const bg = c.createGain();
+  bell.connect(bg); bg.connect(c.destination);
+  bell.type = 'sine'; bell.frequency.value = 1046;
+  bg.gain.setValueAtTime(0.0001, t + 0.3);
+  bg.gain.linearRampToValueAtTime(0.25, t + 0.308);
+  bg.gain.exponentialRampToValueAtTime(0.001, t + 1.1);
+  bell.start(t + 0.3); bell.stop(t + 1.15);
+  // Bell overtone
+  const b2 = c.createOscillator(); const b2g = c.createGain();
+  b2.connect(b2g); b2g.connect(c.destination);
+  b2.type = 'sine'; b2.frequency.value = 2637;
+  b2g.gain.setValueAtTime(0.0001, t + 0.3);
+  b2g.gain.linearRampToValueAtTime(0.09, t + 0.308);
+  b2g.gain.exponentialRampToValueAtTime(0.001, t + 0.7);
+  b2.start(t + 0.3); b2.stop(t + 0.75);
+}
+
+// 🎵 Zen Bowl — knock + singing bowl
+function playZenBowl() {
+  const c = getCtx();
+  const t = c.currentTime;
+  // Soft knock
+  const kLen = Math.floor(c.sampleRate * 0.04);
+  const kBuf = c.createBuffer(1, kLen, c.sampleRate);
+  const kd = kBuf.getChannelData(0);
+  for (let i = 0; i < kLen; i++) kd[i] = (Math.random() * 2 - 1) * (1 - i / kLen);
+  const kSrc = c.createBufferSource(); kSrc.buffer = kBuf;
+  const kf = c.createBiquadFilter(); kf.type = 'lowpass'; kf.frequency.value = 600;
+  const kg = c.createGain(); kg.gain.setValueAtTime(0.25, t); kg.gain.exponentialRampToValueAtTime(0.001, t + 0.04);
+  kSrc.connect(kf); kf.connect(kg); kg.connect(c.destination);
+  kSrc.start(t); kSrc.stop(t + 0.05);
+  // Bowl resonance — slow attack, very long decay
+  [220, 440, 660].forEach((freq, i) => {
+    const o = c.createOscillator(); const g = c.createGain();
+    o.connect(g); g.connect(c.destination);
+    o.type = 'sine'; o.frequency.value = freq;
+    const vol = [0.18, 0.1, 0.05][i];
+    g.gain.setValueAtTime(0.0001, t + 0.01);
+    g.gain.linearRampToValueAtTime(vol, t + 0.12);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 1.4 - i * 0.3);
+    o.start(t + 0.01); o.stop(t + 1.5);
+  });
+}
+
+// 🫧 Poppy Spring — cartoon bounce
+function playPop() {
+  const c = getCtx();
+  const t = c.currentTime;
+  // Spring wobble
+  const osc = c.createOscillator(); const g = c.createGain();
+  osc.connect(g); g.connect(c.destination);
+  osc.type = 'sine';
+  osc.frequency.setValueAtTime(80, t);
+  osc.frequency.exponentialRampToValueAtTime(600, t + 0.12);
+  osc.frequency.exponentialRampToValueAtTime(350, t + 0.2);
+  osc.frequency.exponentialRampToValueAtTime(480, t + 0.27);
+  osc.frequency.exponentialRampToValueAtTime(400, t + 0.33);
+  g.gain.setValueAtTime(0.0001, t);
+  g.gain.linearRampToValueAtTime(0.25, t + 0.03);
+  g.gain.exponentialRampToValueAtTime(0.001, t + 0.38);
+  osc.start(t); osc.stop(t + 0.4);
+  // Pop burst
+  const pLen = Math.floor(c.sampleRate * 0.015);
+  const pBuf = c.createBuffer(1, pLen, c.sampleRate);
+  const pd = pBuf.getChannelData(0);
+  for (let i = 0; i < pLen; i++) pd[i] = Math.random() * 2 - 1;
+  const pSrc = c.createBufferSource(); pSrc.buffer = pBuf;
+  const pg = c.createGain(); pg.gain.setValueAtTime(0.3, t); pg.gain.exponentialRampToValueAtTime(0.001, t + 0.015);
+  pSrc.connect(pg); pg.connect(c.destination);
+  pSrc.start(t); pSrc.stop(t + 0.02);
+}
+
+// 🥁 Mini Drumroll — snare flutter + punch
+function playDrumroll() {
+  const c = getCtx();
+  const t = c.currentTime;
+  // Snare flutter
+  const hits = 6;
+  for (let i = 0; i < hits; i++) {
+    const delay = i * 0.045 * (1 - i / (hits * 1.5));
+    const bLen = Math.floor(c.sampleRate * 0.025);
+    const buf = c.createBuffer(1, bLen, c.sampleRate);
+    const d = buf.getChannelData(0);
+    for (let j = 0; j < bLen; j++) d[j] = Math.random() * 2 - 1;
+    const src = c.createBufferSource(); src.buffer = buf;
+    const f = c.createBiquadFilter(); f.type = 'bandpass'; f.frequency.value = 1800; f.Q.value = 1.5;
+    const g = c.createGain();
+    g.gain.setValueAtTime(0.08 + i * 0.03, t + delay);
+    g.gain.exponentialRampToValueAtTime(0.001, t + delay + 0.03);
+    src.connect(f); f.connect(g); g.connect(c.destination);
+    src.start(t + delay); src.stop(t + delay + 0.04);
+  }
+  // Final punch
+  const kick = c.createOscillator(); const kg = c.createGain();
+  kick.connect(kg); kg.connect(c.destination);
+  kick.type = 'sine'; kick.frequency.setValueAtTime(100, t + 0.22);
+  kick.frequency.exponentialRampToValueAtTime(40, t + 0.38);
+  kg.gain.setValueAtTime(0.4, t + 0.22);
+  kg.gain.exponentialRampToValueAtTime(0.001, t + 0.42);
+  kick.start(t + 0.22); kick.stop(t + 0.45);
+}
+</script>
+</body>
+</html>
