@@ -256,7 +256,48 @@ const buildSlotLand = (c: AudioContext) => {
   sub.start(c.currentTime); sub.stop(c.currentTime + 0.13);
 };
 
-export type SoundType = 'particleClick' | 'startRecording' | 'warning' | 'diceRoll' | 'slotTick' | 'slotLand' | 'leverPull' | 'spaceSwipe';
+// Metal scrape + click of a key turning in a lock
+const buildKeyTurn = (c: AudioContext) => {
+  const t = c.currentTime;
+  // Metallic scrape as key turns — bandpass noise sweep
+  const scrapeLen = Math.floor(c.sampleRate * 0.22);
+  const scrapeBuf = c.createBuffer(1, scrapeLen, c.sampleRate);
+  const sd = scrapeBuf.getChannelData(0);
+  for (let i = 0; i < scrapeLen; i++) sd[i] = Math.random() * 2 - 1;
+  const scrapeSrc = c.createBufferSource(); scrapeSrc.buffer = scrapeBuf;
+  const scrapeF = c.createBiquadFilter(); scrapeF.type = 'bandpass';
+  scrapeF.frequency.setValueAtTime(1200, t);
+  scrapeF.frequency.exponentialRampToValueAtTime(600, t + 0.22);
+  scrapeF.Q.value = 4;
+  const scrapeG = c.createGain();
+  scrapeG.gain.setValueAtTime(0.0001, t);
+  scrapeG.gain.linearRampToValueAtTime(0.08, t + 0.04);
+  scrapeG.gain.exponentialRampToValueAtTime(0.001, t + 0.22);
+  scrapeSrc.connect(scrapeF); scrapeF.connect(scrapeG); scrapeG.connect(c.destination);
+  scrapeSrc.start(t); scrapeSrc.stop(t + 0.24);
+
+  // Satisfying click/clunk at the end when it locks
+  const clickLen = Math.floor(c.sampleRate * 0.06);
+  const clickBuf = c.createBuffer(1, clickLen, c.sampleRate);
+  const cd = clickBuf.getChannelData(0);
+  for (let i = 0; i < clickLen; i++) cd[i] = (Math.random() * 2 - 1) * (1 - i / clickLen);
+  const clickSrc = c.createBufferSource(); clickSrc.buffer = clickBuf;
+  const clickF = c.createBiquadFilter(); clickF.type = 'lowpass'; clickF.frequency.value = 700;
+  const clickG = c.createGain(); clickG.gain.setValueAtTime(0.28, t + 0.2); clickG.gain.exponentialRampToValueAtTime(0.001, t + 0.28);
+  clickSrc.connect(clickF); clickF.connect(clickG); clickG.connect(c.destination);
+  clickSrc.start(t + 0.2); clickSrc.stop(t + 0.3);
+
+  // Tiny metallic ring after the click
+  const ring = c.createOscillator(); const rg = c.createGain();
+  ring.connect(rg); rg.connect(c.destination);
+  ring.type = 'sine'; ring.frequency.value = 2200;
+  rg.gain.setValueAtTime(0.0001, t + 0.22);
+  rg.gain.linearRampToValueAtTime(0.07, t + 0.226);
+  rg.gain.exponentialRampToValueAtTime(0.001, t + 0.5);
+  ring.start(t + 0.22); ring.stop(t + 0.55);
+};
+
+export type SoundType = 'particleClick' | 'startRecording' | 'warning' | 'diceRoll' | 'slotTick' | 'slotLand' | 'leverPull' | 'spaceSwipe' | 'keyTurn';
 
 export const playSound = (type: SoundType) => {
   if (type === 'particleClick') play(buildClick);
@@ -267,4 +308,5 @@ export const playSound = (type: SoundType) => {
   else if (type === 'slotLand') play(buildSlotLand);
   else if (type === 'leverPull') play(buildLeverPull);
   else if (type === 'spaceSwipe') play(buildSpaceSwipe);
+  else if (type === 'keyTurn') play(buildKeyTurn);
 };
