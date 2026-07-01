@@ -3,6 +3,10 @@ import { playSound } from '../utils/sounds';
 
 interface AccentColor { glow: string; bg: string; border: string; text: string }
 
+const RECORDER_MIME_CANDIDATES = ['audio/webm;codecs=opus', 'audio/webm', 'audio/mp4', 'audio/ogg;codecs=opus'];
+const getSupportedMimeType = () =>
+  RECORDER_MIME_CANDIDATES.find((type) => typeof MediaRecorder !== 'undefined' && MediaRecorder.isTypeSupported?.(type));
+
 const MiniLever: React.FC<{ color: AccentColor; shuffling: boolean; onClick: () => void }> = ({ color: c, shuffling, onClick }) => {
   const [pulled, setPulled] = useState(false);
 
@@ -92,14 +96,14 @@ export const SpeakingTimer: React.FC<Props> = ({
   const audioRef                  = useRef<HTMLAudioElement | null>(null);
 
   const start = () => { setTimeLeft(60); setDone(false); setRunning(true); warningFiredRef.current = false; playSound('startRecording'); };
-  const stop  = () => { setRunning(false); if (intervalRef.current) clearInterval(intervalRef.current); };
+  const stop  = () => { setRunning(false); if (intervalRef.current) clearInterval(intervalRef.current); stopRecording(); };
   const reset = () => { stop(); setTimeLeft(60); setDone(false); warningFiredRef.current = false; };
 
   useEffect(() => {
     if (running) {
       intervalRef.current = setInterval(() => {
         setTimeLeft((t) => {
-          if (t <= 1) { setRunning(false); setDone(true); onChallengeComplete?.(); return 0; }
+          if (t <= 1) { setRunning(false); setDone(true); stopRecording(); onChallengeComplete?.(); return 0; }
           if (t === 11 && !warningFiredRef.current) { warningFiredRef.current = true; playSound('warning'); }
           return t - 1;
         });
@@ -123,10 +127,11 @@ export const SpeakingTimer: React.FC<Props> = ({
     setTimeLeft(60); setDone(false); setRunning(true); warningFiredRef.current = false; playSound('startRecording');
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const mr = new MediaRecorder(stream);
+      const mimeType = getSupportedMimeType();
+      const mr = new MediaRecorder(stream, mimeType ? { mimeType } : undefined);
       mediaRecorderRef.current = mr;
       mr.ondataavailable = (e) => { if (e.data.size > 0) chunksRef.current.push(e.data); };
-      mr.onstop = () => { setAudioURL(URL.createObjectURL(new Blob(chunksRef.current, { type: 'audio/webm' }))); stream.getTracks().forEach(t => t.stop()); };
+      mr.onstop = () => { setAudioURL(URL.createObjectURL(new Blob(chunksRef.current, { type: mr.mimeType || mimeType || 'audio/webm' }))); stream.getTracks().forEach(t => t.stop()); };
       mr.start(); setRecording(true);
     } catch { setRecError('Microphone access denied.'); }
   };
@@ -140,7 +145,11 @@ export const SpeakingTimer: React.FC<Props> = ({
     if (!audioURL) return;
     if (!audioRef.current) { audioRef.current = new Audio(audioURL); audioRef.current.onended = () => setPlaying(false); }
     if (playing) { audioRef.current.pause(); audioRef.current.currentTime = 0; setPlaying(false); }
-    else { audioRef.current.play(); setPlaying(true); }
+    else {
+      audioRef.current.play()
+        .then(() => setPlaying(true))
+        .catch(() => setRecError("Couldn't play the recording. Try downloading it instead."));
+    }
   };
 
   const downloadRecording = () => {

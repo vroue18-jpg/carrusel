@@ -2,6 +2,10 @@ import React, { useState, useEffect, useRef } from 'react';
 import { PARTICLES } from '../data/particles';
 import { playSound } from '../utils/sounds';
 
+const RECORDER_MIME_CANDIDATES = ['audio/webm;codecs=opus', 'audio/webm', 'audio/mp4', 'audio/ogg;codecs=opus'];
+const getSupportedMimeType = () =>
+  RECORDER_MIME_CANDIDATES.find((type) => typeof MediaRecorder !== 'undefined' && MediaRecorder.isTypeSupported?.(type));
+
 function getVerbOfTheDay() {
   const now = new Date();
   const dayOfYear = Math.floor(
@@ -61,10 +65,11 @@ export const VerbOfTheDay: React.FC<Props> = ({ onChallengeComplete }) => {
     setRecError(null); setAudioURL(null); chunksRef.current = [];
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const mr = new MediaRecorder(stream);
+      const mimeType = getSupportedMimeType();
+      const mr = new MediaRecorder(stream, mimeType ? { mimeType } : undefined);
       mrRef.current = mr;
       mr.ondataavailable = (e) => { if (e.data.size > 0) chunksRef.current.push(e.data); };
-      mr.onstop = () => { setAudioURL(URL.createObjectURL(new Blob(chunksRef.current, { type: 'audio/webm' }))); stream.getTracks().forEach((t) => t.stop()); };
+      mr.onstop = () => { setAudioURL(URL.createObjectURL(new Blob(chunksRef.current, { type: mr.mimeType || mimeType || 'audio/webm' }))); stream.getTracks().forEach((t) => t.stop()); };
       mr.start(); setRecording(true);
     } catch { setRecError('Microphone blocked — allow it in your browser settings.'); }
   };
@@ -75,7 +80,11 @@ export const VerbOfTheDay: React.FC<Props> = ({ onChallengeComplete }) => {
     if (!audioURL) return;
     if (!audioRef.current) { audioRef.current = new Audio(audioURL); audioRef.current.onended = () => setPlaying(false); }
     if (playing) { audioRef.current.pause(); audioRef.current.currentTime = 0; setPlaying(false); }
-    else { audioRef.current.play(); setPlaying(true); }
+    else {
+      audioRef.current.play()
+        .then(() => setPlaying(true))
+        .catch(() => setRecError("Couldn't play the recording. Try downloading it instead."));
+    }
   };
 
   const download = () => {
