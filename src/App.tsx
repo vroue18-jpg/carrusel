@@ -222,7 +222,7 @@ export default function App() {
       </div>
 
       {/* Header */}
-      <header className="sticky top-0 z-50 glass border-b border-white/[0.07]">
+      <header className="sticky top-0 z-50 glass">
         <div className="max-w-4xl mx-auto px-5 py-4 flex items-center justify-between gap-4">
           <div>
             <h1 className="font-display text-3xl sm:text-4xl tracking-wider shimmer-text leading-none">
@@ -290,7 +290,7 @@ export default function App() {
       </main>
 
       {/* Footer */}
-      <footer className="text-center py-10 border-t border-white/[0.05] mt-8 relative z-10">
+      <footer className="text-center py-10 mt-8 relative z-10">
         <p className="font-handwritten text-lg text-white/25">Made with ❤️ by Craft English</p>
         <p className="text-white/15 text-xs mt-1 tracking-wide">
           Helping learners master English — one particle at a time

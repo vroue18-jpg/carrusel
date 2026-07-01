@@ -124,13 +124,6 @@ export const ParticleDetail: React.FC<Props> = ({ data, onChallengeComplete }) =
         </div>
       </div>
 
-      {/* Divider */}
-      <div className="flex items-center gap-4 pt-4">
-        <div className="h-px flex-1 transition-all duration-700" style={{ background: `linear-gradient(to right, transparent, ${c.border}, transparent)` }} />
-        <span className="text-[10px] font-semibold tracking-[0.3em] uppercase text-white/20">Now practice</span>
-        <div className="h-px flex-1 transition-all duration-700" style={{ background: `linear-gradient(to right, transparent, ${c.border}, transparent)` }} />
-      </div>
-
       {/* Speaking Timer */}
       <SpeakingTimer
         prompt={data.speakingPrompts[promptIndex]}

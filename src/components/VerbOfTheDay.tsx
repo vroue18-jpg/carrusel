@@ -133,8 +133,6 @@ export const VerbOfTheDay: React.FC<Props> = ({ onChallengeComplete }) => {
             </div>
             <p className="text-white/50 text-sm font-medium mt-2">{verb.meaning}</p>
           </div>
-          <div className="hidden sm:block w-px self-stretch bg-white/10" />
-          <div className="sm:hidden h-px bg-white/10" />
           <div className="flex-1 flex flex-col gap-4">
             <p className="text-white/65 text-sm sm:text-base leading-relaxed font-light italic">"{verb.example}"</p>
             <button
@@ -153,7 +151,7 @@ export const VerbOfTheDay: React.FC<Props> = ({ onChallengeComplete }) => {
 
         {/* Inline speaking challenge */}
         {open && (
-          <div className="border-t border-white/10 pt-6 animate-fadeIn">
+          <div className="animate-fadeIn">
 
             {/* Prompt */}
             <div className="mb-5 p-4 rounded-2xl border border-white/[0.07]" style={{ background: 'rgba(255,255,255,0.03)' }}>
